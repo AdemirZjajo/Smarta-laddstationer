@@ -1,3 +1,5 @@
+//Prioritize and get info to display
+
 
 // TODO: Hitta ett bra interface 
 // Exempel: Vi behöver ett interface för att kunna computa och hämta våran 

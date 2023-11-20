@@ -1,0 +1,1 @@
+//skapa objekt för varje nod
