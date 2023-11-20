@@ -20,3 +20,4 @@ int main() {
 
 // rutter från denna specifika laddstation till de tre andra, dessa kan skapas som listor eller
 // arrayer av koordinater för hur noden ska iterera sin förflyttning
+//hej
