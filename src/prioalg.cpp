@@ -1,4 +1,5 @@
 //Prioritize and get info to display
+//Kommer finnas i nod klassen
 
 
 // TODO: Hitta ett bra interface 

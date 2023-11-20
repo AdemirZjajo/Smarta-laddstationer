@@ -1,4 +1,5 @@
 // Programmets huvudfil
+// Prata med nod.cpp för att få information
 
 #include <SPI.h>
 #include <Wire.h>
