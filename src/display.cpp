@@ -5,11 +5,13 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "communication.hpp"
 
 // OLED inställningar 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define RESET    -1  // Reset pin 
+
 
 // Initialize the OLED display using Arduino Wire
 Adafruit_SSD1306 display(SCREEN_WIDTH,SCREEN_HEIGHT , &Wire, RESET);
@@ -50,16 +52,22 @@ void setup() {
     loadType = getRandom(loadTypeOptions, arraySize);
 
     randomSeed(analogRead(0));
+
+     setupCommunication();
 }
 
 
 
 void loop() {
-    display.clearDisplay();
 
+    loopCommunication();
+
+
+    display.clearDisplay();
+    
     // Display "Nod 1" at the static x-position
-    display.setCursor(50, 20);
-    display.println("Nod 1");
+    display.setCursor(35, 20);
+    display.printf("Nod: %d", getID());
 
     //Static information
     display.setCursor(32, 30);

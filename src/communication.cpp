@@ -30,7 +30,7 @@ String MESH_PREFIX = "whateverYouLike2";
 String MESH_PASSWORD = "somethingSneaky2";
 int MESH_PORT = 5555;
 int Counter = 0; 
-
+int nodeId = 0; 
 // User stub
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
@@ -39,11 +39,18 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 //Creating the message and broadcast it here
 void sendMessage() {
-  String msg = "Hello from node 1 ";
-  //msg += mesh.getNodeId();
+  String msg = "Hello from node ";
+  nodeId = mesh.getNodeId() % 1000;
+  msg += nodeId;
   mesh.sendBroadcast( msg );
   taskSendMessage.setInterval( random( TASK_SECOND * 3, TASK_SECOND * 5 ));
    Serial.printf("Sent %s\n", msg.c_str());
+}
+
+// returns the node id, mainly used in display
+int getID()
+{
+  return nodeId;
 }
 
 // This notifies the ESP whe a message is recieved 
@@ -64,6 +71,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   
   
 }
+
 
 
 void newConnectionCallback(uint32_t nodeId) {
@@ -96,7 +104,9 @@ void changedConnectionCallback() {
 
 
 
-void setup() {
+void setupCommunication() {
+
+  
     Serial.begin(115200);
 
     // ... other initialization code ...
@@ -113,7 +123,7 @@ void setup() {
     
 }
 
-void loop() 
+void loopCommunication() 
 {
   // it will run the user scheduler as well
   mesh.update();

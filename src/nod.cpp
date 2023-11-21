@@ -5,8 +5,7 @@
 //Communication
 //Display
 
-
-using namespace std;
+/*using namespace std;
 
 class Nod {
   public: // Accesstyp
@@ -29,7 +28,7 @@ class Nod {
 
     // Nodens initieringsprocess börjar här
     /* Destinationsgenerering och uträkning av miniladdning görs en gång innan
-    state machinen för att låta noden bestämma vilket dess första state ska bli. */
+    state machinen för att låta noden bestämma vilket dess första state ska bli. 
 
 
 };
@@ -57,7 +56,8 @@ int main() {
     break;
   }
   return 0;
-}
+}*/
+
 
 
 /* Transit state
