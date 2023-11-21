@@ -14,41 +14,52 @@
 // Initialize the OLED display using Arduino Wire
 Adafruit_SSD1306 display(SCREEN_WIDTH,SCREEN_HEIGHT , &Wire, RESET);
 
-int nodXPos = 35; // X-position for "Nod 1"
-int otherLinesXPos = SCREEN_WIDTH; // Initial x-position for other lines, starting from the right
+String weight = "0";
+String battery = "0";
+String loadType = "0";
 
 // Arrays of strings for random selection
-const char* batteryOptions[] = {" 90%", " 75%", " 60%", " 45%"};
-const char* lastOptions[] = {" 1000 kg", " 750 kg", " 500 kg", " 250 kg"};
-const char* lastTypOptions[] = {" *", " ", " *", " "};
-const int arraySize = 4; // Size of the arrays
+const char* batteryOptions[] = {
+    " 10%", " 20%", " 30%", " 40%", " 50%",
+    " 60%", " 70%", " 80%", " 90%", " 100%"
+};
+const char* weightOptions[] = {
+    " 1000 kg", " 900 kg", " 800 kg", " 700 kg", " 600 kg",
+    " 500 kg", " 400 kg", " 300 kg", " 200 kg", " 100 kg" 
+};
+const char* loadTypeOptions[] = {
+    " *", "", " *", "", " *",
+    "", " *", "", " *", ""
+};
+const int arraySize = 10; // Size of the arrays
+
+String getRandom(const char* options[], int size) {
+    int randomIndex = random(size); 
+    return options[randomIndex]; 
+}
 
 void setup() {
     // initialize with the I2C addr 0x3C (for the 128x32)
+    
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay();
     display.setTextColor(WHITE);
     display.setTextSize(0,1);
+    battery = getRandom(batteryOptions, arraySize);
+    weight = getRandom(weightOptions, arraySize);
+    loadType = getRandom(loadTypeOptions, arraySize);
 
     randomSeed(analogRead(0));
 }
 
-String getRandomText(const char* options[], int size) {
-    int randomIndex = random(size); 
-    return options[randomIndex]; 
-}
+
 
 void loop() {
     display.clearDisplay();
 
     // Display "Nod 1" at the static x-position
-    display.setCursor(nodXPos, 20);
+    display.setCursor(50, 20);
     display.println("Nod 1");
-
-    otherLinesXPos -= 2;
-    if (otherLinesXPos < - SCREEN_WIDTH) {
-    otherLinesXPos = SCREEN_WIDTH;
-    }
 
     //Static information
     display.setCursor(32, 30);
@@ -60,27 +71,11 @@ void loop() {
 
     // Moving horizontally
     display.setCursor(73, 30);
-    display.println(" 90%");
+    display.println(battery);
     display.setCursor(55, 40);
-    display.println(" 1000kg");
+    display.println(weight);
     display.setCursor(75, 50);
-    display.println(" * ");
-
-    //Moving horizontally and getting a random selected status
-   /* display.setCursor(73, 30);
-    display.println(getRandomText(batteryOptions, arraySize));
-    display.setCursor(55, 40);
-    display.println(getRandomText(lastOptions, arraySize));
-    display.setCursor(75, 50);
-    display.println(getRandomText(lastTypOptions, arraySize));*/
-
-     // Display other lines at the updated x-position
-   /* display.setCursor(otherLinesXPos, 30);
-    display.println("Battery: 90%");
-    display.setCursor(otherLinesXPos + 10, 40);
-    display.println("Last: 1000 kg ");
-    display.setCursor(otherLinesXPos + 10, 50);
-    display.println("Last typ: * ");*/
+    display.println(loadType);
 
     display.display();
 
