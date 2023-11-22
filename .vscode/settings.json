@@ -1,5 +1,6 @@
 {
     "files.associations": {
+<<<<<<< Updated upstream
         "array": "cpp",
         "atomic": "cpp",
         "*.tcc": "cpp",
@@ -49,6 +50,12 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
+=======
+        "list": "cpp",
+        "string": "cpp",
+        "new": "cpp",
+        "vector": "cpp",
+>>>>>>> Stashed changes
         "typeinfo": "cpp"
     }
 }

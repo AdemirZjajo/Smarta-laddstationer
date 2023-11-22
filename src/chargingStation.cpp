@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 
 class ChargingStation {
@@ -16,7 +17,24 @@ class ChargingStation {
   }
   return 0;
 }*/
+=======
+#include "chargingStation.hpp"
+#include <vector>
 
-// rutter från denna specifika laddstation till de tre andra, dessa kan skapas som listor eller
-// arrayer av koordinater för hur noden ska iterera sin förflyttning
-//hej
+using namespace std;
+>>>>>>> Stashed changes
+
+vector<int> route_CS1 = {50, 100, 50}; // CS1 --> CS2 | CS1 --> CS3 | CS1 --> CS4
+vector<int> route_CS2 = {50, 100, 50}; // CS2 --> CS3 | CS2 --> CS4 | CS2 --> CS1
+vector<int> route_CS3 = {50, 100, 50}; // CS3 --> CS4 | CS3 --> CS1 | CS3 --> CS2
+vector<int> route_CS4 = {50, 100, 50}; // CS4 --> CS1 | CS4 --> CS2 | CS4 --> CS3
+
+ChargingStation::ChargingStation(){};
+
+ChargingStation::ChargingStation(int idCS, int xcorCS, int ycorCS, string zonCS)
+{
+  id = idCS;
+  xcor = xcorCS;
+  ycor = ycorCS;
+  zon = zonCS;
+}
