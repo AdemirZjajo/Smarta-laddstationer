@@ -1,13 +1,4 @@
 #include <string>
-<<<<<<< Updated upstream
-
-
-using namespace std;
-
-class ChargingStation {
-  private: // Accesstyp
-    string name;
-=======
 #include <vector>
 
 using namespace std;
@@ -24,5 +15,4 @@ public:
 
   ChargingStation();
   ChargingStation(int id, int xcor, int ycor, string zon);
->>>>>>> Stashed changes
 };
