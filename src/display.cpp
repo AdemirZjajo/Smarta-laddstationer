@@ -1,5 +1,6 @@
 // Programmets huvudfil
 // Prata med nod.cpp för att få information
+// vi 3
 
 #include <SPI.h>
 #include <Wire.h>
@@ -11,6 +12,9 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define RESET    -1  // Reset pin 
+#define buttonAPin 19
+#define buttonBPin 18
+
 
 
 // Initialize the OLED display using Arduino Wire
@@ -20,14 +24,17 @@ String weight = "0";
 String battery = "0";
 String loadType = "0";
 
+//const int buttonAPin = GPIO_NUM_22;
+//const int buttonBPin = GPIO_NUM_21;
+
 // Arrays of strings for random selection
 const char* batteryOptions[] = {
     " 10%", " 20%", " 30%", " 40%", " 50%",
     " 60%", " 70%", " 80%", " 90%", " 100%"
 };
 const char* weightOptions[] = {
-    " 1000 kg", " 900 kg", " 800 kg", " 700 kg", " 600 kg",
-    " 500 kg", " 400 kg", " 300 kg", " 200 kg", " 100 kg" 
+    " 1000kg", " 900kg", " 800kg", " 700kg", " 600kg",
+    " 500kg", " 400kg", " 300kg", " 200kg", " 100kg" 
 };
 const char* loadTypeOptions[] = {
     " *", "", " *", "", " *",
@@ -51,14 +58,19 @@ void setup() {
     weight = getRandom(weightOptions, arraySize);
     loadType = getRandom(loadTypeOptions, arraySize);
 
+    pinMode(buttonAPin, INPUT_PULLUP); 
+    pinMode(buttonBPin, INPUT_PULLUP); 
+
     randomSeed(analogRead(0));
 
-     setupCommunication();
+    setupCommunication();
 }
 
 
 
 void loop() {
+
+    
 
     loopCommunication();
 
@@ -69,19 +81,40 @@ void loop() {
     display.setCursor(35, 20);
     display.printf("Nod: %d", getID());
 
+    //int buttonAState = digitalRead(buttonAPin);
+    //int buttonBState = digitalRead(buttonBPin);
+
+    /*if (buttonAState == LOW) { // Assumes active LOW (button pressed gives LOW)
+        // Button A is pressed
+        // Action for button A
+        display.setCursor(32, 40);
+        display.print("Last:");
+        display.setCursor(55, 40);
+        display.println(weight);
+    }
+
+    if (buttonBState == ESP_LOG_WARN) { // Assumes active LOW
+        // Button B is pressed
+        // Action for button B
+        display.setCursor(32, 30);
+        display.print("Battery:");
+        display.setCursor(73, 30);
+        display.println(battery);
+    }*/
     //Static information
-    display.setCursor(32, 30);
-    display.print("Battery:");
+    
     display.setCursor(32, 40);
     display.print("Last:");
-    display.setCursor(32, 50);
-    display.print("Lasttyp:");
-
-    // Moving horizontally
-    display.setCursor(73, 30);
-    display.println(battery);
     display.setCursor(55, 40);
     display.println(weight);
+
+    display.setCursor(32, 30);
+    display.print("Battery:");
+    display.setCursor(73, 30);
+    display.println(battery);
+
+    display.setCursor(32, 50);
+    display.print("Lasttyp:");
     display.setCursor(75, 50);
     display.println(loadType);
 

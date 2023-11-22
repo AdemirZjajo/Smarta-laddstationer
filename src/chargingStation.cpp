@@ -1,6 +1,6 @@
-#include <string>
 
-class Laddstation1 {
+
+class ChargingStation {
   public: // Accesstyp
 };
 /*int main() {
