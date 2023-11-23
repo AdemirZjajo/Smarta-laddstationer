@@ -10,7 +10,7 @@ using namespace std;
 ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 49, "CS2_ZON"), CS3(3, 49, 0, "CS3_ZON"), CS4(4, 49, 49, "CS4_ZON");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
-Node::Node(int id)
+Node::Node(float id)
 {
 
   // Nodens ID blir tlldelat :)
@@ -30,8 +30,12 @@ Node::Node(int id)
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
+  min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
 
-  min_charge = calcMinCharge(battery_consumption, current_mission);
+  queue_point = rand() % 100;
+
+
+  
 }
 
 // Nodens initieringsprocess börjar här
@@ -46,7 +50,7 @@ Mission generateMission(ChargingStation current_CS)
   return mission;
 };
 
-int calcBatConsumption(Mission mission)
+float calcBatConsumption(Mission mission)
 {
   switch (mission.last)
   {
@@ -128,7 +132,7 @@ int calcStepsNeeded(Mission current_mission)
   return steps_needed;
 };
 
-int calcMinCharge(int battery_consumption, int steps_needed)
+float calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
 };
