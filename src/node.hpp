@@ -18,6 +18,7 @@ public:
   int nod_id;
   int battery_charge;
   int battery_consumption;    // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
+  int min_charge;             // Minimum laddning för aktivt upprag
   Mission current_mission;    // Uppdateras dynamiskt under uppdragsgivande
   ChargingStation current_CS; // Laddstationen som noden är vid just nu
   int xcor;                   // Nodens x-koordinat
@@ -39,7 +40,9 @@ public:
 
   int calcBatConsumption(Mission mission);
 
-  void calcMinCharge(int battery_consumption, Mission mission);
+  int calcStepsNeeded(Mission current_mission);
+
+  int calcMinCharge(int battery_consumption, Mission mission);
 };
 
 #endif

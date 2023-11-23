@@ -31,7 +31,7 @@ Node::Node(int id)
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
 
-  calcMinCharge(battery_consumption, current_mission);
+  min_charge = calcMinCharge(battery_consumption, current_mission);
 }
 
 // Nodens initieringsprocess börjar här
@@ -63,7 +63,7 @@ int calcBatConsumption(Mission mission)
   }
 }
 
-int calcMinCharge(int battery_consumption, Mission current_mission)
+int calcStepsNeeded(Mission current_mission)
 {
   int steps_needed;
   switch (current_mission.missionOrigin.id)
@@ -125,6 +125,11 @@ int calcMinCharge(int battery_consumption, Mission current_mission)
     }
   }
 
+  return steps_needed;
+};
+
+int calcMinCharge(int battery_consumption, int steps_needed)
+{
   return steps_needed * battery_consumption;
 };
 
