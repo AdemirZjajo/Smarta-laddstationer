@@ -33,26 +33,9 @@ int Counter = 0;
 int nodeId = 0;
 // User stub
 
-COM::COM()
-{
-  initCOM();
-}
 
-void initCOM()
-{
-  Serial.begin(115200);
 
-  // ... other initialization code ...
 
-  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
-  mesh.onReceive(&receivedCallback);
-  mesh.onNewConnection(&newConnectionCallback);
-  mesh.onChangedConnections(&changedConnectionCallback);
-
-  userScheduler.addTask(taskSendMessage);
-  delay(3000);
-  taskSendMessage.enable(); // Enable continuous message sending task
-}
 
 void sendMessage(); // Prototype so PlatformIO doesn't complain
 
@@ -68,6 +51,13 @@ void sendMessage()
   mesh.sendBroadcast(msg);
   taskSendMessage.setInterval(random(TASK_SECOND * 3, TASK_SECOND * 5));
   Serial.printf("Sent %s\n", msg.c_str());
+}
+
+
+
+COM::COM()
+{
+  initCOM();
 }
 
 void changeCS(string zoneCode)
@@ -156,4 +146,20 @@ void updateCommunication()
     printf("MESH UPDATED \n");
     Counter += 1;
   }
+}
+
+void initCOM()
+{
+  Serial.begin(115200);
+
+  // ... other initialization code ...
+
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
+  mesh.onReceive(&receivedCallback);
+  mesh.onNewConnection(&newConnectionCallback);
+  mesh.onChangedConnections(&changedConnectionCallback);
+
+  userScheduler.addTask(taskSendMessage);
+  delay(3000);
+  taskSendMessage.enable(); // Enable continuous message sending task
 }

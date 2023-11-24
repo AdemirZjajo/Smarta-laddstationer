@@ -11,6 +11,59 @@ using namespace std;
 ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 9, "CS2_ZON"), CS3(3, 9, 0, "CS3_ZON"), CS4(4, 9, 9, "CS4_ZON");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
+// Randomly selects a charging station to spawn at
+ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4)
+{
+  int randomInt = rand() % 4;
+
+  // Map the random number to one of the four objects
+  switch (randomInt)
+  {
+  case 0:
+    return CS1;
+  case 1:
+    return CS2;
+  case 2:
+    return CS3;
+  case 3:
+    return CS4;
+  default:
+    return CS1;
+  }
+};
+
+ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4, ChargingStation notThisCS)
+{
+
+  ChargingStation chosenCS;
+  do
+  {
+    int randomInt = rand() % 4;
+
+    // Map the random number to one of the four objects
+    switch (randomInt)
+    {
+    case 0:
+      chosenCS = CS1;
+      break;
+    case 1:
+      chosenCS = CS2;
+      break;
+    case 2:
+      chosenCS = CS3;
+      break;
+    case 3:
+      chosenCS = CS4;
+      break;
+    default:
+      chosenCS = CS1;
+      break;
+    }
+  } while (chosenCS.id == notThisCS.id);
+  return chosenCS;
+};
+
+
 Node::Node(float id)
 {
 
@@ -146,55 +199,4 @@ int calcStepsNeeded(Mission current_mission)
 float calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
-};
-
-// Randomly selects a charging station to spawn at
-ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4)
-{
-  int randomInt = rand() % 4;
-
-  // Map the random number to one of the four objects
-  switch (randomInt)
-  {
-  case 0:
-    return CS1;
-  case 1:
-    return CS2;
-  case 2:
-    return CS3;
-  case 3:
-    return CS4;
-  default:
-    return CS1;
-  }
-};
-
-ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4, ChargingStation notThisCS)
-{
-
-  ChargingStation chosenCS;
-  do
-  {
-    int randomInt = rand() % 4;
-
-    // Map the random number to one of the four objects
-    switch (randomInt)
-    {
-    case 0:
-      chosenCS = CS1;
-      break;
-    case 1:
-      chosenCS = CS2;
-      break;
-    case 2:
-      chosenCS = CS3;
-      break;
-    case 3:
-      chosenCS = CS4;
-      break;
-    default:
-      chosenCS = CS1;
-      break;
-    }
-  } while (chosenCS.id == notThisCS.id);
 };

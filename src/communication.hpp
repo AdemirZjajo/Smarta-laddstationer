@@ -2,6 +2,7 @@
 #define COMMUNICATION_H_
 
 #include <stdint.h>
+#include <string>
 
 using namespace std;
 
@@ -15,7 +16,7 @@ public:
 
     void sendMessage();
 
-    void changeCS(std::string zoneCode);
+    void changeCS(string zoneCode);
 
     int getID();
 
