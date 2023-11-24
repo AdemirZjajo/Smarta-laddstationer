@@ -11,9 +11,11 @@
 #define buttonAPin 19
 #define buttonBPin 18
 
-class DisplayController {
-public: 
-    DisplayController() : display(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, RESET)) {}
+
+DisplayController::DisplayController(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, RESET))
+{
+
+}
    
    void initialize() {
         display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -26,12 +28,12 @@ public:
 
         randomSeed(analogRead(0));
 
-        setupCommunication();
+        
     }
 
     void updateDisplay() {
 
-        loopCommunication();
+        updateCommunication();
         display.clearDisplay();
         
         // Display "Nod 1" at the static x-position
@@ -57,7 +59,7 @@ public:
 
         delay(100);
     }
-    private : 
+  
         Adafruit_SSD1306 display;
         String weight = "0";
         String battery = "0";
@@ -82,7 +84,7 @@ public:
             int randomIndex = random(size); 
             return options[randomIndex]; 
         }
-}
+
 // Initialize the OLED display using Arduino Wire
 //Adafruit_SSD1306 display(SCREEN_WIDTH,SCREEN_HEIGHT , &Wire, RESET);
 

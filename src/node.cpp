@@ -189,4 +189,12 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
     case 2:
       chosenCS = CS3;
       break;
-    
+    case 3:
+      chosenCS = CS4;
+      break;
+    default:
+      chosenCS = CS1;
+      break;
+    }
+  } while (chosenCS.id == notThisCS.id);
+};

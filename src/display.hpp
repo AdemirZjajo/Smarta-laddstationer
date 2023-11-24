@@ -9,23 +9,29 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define RESET -1 // Reset pin
+class DisplayController
+{
+public:
+    DisplayController();
+    DisplayController(int resetPin);
+    void begin();
 
-extern Adafruit_SSD1306 display;
+    // Arrays of strings for random selection
+    static char *batteryOptions[];
+    static char *weightOptions[];
+    static char *loadTypeOptions[];
+    static int arraySize;
 
-extern String weight;
-extern String battery;
-extern String loadType;
+    String getRandom(const char *options[], int size);
+    void initialize();
+    void updateDisplay();
+    void loopCommunication();
+    void clearDisplay();
 
-// Arrays of strings for random selection
-extern const char* batteryOptions[];
-extern const char* weightOptions[];
-extern const char* loadTypeOptions[];
-extern const int arraySize;
-
-String getRandom(const char* options[], int size);
-void initialize () {}
-void updateDisplay () {}
-void loopCommunication() {}
-void display.clearDisplay(){}
-
-#endif 
+private:
+    Adafruit_SSD1306 display;
+    String weight;
+    String battery;
+    String loadType;
+};
+#endif

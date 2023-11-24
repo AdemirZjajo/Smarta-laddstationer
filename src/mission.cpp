@@ -14,4 +14,4 @@ Mission::Mission(ChargingStation initCS, ChargingStation goalCS)
 
 // metod som genererar ett uppdrag till noden
 // last: exempelvis 1-5 ton
-// förbrukning: baserat på las
+// förbrukning: baserat på last

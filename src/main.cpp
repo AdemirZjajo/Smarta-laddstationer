@@ -19,7 +19,6 @@ using namespace std;
 bool activeMission = false;
 State state = TRANSIT; // Starttillståndet
 COM com;
-float fl = ;
 Node node(static_cast<float>(com.getID())); // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 
 /* HÄR DEFINIERAS DISPLAYEN för första gången med TRANSIT A och B sida
