@@ -6,7 +6,7 @@
 
 Mission::Mission(ChargingStation initCS, ChargingStation goalCS)
 {
-    last = rand() % 5;
+    last = rand() % 11;
     kylvara = rand() % 2;
     missionOrigin = initCS;
     missionDestination = goalCS;

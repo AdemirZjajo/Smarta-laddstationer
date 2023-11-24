@@ -1,4 +1,5 @@
 #include "node.hpp"
+
 // randomize function in this class and show on display
 // Prio
 // State
@@ -7,7 +8,7 @@
 
 using namespace std;
 
-ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 49, "CS2_ZON"), CS3(3, 49, 0, "CS3_ZON"), CS4(4, 49, 49, "CS4_ZON");
+ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 9, "CS2_ZON"), CS3(3, 9, 0, "CS3_ZON"), CS4(4, 9, 9, "CS4_ZON");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
 Node::Node(float id)
@@ -15,6 +16,7 @@ Node::Node(float id)
 
   // Nodens ID blir tlldelat :)
   nod_id = id;
+
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
 
@@ -33,9 +35,6 @@ Node::Node(float id)
   min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
 
   queue_point = rand() % 100;
-
-
-  
 }
 
 // Nodens initieringsprocess börjar här
@@ -54,14 +53,26 @@ float calcBatConsumption(Mission mission)
 {
   switch (mission.last)
   {
-  case 0:
-    return 0.7;
   case 1:
-    return 0.8;
-  case 2:
-    return 0.9;
-  case 3:
     return 1;
+  case 2:
+    return 1.5;
+  case 3:
+    return 2;
+  case 4:
+    return 2.5;
+  case 5:
+    return 3;
+  case 6:
+    return 3.5;
+  case 7:
+    return 4;
+  case 8:
+    return 4.5;
+  case 9:
+    return 5;
+  case 10:
+    return 55;
   default:
     return 0.7;
   }

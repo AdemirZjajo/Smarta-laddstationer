@@ -23,5 +23,9 @@ extern const char* loadTypeOptions[];
 extern const int arraySize;
 
 String getRandom(const char* options[], int size);
+void initialize () {}
+void updateDisplay () {}
+void loopCommunication() {}
+void display.clearDisplay(){}
 
 #endif 

@@ -4,19 +4,19 @@
 #include <stdint.h>
 
 
+using namespace std;
 
-void sendMessage();
+class COM
+{
+public:
+    COM();
 
-int getID();
+    void sendMessage();
 
-void receivedCallback( uint32_t from, string &msg );
+    void changeCS(string zoneCode);
 
-void newConnectionCallback(uint32_t nodeId);
+    int getID();
 
-void changedConnectionCallback();
+    // void receivedCallback( uint32_t from, STD::string &msg );
 
-void setupCommunication();
-
-void loopCommunication();
-
-#endif
+    void newConnectionCallback(uint32
