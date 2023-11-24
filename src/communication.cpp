@@ -35,6 +35,11 @@ int nodeId = 0;
 
 COM::COM()
 {
+  initCOM();
+}
+
+void initCOM()
+{
   Serial.begin(115200);
 
   // ... other initialization code ...

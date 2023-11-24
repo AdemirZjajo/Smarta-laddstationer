@@ -17,25 +17,20 @@ class Node
 public:
   float nod_id;
   float battery_charge;
-  float battery_consumption;    // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
-  float min_charge;             // Minimum laddning för aktivt upprag
+  float battery_consumption;  // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
+  float min_charge;           // Minimum laddning för aktivt upprag
   Mission current_mission;    // Uppdateras dynamiskt under uppdragsgivande
   ChargingStation current_CS; // Laddstationen som noden är vid just nu
   int xcor;                   // Nodens x-koordinat
   int ycor;                   // Nodens y-koordinat
   string zon;                 // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
-  
 
-  vector<vector<float>> vect 
-
-  
-    { 
-        {001, 50}, 
-        {002, 59}, 
-        {003, 70} 
-    }; 
-      
+  vector<vector<float>> vect{
+      /*{001, 50},
+      {002, 59},
+      {003, 70}*/
+  };
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
   ChargingStation LS1, LS2, LS3, LS4;

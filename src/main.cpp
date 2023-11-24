@@ -17,25 +17,24 @@ enum State
 using namespace std;
 
 bool activeMission = false;
-State state = TRANSIT;                 // Starttillståndet
-COM com();
-Node node(static_cast<float>(com.nodeId)); // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
+State state = TRANSIT; // Starttillståndet
+COM com;
+float fl = ;
+Node node(static_cast<float>(com.getID())); // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 
 /* HÄR DEFINIERAS DISPLAYEN för första gången med TRANSIT A och B sida
 Display display();
-//A-SIDA 
+//A-SIDA
 display.setID(node.nod_id);
 display.setBat(node.battery_charge);
 display.position(node.xcor, node.ycor);
 display.destination(node.current_mission.missionDestination);
-//B-SIDA 
+//B-SIDA
 display.load(node.current_mission.last);
 display.loadType(node.current_mission.kylvara);
 */
 
 //
-
-
 
 int main()
 {
@@ -55,22 +54,21 @@ int main()
 
                 // Optional: Display iteration number
                 cout << "Iteration " << i + 1 << " completed." << endl;
-                node.battery_charge -= node.battery_consumption; // vi minskar beteri % för att simulera att vi rör oss framåt 
+                node.battery_charge -= node.battery_consumption; // vi minskar beteri % för att simulera att vi rör oss framåt
                 /* UPPDATERA BATTERI STATUS-FUNKTION TILL OLED */
-                //display.updateBattery(node.battery_charge);
+                // display.updateBattery(node.battery_charge);
             }
             node.xcor = node.current_mission.missionDestination.xcor;
             node.ycor = node.current_mission.missionDestination.ycor;
-            //display.updatePosition(node.xcor,node.ycor);
+            // display.updatePosition(node.xcor,node.ycor);
 
-
-            // Nod framme 
+            // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
             {
                 node.current_mission = node.generateMission(node.current_mission.missionOrigin);      // Generera nytt uppdrag med last, typ av last, och förbrukning
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);             // Beräkna batteriförbrukning baserat på upppdrag
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.current_mission); // Beräkna minimumladdning baserat på uppdraget
-                //display.newMission(node.current_mission.missionDestination);
+                // display.newMission(node.current_mission.missionDestination);
             }
         }
         else
@@ -84,9 +82,9 @@ int main()
         com.changeCS(node.current_mission.missionOrigin.zon);
 
         /* HÄR RÄKNAS KÖPOÄNG UT */
-        
-        //display.queuePoints(node.queue_point);    
-        //display: remove destination and add queue points text
+
+        // display.queuePoints(node.queue_point);
+        // display: remove destination and add queue points text
 
         /* HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...) */
 
@@ -111,8 +109,8 @@ int main()
         // In case of an emergency, quit charge
         // One second, one procent added to battery
 
-        //display.printlj("laddar...");    
-        //display: remove destination/queue and add charge line
+        // display.printlj("laddar...");
+        // display: remove destination/queue and add charge line
 
         // OM: man är ensam på laddstationen laddar man mot 100%
         if (/* OM MAN ÄR ENSAM PÅ LADDSATIONEN OCH... */ node.battery_charge <= 100)
@@ -122,7 +120,7 @@ int main()
 
             node.battery_charge++;
             /* UPPDATERA STATUS-FUNKTION TILL OLED */
-            //display.updateBattery(node.battery_charge);
+            // display.updateBattery(node.battery_charge);
         }
 
         // ANNARS OM: man inte var ensam, men har högst priopoäng, laddar man mot sin minimumladdning
@@ -133,7 +131,7 @@ int main()
 
             node.battery_charge++;
             /* UPPDATERA STATUS-FUNKTION TILL OLED */
-            //display.updateBattery(node.battery_charge);
+            // display.updateBattery(node.battery_charge);
         }
 
         // ANNARS OM: man laddar för nuvarande men någon annan har MYCKET högre priopoäng, eller av annan anledning får slänga ut dig --> Byt tillstånd till QUEUE
@@ -150,8 +148,8 @@ int main()
             // Använd sedan vector.erase(...) för att ta bort vektorn
 
             /* UPPDATERA STATUS-FUNKTION TILL OLED */
-            //Display: remove "laddar..."
-            //display.newMission(node.current_mission.missionDestination);
+            // Display: remove "laddar..."
+            // display.newMission(node.current_mission.missionDestination);
             state = TRANSIT;
         }
 

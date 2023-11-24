@@ -3,20 +3,30 @@
 
 #include <stdint.h>
 
-
 using namespace std;
 
 class COM
 {
+private:
+    void initCOM();
+
 public:
     COM();
 
     void sendMessage();
 
-    void changeCS(string zoneCode);
+    void changeCS(std::string zoneCode);
 
     int getID();
 
     // void receivedCallback( uint32_t from, STD::string &msg );
 
-    void newConnectionCallback(uint32
+    void newConnectionCallback(uint32_t nodeId);
+
+    void changedConnectionCallback();
+
+    void setupCommunication();
+
+    void updateCommunication();
+};
+#endif
