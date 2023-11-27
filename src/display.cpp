@@ -11,8 +11,111 @@
 #define buttonAPin 19
 #define buttonBPin 18
 
+Adafruit_SSD1306 display(SCREEN_WIDTH,SCREEN_HEIGHT , &Wire, RESET);
+String weight = "0";
+String battery = "0";
+String loadType = "0";
 
-DisplayController::DisplayController(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, RESET))
+        // Arrays of strings for random selection
+const char* batteryOptions[] = {
+            " 10%", " 20%", " 30%", " 40%", " 50%",
+            " 60%", " 70%", " 80%", " 90%", " 100%"
+};
+const char* weightOptions[] = {
+            " 10ton", " 9ton", " 8ton", " 7ton", " 6ton",
+            " 5ton", " 4ton", " 3ton", " 2ton", " 1ton" 
+};
+const char* loadTypeOptions[] = {
+            " *", "", " *", "", " *",
+            "", " *", "", " *", ""
+};
+
+const int arraySize = 10;
+
+
+String getRandom(const char* options[], int size) {
+            int randomIndex = random(size); 
+            return options[randomIndex]; 
+}
+
+void setup() {
+    // initialize with the I2C addr 0x3C (for the 128x32)
+    
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+    display.clearDisplay();
+    display.setTextColor(WHITE);
+    display.setTextSize(0,1);
+    battery = getRandom(batteryOptions, arraySize);
+    weight = getRandom(weightOptions, arraySize);
+    loadType = getRandom(loadTypeOptions, arraySize);
+
+    pinMode(buttonAPin, INPUT_PULLUP); 
+    pinMode(buttonBPin, INPUT_PULLUP); 
+
+    randomSeed(analogRead(0));
+
+    //setupCommunication();
+}
+
+void loop(){
+    display.clearDisplay();
+    display.setCursor(50, 20);
+    display.println("Nod 1");
+
+    display.setCursor(32, 30);
+    display.print("Battery:");
+    display.setCursor(73, 30);
+    display.println(battery);
+    
+
+    display.setCursor(32, 40);
+    display.print("Last:");
+    display.setCursor(55, 40);
+    display.println(weight);
+    
+
+    display.setCursor(32, 50);
+    display.print("Lasttyp:");
+    display.setCursor(75, 50);
+    display.println(loadType);
+
+
+    display.display();
+
+    delay(100);
+
+}
+
+void setID(String id){
+    display.setCursor(50, 20);
+    display.println("Nod: ");
+    display.println(id);
+}
+
+void setBat(String battery){
+    display.setCursor(32, 30);
+    display.print("Bat: ");
+    display.setCursor(65, 30);
+    display.println(battery);
+}
+
+void position(int x, int y){
+    display.setCursor(32, 40);
+    display.print("Pos: ");
+    display.setCursor(55, 40);
+    display.print(x);
+    display.print(",");
+    display.println(y);
+}
+
+void destination(String dest){
+    display.setCursor(32, 50);
+    display.print("Dest: ");
+    display.setCursor(75, 50);
+    display.println(dest);
+}
+
+/*DisplayController::DisplayController(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, RESET))
 {
 
 }
@@ -83,31 +186,14 @@ DisplayController::DisplayController(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_H
         String getRandom(const char* options[], int size) {
             int randomIndex = random(size); 
             return options[randomIndex]; 
-        }
+        }*/
 
 // Initialize the OLED display using Arduino Wire
 //Adafruit_SSD1306 display(SCREEN_WIDTH,SCREEN_HEIGHT , &Wire, RESET);
 
-/*
-void setup() {
-    // initialize with the I2C addr 0x3C (for the 128x32)
-    
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-    display.clearDisplay();
-    display.setTextColor(WHITE);
-    display.setTextSize(0,1);
-    battery = getRandom(batteryOptions, arraySize);
-    weight = getRandom(weightOptions, arraySize);
-    loadType = getRandom(loadTypeOptions, arraySize);
 
-    pinMode(buttonAPin, INPUT_PULLUP); 
-    pinMode(buttonBPin, INPUT_PULLUP); 
 
-    randomSeed(analogRead(0));
 
-    setupCommunication();
-}
-*/
 
 
   //int buttonAState = digitalRead(buttonAPin);
