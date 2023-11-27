@@ -28,4 +28,15 @@ String getRandom(const char* options[], int size);
 void setupDIS();
 void displayLooping(int id);
 
+void displayClear();
+
+void setID(int id);
+void setBat(float battery);
+void setWeight(int weight);
+void setLoadType(int loadType);
+
+void clearArea();
+void position(int x, int y);
+
+
 #endif

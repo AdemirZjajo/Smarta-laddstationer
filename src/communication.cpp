@@ -49,7 +49,7 @@ void sendMessage()
   nodeId = mesh.getNodeId() % 1000;
   msg += nodeId;
   mesh.sendBroadcast(msg);
-  taskSendMessage.setInterval(random(TASK_SECOND * 3, TASK_SECOND * 5));
+  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
@@ -96,7 +96,6 @@ void receivedCallback(uint32_t from, String &msg)
   else if (Counter == 5)
   {
     MESH_PREFIX = "laddstiation2";
-    String MESH_PASSWORD = "1234";
     printf("Changed MESH perfix \n");
     Counter += 1;
   }

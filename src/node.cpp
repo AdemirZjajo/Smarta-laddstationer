@@ -8,8 +8,6 @@
 
 using namespace std;
 
-
-
 ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 9, "CS2_ZON"), CS3(3, 9, 0, "CS3_ZON"), CS4(4, 9, 9, "CS4_ZON");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
@@ -64,13 +62,12 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
   } while (chosenCS.id == notThisCS.id);
   return chosenCS;
 };
-Node::Node(){}
+Node::Node() {}
 Node::Node(int id)
 {
 
   // Nodens ID blir tlldelat :)
   nod_id = id;
-
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
 
@@ -86,9 +83,10 @@ Node::Node(int id)
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  //min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
-  
-  min_charge = calcMinCharge(battery_consumption,calcStepsNeeded(current_mission));  
+  // min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
+
+  min_charge = 25;
+  // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
   queue_point = rand() % 100;
 }
 
@@ -129,9 +127,9 @@ float Node::calcBatConsumption(Mission mission)
   case 9:
     return 5;
   case 10:
-    return 55;
+    return 5.5;
   default:
-    return 0.7;
+    return 2;
   }
 }
 
@@ -153,6 +151,7 @@ int Node::calcStepsNeeded(Mission current_mission)
       steps_needed = current_mission.missionOrigin.route_CS1[2];
       break;
     }
+    break;
 
   case 2:
     switch (current_mission.missionDestination.id)
@@ -167,6 +166,7 @@ int Node::calcStepsNeeded(Mission current_mission)
       steps_needed = current_mission.missionOrigin.route_CS2[2];
       break;
     }
+    break;
 
   case 3:
     switch (current_mission.missionDestination.id)
@@ -181,6 +181,7 @@ int Node::calcStepsNeeded(Mission current_mission)
       steps_needed = current_mission.missionOrigin.route_CS3[2];
       break;
     }
+    break;
 
   case 4:
     switch (current_mission.missionDestination.id)
@@ -195,6 +196,7 @@ int Node::calcStepsNeeded(Mission current_mission)
       steps_needed = current_mission.missionOrigin.route_CS4[2];
       break;
     }
+    break;
   }
 
   return steps_needed;
