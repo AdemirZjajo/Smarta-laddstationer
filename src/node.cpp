@@ -8,6 +8,8 @@
 
 using namespace std;
 
+
+
 ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 9, "CS2_ZON"), CS3(3, 9, 0, "CS3_ZON"), CS4(4, 9, 9, "CS4_ZON");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
@@ -63,7 +65,7 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
   return chosenCS;
 };
 Node::Node(){}
-Node::Node(float id)
+Node::Node(int id)
 {
 
   // Nodens ID blir tlldelat :)
@@ -84,8 +86,9 @@ Node::Node(float id)
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
-
+  //min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
+  
+  min_charge = calcMinCharge(battery_consumption,calcStepsNeeded(current_mission));  
   queue_point = rand() % 100;
 }
 
@@ -93,7 +96,7 @@ Node::Node(float id)
 /* Destinationsgenerering och uträkning av miniladdning görs en gång innan
 state machinen för att låta noden bestämma vilket dess första state ska bli. */
 
-Mission generateMission(ChargingStation current_CS)
+Mission Node::generateMission(ChargingStation current_CS)
 {
   ChargingStation goal_CS = randomNotCurrentCS(CS1, CS2, CS3, CS4, current_CS);
   Mission mission;
@@ -103,7 +106,7 @@ Mission generateMission(ChargingStation current_CS)
   return mission;
 };
 
-float calcBatConsumption(Mission mission)
+float Node::calcBatConsumption(Mission mission)
 {
   switch (mission.last)
   {
@@ -132,7 +135,7 @@ float calcBatConsumption(Mission mission)
   }
 }
 
-int calcStepsNeeded(Mission current_mission)
+int Node::calcStepsNeeded(Mission current_mission)
 {
   int steps_needed;
   switch (current_mission.missionOrigin.id)
@@ -197,7 +200,7 @@ int calcStepsNeeded(Mission current_mission)
   return steps_needed;
 };
 
-float calcMinCharge(float battery_consumption, int steps_needed)
+float Node::calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
 };

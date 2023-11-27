@@ -55,7 +55,7 @@ void sendMessage()
 
 
 void changeCS(string zoneCode)
-{
+{/*
   if (zoneCode == "CS1_ZON")
   {
     MESH_PREFIX = "station1";
@@ -76,7 +76,7 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station4";
     String MESH_PASSWORD = "station4";
   }
-}
+*/}
 
 // returns the node id, mainly used in display
 int getID()

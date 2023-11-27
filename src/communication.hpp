@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <painlessMesh.h>
 
 using namespace std;
 
@@ -15,10 +16,11 @@ void changeCS(string zoneCode);
 
 int getID();
 
-// void receivedCallback( uint32_t from, STD::string &msg );
+void receivedCallback(uint32_t from, String &msg);
 
 void newConnectionCallback(uint32_t nodeId);
 
 void changedConnectionCallback();
+void updateCommunication();
 
 #endif

@@ -53,14 +53,15 @@ void setupDIS() {
     pinMode(buttonBPin, INPUT_PULLUP); 
 
     randomSeed(analogRead(0));
-
+    
+    
     //setupCommunication();
 }
 
-/*void loop(){
+void displayLooping(int id){
     display.clearDisplay();
-    display.setCursor(50, 20);
-    display.println("Nod 1");
+    display.setCursor(40, 20);
+    display.printf("Nod: %d" ,id);
 
     display.setCursor(32, 30);
     display.print("Battery:");
@@ -82,9 +83,7 @@ void setupDIS() {
 
     display.display();
 
-    delay(100);
-
-}*/
+}
 
 void setID(String id){
     display.setCursor(50, 20);

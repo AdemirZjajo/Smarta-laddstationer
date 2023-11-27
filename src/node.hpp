@@ -16,7 +16,7 @@ using namespace std;
 class Node
 {
 public:
-  float nod_id;
+  int nod_id;
   float battery_charge;
   float battery_consumption;  // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
   float min_charge;           // Minimum laddning för aktivt upprag
@@ -42,7 +42,7 @@ public:
   state machinen för att låta noden bestämma vilket dess första state ska bli. */
 
   Node();
-  Node(float nodeID);
+  Node(int nodeID);
 
   Mission generateMission(ChargingStation currentCS);
 
@@ -51,7 +51,7 @@ public:
   // Returnar antalet steg som noden behöver ta för att ta sig hela vägen fram till sin destination
   int calcStepsNeeded(Mission current_mission);
 
-  float calcMinCharge(float battery_consumption, Mission mission);
+  float calcMinCharge(float battery_consumption, int steps_needed);
 };
 
 #endif

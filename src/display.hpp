@@ -26,5 +26,6 @@ void setupCommunication();
 String getRandom(const char* options[], int size);
 
 void setupDIS();
+void displayLooping(int id);
 
 #endif
