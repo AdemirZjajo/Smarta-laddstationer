@@ -25,6 +25,12 @@ void setup()
     // cout << "SETUP START" << endl;
     initCOM();
     setupDIS();
+    node.nod_id = getID();
+    cout << "Nod-" << node.nod_id << " har spawnat på: " << node.current_CS.zon << endl;
+    cout << "Noden har " << node.battery_charge << "% batteri" << endl;
+    cout << "Nodens första destination är: " << node.current_mission.missionDestination.zon << endl;
+    cout << "Noden har " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
+    cout << "Noden har " << node.battery_consumption << " batteriförbrukning" << endl;
 
     /* HÄR DEFINIERAS DISPLAYEN för första gången med TRANSIT A och B sida
     Display display();
@@ -43,7 +49,7 @@ void loop()
 {
     if (node.nod_id == 0)
     {
-        node.nod_id = getID();
+        // Maaaaannen...
     }
 
     displayClear();
@@ -58,10 +64,10 @@ void loop()
     switch (state)
     {
     case TRANSIT:
-        cout << "NOD i Transit" << endl;
+        cout << "NOD är i Transit-state" << endl;
         if (node.battery_charge >= node.min_charge) // Jämföra batterinivå med minimumladdning, för att stanna kvar i transit
         {
-            cout << "Nodens Batteri är tillräckligt för resan" << endl;
+            cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zon << endl;
 
             // FÖRLYTTNINGS LOOP
             // Iteration med tidsfördröjning
@@ -73,8 +79,9 @@ void loop()
                 this_thread::sleep_for(chrono::seconds(1));
 
                 // Optional: Display iteration number
-                cout << "Nod Förlyttning " << i + 1 << " klar." << endl;
-                node.battery_charge -= node.battery_consumption; // vi minskar beteri % för att simulera att vi rör oss framåt
+                node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar beteri % för att simulera att vi rör oss framåt
+                cout << "Nod-Förlyttning " << i << "/10. "
+                     << "Nodens batteri status är nu: " << node.battery_charge << endl;
                 // UPPDATERA BATTERI STATUS-FUNKTION TILL OLED
                 displayClear();
                 setID(node.nod_id);
@@ -89,27 +96,31 @@ void loop()
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
             {
-                cout << "NOD Framme På Destination" << endl;
-                cout << "NOD Får Nytt Uppdrag" << endl;
+                cout << "Noden har nått sin destination"
+                     << " X: " << node.xcor << " Y: " << node.ycor << endl;
+
                 node.current_mission = node.generateMission(node.current_mission.missionOrigin); // Generera nytt uppdrag med last, typ av last, och förbrukning
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);        // Beräkna batteriförbrukning baserat på upppdrag
-                node.min_charge = 10;
+                node.min_charge = 40;
+                cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zon << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
+                cout << "Nodens förbrukning är nu: " << node.battery_consumption << endl;
+
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget
                 //  display.destination(node.current_mission.missionDestination);
             }
         }
         else
         { // Om batterinivån är lägre än minimumladdningen --> byta tillstånd till queue
-            cout << "i ELSE" << endl;
+            cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << " men uppdraget kräver: " << node.min_charge << endl;
             state = QUEUE;
             break;
         }
         break;
 
     case QUEUE:
-        cout << " NOD i Queue" << endl;
+        cout << " NOD är i Queue-state" << endl;
         // changeCS(node.current_mission.missionOrigin.zon);
-
+        cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
 
         // display.clearArea();
@@ -130,11 +141,11 @@ void loop()
               });
               */
         state = CHARGE; // TEMP skickar bara en till CHARGE direkt
+        cout << " NOD är i Charge-state" << endl;
         // OM: ingen annan nod är vid laddstationen; alltså att man inte är med i något meshnät --> byt tillstånd till CHARGE och börja ladda mot 100% (eftersom det inte finns någon annan i kö)
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         break;
     case CHARGE:
-        cout << " NOD i Charge" << endl;
 
         // Om man kommer in i detta tillstånd ska man omedelbart börja ladda
 
@@ -158,7 +169,7 @@ void loop()
                 node.battery_charge++;
             }
 
-            cout << "NOD LADDAR... +1%" << endl;
+            cout << "NOD LADDAR... " << node.battery_charge << "%" << endl;
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
         }

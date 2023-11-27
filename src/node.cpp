@@ -8,7 +8,7 @@
 
 using namespace std;
 
-ChargingStation CS1(1, 0, 0, "CS1_ZON"), CS2(2, 0, 9, "CS2_ZON"), CS3(3, 9, 0, "CS3_ZON"), CS4(4, 9, 9, "CS4_ZON");
+ChargingStation CS1(1, 0, 0, "LADDSTATION-1"), CS2(2, 0, 9, "LADDSTATION-2"), CS3(3, 9, 0, "LADDSTATION-3"), CS4(4, 9, 9, "LADDSTATION-4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
 // Randomly selects a charging station to spawn at
@@ -73,19 +73,20 @@ Node::Node(int id)
 
   // NODEN spawnar randomly på en av de fyra Laddstationer
   ChargingStation init_CS = randomCS(CS1, CS2, CS3, CS4);
+  current_CS = init_CS;
   xcor = init_CS.xcor; // Nodens initiala x-koordinat
   ycor = init_CS.ycor; // Nodens initiala y-koordinat
   zon = init_CS.zon;   // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
-  battery_charge = (rand() % 100);
+  battery_charge = rand() % 100;
   // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
   // min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
 
-  min_charge = 25;
+  min_charge = 50;
   // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
   queue_point = rand() % 100;
 }
@@ -108,6 +109,8 @@ float Node::calcBatConsumption(Mission mission)
 {
   switch (mission.last)
   {
+  case 0:
+    return 0.5;
   case 1:
     return 1;
   case 2:
@@ -129,7 +132,7 @@ float Node::calcBatConsumption(Mission mission)
   case 10:
     return 5.5;
   default:
-    return 2;
+    return 1.3;
   }
 }
 

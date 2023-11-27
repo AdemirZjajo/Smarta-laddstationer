@@ -31,11 +31,8 @@ String MESH_PASSWORD = "1234";
 int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
+;
 // User stub
-
-
-
-
 
 void sendMessage(); // Prototype so PlatformIO doesn't complain
 
@@ -53,30 +50,30 @@ void sendMessage()
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
-
 void changeCS(string zoneCode)
-{/*
-  if (zoneCode == "CS1_ZON")
-  {
-    MESH_PREFIX = "station1";
-    String MESH_PASSWORD = "station1";
-  }
-  else if (zoneCode == "CS2_ZON")
-  {
-    MESH_PREFIX = "station2";
-    String MESH_PASSWORD = "station2";
-  }
-  else if (zoneCode == "CS3_ZON")
-  {
-    MESH_PREFIX = "station3";
-    String MESH_PASSWORD = "station3";
-  }
-  else if (zoneCode == "CS4_ZON")
-  {
-    MESH_PREFIX = "station4";
-    String MESH_PASSWORD = "station4";
-  }
-*/}
+{ /*
+   if (zoneCode == "CS1_ZON")
+   {
+     MESH_PREFIX = "station1";
+     String MESH_PASSWORD = "station1";
+   }
+   else if (zoneCode == "CS2_ZON")
+   {
+     MESH_PREFIX = "station2";
+     String MESH_PASSWORD = "station2";
+   }
+   else if (zoneCode == "CS3_ZON")
+   {
+     MESH_PREFIX = "station3";
+     String MESH_PASSWORD = "station3";
+   }
+   else if (zoneCode == "CS4_ZON")
+   {
+     MESH_PREFIX = "station4";
+     String MESH_PASSWORD = "station4";
+   }
+ */
+}
 
 // returns the node id, mainly used in display
 int getID()
@@ -155,4 +152,5 @@ void initCOM()
   userScheduler.addTask(taskSendMessage);
   delay(3000);
   taskSendMessage.enable(); // Enable continuous message sending task
+  mesh.getNodeId() % 1000;
 }
