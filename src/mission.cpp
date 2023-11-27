@@ -3,13 +3,16 @@
 /*
  * Detta är uppdragsobjekten, för varje nytt slumpat uppdrag skapas ett nytt unikt objekt
  */
-
-Mission::Mission(ChargingStation initCS, ChargingStation goalCS)
+/*
+Mission::Mission()
+{
+}*/
+Mission::Mission(/*ChargingStation initCS, ChargingStation goalCS*/)
 {
     last = rand() % 11;
     kylvara = rand() % 2;
-    missionOrigin = initCS;
-    missionDestination = goalCS;
+    //missionOrigin = initCS;
+    //missionDestination = goalCS;
 }
 
 // metod som genererar ett uppdrag till noden

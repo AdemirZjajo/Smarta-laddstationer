@@ -54,12 +54,6 @@ void sendMessage()
 }
 
 
-
-COM::COM()
-{
-  initCOM();
-}
-
 void changeCS(string zoneCode)
 {
   if (zoneCode == "CS1_ZON")

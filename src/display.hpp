@@ -1,4 +1,4 @@
-
+#pragma once
 #ifndef DISPLAY_HPP
 #define DISPLAY_HPP
 
@@ -24,5 +24,7 @@ const int arraySize = 10;
 // Function declarations
 void setupCommunication();
 String getRandom(const char* options[], int size);
+
+void setupDIS();
 
 #endif

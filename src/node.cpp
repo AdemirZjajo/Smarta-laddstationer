@@ -62,8 +62,7 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
   } while (chosenCS.id == notThisCS.id);
   return chosenCS;
 };
-
-
+Node::Node(){}
 Node::Node(float id)
 {
 
@@ -97,7 +96,9 @@ state machinen för att låta noden bestämma vilket dess första state ska bli.
 Mission generateMission(ChargingStation current_CS)
 {
   ChargingStation goal_CS = randomNotCurrentCS(CS1, CS2, CS3, CS4, current_CS);
-  Mission mission(current_CS, goal_CS);
+  Mission mission;
+  mission.missionOrigin = current_CS;
+  mission.missionDestination = goal_CS;
 
   return mission;
 };

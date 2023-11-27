@@ -38,7 +38,7 @@ String getRandom(const char* options[], int size) {
             return options[randomIndex]; 
 }
 
-void setup() {
+void setupDIS() {
     // initialize with the I2C addr 0x3C (for the 128x32)
     
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -57,7 +57,7 @@ void setup() {
     //setupCommunication();
 }
 
-void loop(){
+/*void loop(){
     display.clearDisplay();
     display.setCursor(50, 20);
     display.println("Nod 1");
@@ -84,7 +84,7 @@ void loop(){
 
     delay(100);
 
-}
+}*/
 
 void setID(String id){
     display.setCursor(50, 20);
@@ -114,6 +114,31 @@ void destination(String dest){
     display.setCursor(75, 50);
     display.println(dest);
 }
+
+void queuePoints(String dest){
+    display.setCursor(32, 50);
+    display.print("Kö: ");
+    display.setCursor(75, 50);
+    display.println(dest);
+}
+
+void clearArea(){
+    display.setTextColor(BLACK);
+    display.setCursor(32, 50);
+    display.print("         "); 
+    display.setCursor(75, 50);
+    display.print("            ");
+
+    display.setTextColor(WHITE); 
+    display.display(); 
+}
+
+void loading(){
+    display.setCursor(32, 50);
+    display.print("Laddar...");
+}
+
+
 
 /*DisplayController::DisplayController(new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, RESET))
 {

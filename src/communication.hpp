@@ -1,3 +1,4 @@
+#pragma once
 #ifndef COMMUNICATION_H_
 #define COMMUNICATION_H_
 
@@ -6,28 +7,18 @@
 
 using namespace std;
 
-class COM
-{
-private:
-    void initCOM();
+void initCOM();
 
-public:
-    COM();
+void sendMessage();
 
-    void sendMessage();
+void changeCS(string zoneCode);
 
-    void changeCS(string zoneCode);
+int getID();
 
-    int getID();
+// void receivedCallback( uint32_t from, STD::string &msg );
 
-    // void receivedCallback( uint32_t from, STD::string &msg );
+void newConnectionCallback(uint32_t nodeId);
 
-    void newConnectionCallback(uint32_t nodeId);
+void changedConnectionCallback();
 
-    void changedConnectionCallback();
-
-    void setupCommunication();
-
-    void updateCommunication();
-};
 #endif
