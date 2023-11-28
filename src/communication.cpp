@@ -72,7 +72,7 @@ void sendQ(int id, float points)
 }
 
 void changeCS(string zoneCode)
-{ /*
+{ 
    if (zoneCode == "CS1_ZON")
    {
      MESH_PREFIX = "station1";
@@ -97,7 +97,6 @@ void changeCS(string zoneCode)
      String MESH_PASSWORD = "station4";
      MESH_PORT = 4444;
    }
- */
 }
 
 // returns the node id, mainly used in display

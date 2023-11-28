@@ -19,7 +19,9 @@ State state = TRANSIT;
 bool activeMission = false; // Starttillståndet
 
 vector<float> tempVect;
+vector<float> tempVect2;
 pair<int, float> tempNodeMsg;
+bool exists;
 
 using namespace std;
 
@@ -124,31 +126,49 @@ void loop()
         break;
 
     case QUEUE:
+        // changeCS(node.current_mission.missionOrigin.zon);
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
-        tempNodeMsg = getNodePair();
-        /*string stringTest = "(" + to_string(testPar.first) + ", " + to_string(testPar.second) + ")";
-        cout << " TEST: " << stringTest << endl;
 
-        cout << " NOD är i Queue-state" << endl;*/
-        // changeCS(node.current_mission.missionOrigin.zon);
-        cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
-
-        // display.clearArea();
-        displayClear();
-        setID(node.nod_id);
-        setBat(node.battery_charge);
-        position(node.xcor, node.ycor);
-        queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(500));
+        // cout << "Nodens köpoäng är: " << node.queue_point << endl;
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
-        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
-        if (find(node.queueVector.begin(), node.queueVector.end(), tempVect) != node.queueVector.end()) // Om den egna noden inte redan finns i sin egna lista
+        tempNodeMsg = getNodePair();
+
+        tempVect2 = {static_cast<float>(tempNodeMsg.first), tempNodeMsg.second};
+
+        exists = false;
+        for (const auto &vec : node.queueVector)
         {
-            node.queueVector.insert(node.queueVector.end(), tempVect); // Lägger in nodens egna id och köpoäng i vektorn
+            if (vec[0] == tempVect2[0])
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            node.queueVector.push_back(tempVect2);
+        }
+
+        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
+
+        exists = false;
+        for (const auto &vec : node.queueVector)
+        {
+            if (vec[0] == tempVect[0])
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            node.queueVector.push_back(tempVect);
         }
 
         sort(node.queueVector.begin(),
@@ -158,13 +178,33 @@ void loop()
                  return a[1] > b[1];
              });
 
+        // Skriver ut kövektorn
+        for (const auto &row : node.queueVector)
+        {
+            for (const auto &element : row)
+            {
+                std::cout << element << ' ';
+            }
+            std::cout << '\n';
+        }
+
         if (false)
         {
             state = CHARGE; // TEMP skickar bara en till CHARGE direkt
             cout << " NOD är i Charge-state" << endl;
         }
+
         // OM: ingen annan nod är vid laddstationen; alltså att man inte är med i något meshnät --> byt tillstånd till CHARGE och börja ladda mot 100% (eftersom det inte finns någon annan i kö)
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
+
+        // display.clearArea();
+        displayClear();
+        setID(node.nod_id);
+        setBat(node.battery_charge);
+        position(node.xcor, node.ycor);
+        queuePoints(node.queue_point);
+        this_thread::sleep_for(chrono::milliseconds(500));
+
         break;
     case CHARGE:
 
