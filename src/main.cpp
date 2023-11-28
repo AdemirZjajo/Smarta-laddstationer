@@ -51,7 +51,6 @@ void loop()
     {
         getID();
         setID(node.nod_id);
-
     }
 
     displayClear();
@@ -60,8 +59,7 @@ void loop()
     setWeight(node.current_mission.last);
     setLoadType(node.current_mission.kylvara);
 
-    //displayLooping(node.nod_id);
-    
+    // displayLooping(node.nod_id);
 
     switch (state)
     {
@@ -122,17 +120,15 @@ void loop()
     case QUEUE:
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
-       
-        
-        
 
         cout << " NOD är i Queue-state" << endl;
         // changeCS(node.current_mission.missionOrigin.zon);
         cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
 
-        //display.clearArea();
+        // display.clearArea();
         queuePoints(node.queue_point);
+        this_thread::sleep_for(chrono::milliseconds(200));
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
@@ -148,10 +144,11 @@ void loop()
                   return a[1] > b[1];
               });
               */
-              if(false){
-        state = CHARGE; // TEMP skickar bara en till CHARGE direkt
-        cout << " NOD är i Charge-state" << endl;
-              }
+        if (true)
+        {
+            state = CHARGE; // TEMP skickar bara en till CHARGE direkt
+            cout << " NOD är i Charge-state" << endl;
+        }
         // OM: ingen annan nod är vid laddstationen; alltså att man inte är med i något meshnät --> byt tillstånd till CHARGE och börja ladda mot 100% (eftersom det inte finns någon annan i kö)
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         break;
@@ -162,9 +159,9 @@ void loop()
         // In case of an emergency, quit charge
         // One second, one procent added to battery
 
-        //clearArea();
-        //loading();
-        // OM: man är ensam på laddstationen laddar man mot 100%
+        // clearArea();
+        // loading();
+        //  OM: man är ensam på laddstationen laddar man mot 100%
         if (node.battery_charge < 100)
         {
             // Chilla 1 sekund
@@ -188,7 +185,7 @@ void loop()
         {
             cout << "I KÖ FÖR ATT LADDA (ELSE IF)" << endl;
             // Chilla 1 sekund
-            // this_thread::sleep_for(chrono::seconds(1));
+            this_thread::sleep_for(chrono::seconds(1));
 
             node.battery_charge++;
             // UPPDATERA STATUS-FUNKTION TILL OLED
