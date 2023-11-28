@@ -4,6 +4,7 @@
 #include "node.hpp"
 
 /*class IntegerClass {
+/*class IntegerClass {
 public:
     // Constructor
     IntegerClass(int value) : integerValue(value), integerValue2(0), prioValue(0.0) {}
@@ -29,7 +30,27 @@ private:
     int integerValue;
     int integerValue2;
     float prioValue;
-};*/
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // #include <string>
 

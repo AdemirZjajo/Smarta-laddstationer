@@ -21,6 +21,7 @@
 #include <list>
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -62,6 +63,12 @@ void sendQ(int id, float points)
   mesh.sendBroadcast(qPoints);
   taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
   Serial.printf("Sent %s\n", qPoints.c_str());
+  /*
+  String qPoints = String(id) + "-" + String(points);
+  mesh.sendBroadcast(qPoints);
+  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  Serial.printf("Sent %s\n", qPoints.c_str());
+  */
 }
 
 void changeCS(string zoneCode)
@@ -70,21 +77,25 @@ void changeCS(string zoneCode)
    {
      MESH_PREFIX = "station1";
      String MESH_PASSWORD = "station1";
+     MESH_PORT = 1111;
    }
    else if (zoneCode == "CS2_ZON")
    {
      MESH_PREFIX = "station2";
      String MESH_PASSWORD = "station2";
+     MESH_PORT = 2222;
    }
    else if (zoneCode == "CS3_ZON")
    {
      MESH_PREFIX = "station3";
      String MESH_PASSWORD = "station3";
+     MESH_PORT = 3333;
    }
    else if (zoneCode == "CS4_ZON")
    {
      MESH_PREFIX = "station4";
      String MESH_PASSWORD = "station4";
+     MESH_PORT = 4444;
    }
  */
 }
@@ -149,7 +160,6 @@ void receivedCallback(uint32_t from, String &msg)
      printf("Changed MESH perfix \n");
      Counter += 1;
    }*/
-  // return from
 }
 
 pair<int, float> getNodePair()

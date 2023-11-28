@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <string>
 //#include "display.hpp"
 
 // OLED inställningar
@@ -43,9 +44,9 @@ void setupDIS()
     display.clearDisplay();
     display.setTextColor(WHITE);
     display.setTextSize(0, 1);
-    battery = getRandom(batteryOptions, arraySize);
-    weight = getRandom(weightOptions, arraySize);
-    loadType = getRandom(loadTypeOptions, arraySize);
+    //battery = getRandom(batteryOptions, arraySize);
+    //weight = getRandom(weightOptions, arraySize);
+    //loadType = getRandom(loadTypeOptions, arraySize);
 
     pinMode(buttonAPin, INPUT_PULLUP);
     pinMode(buttonBPin, INPUT_PULLUP);
@@ -149,27 +150,28 @@ void position(int x, int y)
 {
     display.setCursor(32, 40);
     display.print("Pos: ");
-    display.setCursor(55, 40);
+    display.setCursor(60, 40);
     display.print(x);
-    display.print(",");
+    display.print(", ");
     display.println(y);
     display.display();
 }
 
 void destination(String dest)
 {
+    String temp = String(dest);
     display.setCursor(32, 50);
     display.print("Dest: ");
     display.setCursor(75, 50);
-    display.println(dest);
+    display.println(temp);
     display.display();
 }
 
 void queuePoints(float dest)
 {
     display.setCursor(32, 50);
-    display.print("Kö: ");
-    display.setCursor(75, 50);
+    display.print("Queue: ");
+    display.setCursor(68, 50);
     display.println(dest);
     display.display();
 }

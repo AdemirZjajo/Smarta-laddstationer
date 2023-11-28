@@ -27,7 +27,7 @@ public:
   string zon;                 // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
 
-  vector<vector<float>> vect{
+  vector<vector<float>> queueVector{
       /*{001, 50},
       {002, 59},
       {003, 70}*/

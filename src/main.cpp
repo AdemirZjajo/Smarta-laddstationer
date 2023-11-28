@@ -53,13 +53,16 @@ void loop()
         setID(node.nod_id);
     }
 
-    displayClear();
+    // displayClear();
     setID(getID());
     setBat(node.battery_charge);
+    // position(node.xcor, node.ycor);
     setWeight(node.current_mission.last);
     setLoadType(node.current_mission.kylvara);
 
     // displayLooping(node.nod_id);
+
+    vector<float> tempVect;
 
     switch (state)
     {
@@ -88,10 +91,12 @@ void loop()
                 setBat(node.battery_charge);
                 setWeight(node.current_mission.last);
                 setLoadType(node.current_mission.kylvara);
+                // position(node.xcor, node.ycor);
+                // destination(node.current_mission.missionDestination.zon);
             }
             node.xcor = node.current_mission.missionDestination.xcor;
             node.ycor = node.current_mission.missionDestination.ycor;
-            // display.position(node.xcor,node.ycor);
+            // position(node.xcor,node.ycor);
 
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
@@ -121,7 +126,7 @@ void loop()
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
         getNodePair();
-        //pair<double, double> testPar = getNodePair();
+        // pair<double, double> testPar = getNodePair();
         /*string stringTest = "(" + to_string(testPar.first) + ", " + to_string(testPar.second) + ")";
         cout << " TEST: " << stringTest << endl;
 
@@ -131,15 +136,21 @@ void loop()
         // HÄR RÄKNAS KÖPOÄNG UT
 
         // display.clearArea();
+        displayClear();
+        setID(node.nod_id);
+        setBat(node.battery_charge);
+        position(node.xcor, node.ycor);
         queuePoints(node.queue_point);
+        this_thread::sleep_for(chrono::milliseconds(500));
         this_thread::sleep_for(chrono::milliseconds(500));
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
-        /*if (false) // Om den egna noden inte redan finns i sin egna lista:
-         {
-             node.vect.insert(node.vect.end(), {static_cast<float>(node.nod_id), node.queue_point}); // Lägger in nodens egna id och köpoäng i vektorn
-         }
+        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
+        if (find(node.queueVector.begin(), node.queueVector.end(), tempVect) != node.queueVector.end()) // Om den egna noden inte redan finns i sin egna lista
+        {
+            node.queueVector.insert(node.queueVector.end(), tempVect); // Lägger in nodens egna id och köpoäng i vektorn
+        }
 
          sort(node.vect.begin(),
               node.vect.end(),
@@ -148,6 +159,14 @@ void loop()
                   return a[1] > b[1];
               });
               */
+        if (false)
+        sort(node.queueVector.begin(),
+             node.queueVector.end(),
+             [](const vector<float> &a, const vector<float> &b)
+             {
+                 return a[1] > b[1];
+             });
+
         if (false)
         {
             state = CHARGE; // TEMP skickar bara en till CHARGE direkt
@@ -163,8 +182,11 @@ void loop()
         // In case of an emergency, quit charge
         // One second, one procent added to battery
 
-        // clearArea();
-        // loading();
+        displayClear();
+        setID(node.nod_id);
+        setBat(node.battery_charge);
+        position(node.xcor, node.ycor);
+        loading();
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (node.battery_charge < 100)
         {

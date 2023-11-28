@@ -35,8 +35,9 @@ void setID(int id);
 void setBat(float battery);
 void setWeight(int weight);
 void setLoadType(bool loadType);
-void queuePoints(float dest);
+void queuePoints(float points);
 void loading();
+void destination(String dest);
 
 void clearArea();
 void position(int x, int y);
