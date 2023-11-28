@@ -50,6 +50,18 @@ void sendMessage()
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
+void sendQ(int id, float points){
+   //mesh.getNodeId()%1000;
+  String qPoints = "Nod:";
+  qPoints += id;
+  qPoints += " ";
+  qPoints += points;
+  mesh.sendBroadcast(qPoints);
+  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  Serial.printf("Sent %s\n", qPoints.c_str());
+
+}
+
 void changeCS(string zoneCode)
 { /*
    if (zoneCode == "CS1_ZON")
@@ -78,14 +90,18 @@ void changeCS(string zoneCode)
 // returns the node id, mainly used in display
 int getID()
 {
-  return nodeId;
+  return mesh.getNodeId() % 1000;
 }
 
-// This notifies the ESP whe a message is recieved
+
+
+// This notifies the ESP when a message is recieved
 void receivedCallback(uint32_t from, String &msg)
-{
+{ 
   Serial.printf("Received  %s\n", msg.c_str());
-  if (Counter < 5)
+ // Serial.printf("Received  %s\n", q.c_str());
+
+ /* if (Counter < 5)
   {
     Counter = Counter + 1;
     printf("Counter : %d\n", Counter);
@@ -95,8 +111,16 @@ void receivedCallback(uint32_t from, String &msg)
     MESH_PREFIX = "laddstiation2";
     printf("Changed MESH perfix \n");
     Counter += 1;
-  }
+  }*/
+ // return from
 }
+
+void receive(){
+//receivedCallback(from, &q, &msg);
+ mesh.onReceive(&receivedCallback);
+};
+ 
+
 
 void newConnectionCallback(uint32_t nodeId)
 {
@@ -130,12 +154,12 @@ void updateCommunication()
 {
   // it will run the user scheduler as well
   mesh.update();
-  if (Counter == 6)
+ /* if (Counter == 6)
   {
     mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
     printf("MESH UPDATED \n");
     Counter += 1;
-  }
+  }*/
 }
 
 void initCOM()
@@ -153,4 +177,4 @@ void initCOM()
   delay(3000);
   taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
-}
+} 

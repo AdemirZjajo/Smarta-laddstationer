@@ -22,7 +22,7 @@ using namespace std;
 
 void setup()
 {
-    // cout << "SETUP START" << endl;
+    cout << "SETUP START" << endl;
     initCOM();
     setupDIS();
     node.nod_id = getID();
@@ -36,7 +36,7 @@ void setup()
     Display display();
     //A-SIDA
     display.setID(node.nod_id);
-    display.setBat(node.battery_charge);
+    display.setBat(node.battery_charge)
     display.position(node.xcor, node.ycor);
     display.destination(node.current_mission.missionDestination);
     //B-SIDA
@@ -49,17 +49,19 @@ void loop()
 {
     if (node.nod_id == 0)
     {
-        // Maaaaannen...
+        getID();
+        setID(node.nod_id);
+
     }
 
     displayClear();
-    setID(node.nod_id);
+    setID(getID());
     setBat(node.battery_charge);
     setWeight(node.current_mission.last);
     setLoadType(node.current_mission.kylvara);
 
-    // displayLooping(node.nod_id);
-    updateCommunication();
+    //displayLooping(node.nod_id);
+    
 
     switch (state)
     {
@@ -118,13 +120,19 @@ void loop()
         break;
 
     case QUEUE:
+        updateCommunication();
+        sendQ(node.nod_id, node.queue_point);
+       
+        
+        
+
         cout << " NOD är i Queue-state" << endl;
         // changeCS(node.current_mission.missionOrigin.zon);
         cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
 
-        // display.clearArea();
-        // display.queuePoints(node.queue_point);
+        //display.clearArea();
+        queuePoints(node.queue_point);
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
@@ -140,8 +148,10 @@ void loop()
                   return a[1] > b[1];
               });
               */
+              if(false){
         state = CHARGE; // TEMP skickar bara en till CHARGE direkt
         cout << " NOD är i Charge-state" << endl;
+              }
         // OM: ingen annan nod är vid laddstationen; alltså att man inte är med i något meshnät --> byt tillstånd till CHARGE och börja ladda mot 100% (eftersom det inte finns någon annan i kö)
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         break;
@@ -152,9 +162,8 @@ void loop()
         // In case of an emergency, quit charge
         // One second, one procent added to battery
 
-        // display.clearArea();
-        // display.loading();
-
+        //clearArea();
+        //loading();
         // OM: man är ensam på laddstationen laddar man mot 100%
         if (node.battery_charge < 100)
         {

@@ -12,6 +12,9 @@ void initCOM();
 
 void sendMessage();
 
+void sendQ(int id, float points);
+void receive();
+
 void changeCS(string zoneCode);
 
 int getID();

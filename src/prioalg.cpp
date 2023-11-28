@@ -1,11 +1,53 @@
-//Prioritize and get info to display
-//Kommer finnas i nod klassen
+#include "communication.hpp"
+#include "mission.hpp"
+#include <iostream>
+#include "node.hpp"
+/*
+class IntegerClass {
+public:
+    // Constructor
+    IntegerClass(int value) : integerValue(value) {}
+
+    // Member function that returns the stored integer value
+    int getbat() const {
+        return integerValue;
+    }
+
+    int getminlad (int minCharge) const {
+       integerValue2 = minCharge ;
+        return integerValue2;
+    }
+
+    // Method to calculate priority and return an integer value
+    int calculatePriority(battery_charge) const {
+        // Example calculation, replace this with your logic
+        
+        return prioValue;
+    }
+
+private:
+    int integerValue;
+    int integerValue2;
+    int prioValue;
+};
+*/
 
 
-// TODO: Hitta ett bra interface 
-// Exempel: Vi behöver ett interface för att kunna computa och hämta våran 
-//          nuvarande state. 
-// States : transit, queue, charge 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30,5 +72,3 @@
 // }
 
 
-// // rutter från denna specifika laddstation till de tre andra, dessa kan skapas som listor eller
-// // arrayer av koordinater för hur noden ska iterera sin förflyttning

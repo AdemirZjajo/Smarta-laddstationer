@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include "communication.hpp"
+//#include "display.hpp"
 
 // OLED inställningar
 #define SCREEN_WIDTH 128
@@ -87,14 +87,14 @@ void displayLooping(int id)
 void clearArea()
 {
     display.setTextColor(BLACK);
-    // display.setCursor(32, 50);
+    display.setCursor(32, 50);
     display.print("         ");
-    // display.setCursor(75, 50);
+    display.setCursor(75, 50);
     display.print("            ");
-    display.setCursor(32, 30);
-    display.print("            ");
-    display.setCursor(65, 30);
-    display.print("            ");
+    //display.setCursor(32, 30);
+    //display.print("            ");
+    //display.setCursor(65, 30);
+    //display.print("            ");
 
     display.setTextColor(WHITE);
     display.display();
@@ -103,9 +103,9 @@ void clearArea()
 void setID(int id)
 {
     String temp = String(id);
-    display.setCursor(50, 20);
-    display.println("Nod: ");
-    display.println(temp);
+    display.setCursor(35, 20);
+    display.println("Nod: " + temp);
+    //display.println(temp);
     display.display();
 }
 
@@ -130,13 +130,18 @@ void setWeight(int weight)
     display.display();
 }
 
-void setLoadType(int loadType)
+void setLoadType(bool loadType)
 {
-    String temp = String(loadType);
+    //String temp = String(loadType);
     display.setCursor(32, 50);
     display.print("Lasttyp:");
     display.setCursor(80, 50);
-    display.println(temp);
+    if(loadType){
+        display.println("*");
+    } else {
+    display.println("");
+    }
+   // display.println(temp);
     display.display();
 }
 
@@ -160,7 +165,7 @@ void destination(String dest)
     display.display();
 }
 
-void queuePoints(String dest)
+void queuePoints(float dest)
 {
     display.setCursor(32, 50);
     display.print("Kö: ");

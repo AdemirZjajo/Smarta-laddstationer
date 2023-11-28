@@ -16,7 +16,7 @@ public:
   ChargingStation missionDestination;
 
   Mission();
-  //Mission(ChargingStation initCS, ChargingStation goalCS);
+  Mission(ChargingStation initCS, ChargingStation goalCS);
 };
 
 // metod som genererar ett uppdrag till noden
