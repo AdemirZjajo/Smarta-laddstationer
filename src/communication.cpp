@@ -139,7 +139,7 @@ void receivedCallback(uint32_t from, String &msg)
 {
   cout << msg.c_str() << endl;
   string stringMsg = msg.c_str();
-  pair<double, double> result = splitString(stringMsg);
+  pair<int, float> result = splitString(stringMsg);
 
   // Print the results
   cout << "First value: " << result.first << endl;

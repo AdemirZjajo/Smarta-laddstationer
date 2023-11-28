@@ -18,6 +18,9 @@ Node node(0); // Type casta integern för nod id till en float för att kunna an
 State state = TRANSIT;
 bool activeMission = false; // Starttillståndet
 
+vector<float> tempVect;
+pair<int, float> tempNodeMsg;
+
 using namespace std;
 
 void setup()
@@ -61,8 +64,6 @@ void loop()
     setLoadType(node.current_mission.kylvara);
 
     // displayLooping(node.nod_id);
-
-    vector<float> tempVect;
 
     switch (state)
     {
@@ -125,8 +126,7 @@ void loop()
     case QUEUE:
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
-        getNodePair();
-        // pair<double, double> testPar = getNodePair();
+        tempNodeMsg = getNodePair();
         /*string stringTest = "(" + to_string(testPar.first) + ", " + to_string(testPar.second) + ")";
         cout << " TEST: " << stringTest << endl;
 
@@ -142,7 +142,6 @@ void loop()
         position(node.xcor, node.ycor);
         queuePoints(node.queue_point);
         this_thread::sleep_for(chrono::milliseconds(500));
-        this_thread::sleep_for(chrono::milliseconds(500));
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
@@ -152,14 +151,6 @@ void loop()
             node.queueVector.insert(node.queueVector.end(), tempVect); // Lägger in nodens egna id och köpoäng i vektorn
         }
 
-         sort(node.vect.begin(),
-              node.vect.end(),
-              [](const vector<float> &a, const vector<float> &b)
-              {
-                  return a[1] > b[1];
-              });
-              */
-        if (false)
         sort(node.queueVector.begin(),
              node.queueVector.end(),
              [](const vector<float> &a, const vector<float> &b)
