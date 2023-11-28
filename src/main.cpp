@@ -120,15 +120,19 @@ void loop()
     case QUEUE:
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
+        getNodePair();
+        //pair<double, double> testPar = getNodePair();
+        /*string stringTest = "(" + to_string(testPar.first) + ", " + to_string(testPar.second) + ")";
+        cout << " TEST: " << stringTest << endl;
 
-        cout << " NOD är i Queue-state" << endl;
+        cout << " NOD är i Queue-state" << endl;*/
         // changeCS(node.current_mission.missionOrigin.zon);
         cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
 
         // display.clearArea();
         queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(200));
+        this_thread::sleep_for(chrono::milliseconds(500));
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
@@ -144,7 +148,7 @@ void loop()
                   return a[1] > b[1];
               });
               */
-        if (true)
+        if (false)
         {
             state = CHARGE; // TEMP skickar bara en till CHARGE direkt
             cout << " NOD är i Charge-state" << endl;

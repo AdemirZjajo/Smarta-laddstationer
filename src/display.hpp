@@ -4,11 +4,12 @@
 
 #include <Arduino.h>
 #include <Adafruit_SSD1306.h>
+#include <string>
 
 // OLED settings
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define RESET -1 // Reset pin 
+#define RESET -1 // Reset pin
 #define buttonAPin 19
 #define buttonBPin 18
 
@@ -23,7 +24,7 @@ const int arraySize = 10;
 
 // Function declarations
 void setupCommunication();
-String getRandom(const char* options[], int size);
+String getRandom(const char *options[], int size);
 
 void setupDIS();
 void displayLooping(int id);
@@ -39,6 +40,5 @@ void loading();
 
 void clearArea();
 void position(int x, int y);
-
 
 #endif

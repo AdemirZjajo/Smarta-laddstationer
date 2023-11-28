@@ -20,6 +20,7 @@
 #include <painlessMesh.h>
 #include <list>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -31,7 +32,8 @@ String MESH_PASSWORD = "123456789";
 int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
-;
+pair<int, float> nodePair;
+
 // User stub
 
 void sendMessage(); // Prototype so PlatformIO doesn't complain
@@ -53,9 +55,9 @@ void sendMessage()
 void sendQ(int id, float points)
 {
   // mesh.getNodeId()%1000;
-  String qPoints = "Nod:";
+  String qPoints = "";
   qPoints += id;
-  qPoints += " ";
+  qPoints += "-";
   qPoints += points;
   mesh.sendBroadcast(qPoints);
   taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
@@ -93,12 +95,49 @@ int getID()
   return mesh.getNodeId() % 1000;
 }
 
+pair<int, float> splitString(const string &input)
+{
+  // Find the position of the "-" character
+  size_t pos = input.find('-');
+
+  // Check if the "-" character is found
+  if (pos != string::npos)
+  {
+    // Extract the substrings before and after the "-"
+    string firstPart = input.substr(0, pos);
+    string secondPart = input.substr(pos + 1);
+
+    // Convert the substrings to double values
+    int firstValue = stod(firstPart);
+    float secondValue = stod(secondPart);
+
+    // Return a pair of double values
+    return make_pair(firstValue, secondValue);
+  }
+  else
+  {
+    // Handle the case where "-" is not found
+    // You might want to throw an exception or handle it differently based on your needs
+    cerr << "Error: '-' not found in the input string" << endl;
+    return make_pair(0.0, 0.0); // Return default values or handle the error accordingly
+  }
+}
+
 // This notifies the ESP when a message is recieved
 void receivedCallback(uint32_t from, String &msg)
 {
-  Serial.printf("Received  %s\n", msg.c_str());
-  // Serial.printf("Received  %s\n", q.c_str());
+  cout << msg.c_str() << endl;
+  string stringMsg = msg.c_str();
+  pair<double, double> result = splitString(stringMsg);
 
+  // Print the results
+  cout << "First value: " << result.first << endl;
+  cout << "Second value: " << result.second << endl;
+
+  // Serial.printf("Received  %s\n", msg.c_str());
+
+  // Serial.printf("Received  %s\n", q.c_str());
+  nodePair = result;
   /* if (Counter < 5)
    {
      Counter = Counter + 1;
@@ -113,10 +152,10 @@ void receivedCallback(uint32_t from, String &msg)
   // return from
 }
 
-void receive()
+pair<int, float> getNodePair()
 {
-  // receivedCallback(from, &q, &msg);
-  mesh.onReceive(&receivedCallback);
+  cout << "Pair: (" << nodePair.first << ", " << nodePair.second << ")" << endl;
+  return nodePair;
 };
 
 void newConnectionCallback(uint32_t nodeId)

@@ -13,7 +13,7 @@ void initCOM();
 void sendMessage();
 
 void sendQ(int id, float points);
-void receive();
+pair <int, float>  getNodePair();
 
 void changeCS(string zoneCode);
 
