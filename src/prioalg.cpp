@@ -2,35 +2,35 @@
 #include "mission.hpp"
 #include <iostream>
 #include "node.hpp"
-/*
+
 class IntegerClass {
 public:
     // Constructor
-    IntegerClass(int value) : integerValue(value) {}
+    IntegerClass(int value) : integerValue(value), integerValue2(0), prioValue(0.0) {}
 
     // Member function that returns the stored integer value
     int getbat() const {
         return integerValue;
     }
 
-    int getminlad (int minCharge) const {
-       integerValue2 = minCharge ;
-        return integerValue2;
+    // Method to set minlad value
+    void setMinLad(int minCharge) {
+        integerValue2 = minCharge;
     }
 
     // Method to calculate priority and return an integer value
-    int calculatePriority(battery_charge) const {
+    int calculatePriority(float battery_charge) const {
         // Example calculation, replace this with your logic
-        
-        return prioValue;
+        prioValue = battery_charge;
+        return static_cast<int>(prioValue);
     }
 
 private:
     int integerValue;
     int integerValue2;
-    int prioValue;
+    float prioValue;
 };
-*/
+
 
 
 
