@@ -40,7 +40,6 @@ tuple<int, int, float> queueTuple;
 vector<vector<float>> queueVector;
 
 vector<float> tempVect;
-pair<int, float> tempNodeMsg;
 bool exists;
 
 // User stub
@@ -56,21 +55,22 @@ void sendMessage()
   String msg = "Hello from node ";
   nodeId = mesh.getNodeId() % 1000;
   msg += nodeId;
- // mesh.sendBroadcast(msg);
-  //taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  // mesh.sendBroadcast(msg);
+  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
 void sendQ(int id, float points)
 {
   // mesh.getNodeId()%1000;
-  String qPoints = "1";
+  String qPoints = "0";
+  qPoints += "-";
   qPoints += id;
   qPoints += "-";
   qPoints += points;
   mesh.sendBroadcast(qPoints);
   taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-  Serial.printf(qPoints.c_str());
+  // cout << qPoints.c_str() << endl;
   /*
   String qPoints = String(id) + "-" + String(points);
   mesh.sendBroadcast(qPoints);
@@ -95,6 +95,17 @@ void sendQ(int id, float points)
   {
     queueVector.push_back(tempVect);
   }
+}
+
+void sendRemove(int id)
+{
+  String tempStr = "1";
+  tempStr += "-";
+  tempStr += id;
+  tempStr += "-";
+  tempStr += "";
+  mesh.sendBroadcast(tempStr);
+  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
 }
 
 void changeCS(string zoneCode)
@@ -169,46 +180,60 @@ void receivedCallback(uint32_t from, String &msg)
   string stringMsg = msg.c_str();
   tuple<int, int, float> result = splitString(stringMsg);
 
-  // Print the results
-  // cout << "First value: " << result.first << endl;
-  // cout << "Second value: " << result.second << endl;
-
-  // Serial.printf("Received  %s\n", msg.c_str());
-
-  // Serial.printf("Received  %s\n", q.c_str());
-
   queueTuple = result;
 
-  /* if (Counter < 5)
-   {
-     Counter = Counter + 1;
-     printf("Counter : %d\n", Counter);
-   }
-   else if (Counter == 5)
-   {
-     MESH_PREFIX = "laddstiation2";
-     printf("Changed MESH perfix \n");
-     Counter += 1;
-   }*/
-
-  // Lägger till andra i vektorn
-  tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
-
-  exists = false;
-  for (const auto &vec : queueVector)
+  switch (get<0>(queueTuple))
   {
-    if (vec[0] == tempVect[0])
+  case 0: // Lägga in annan i vektorn
+    tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
+
+    exists = false;
+    for (const auto &vec : queueVector)
     {
-      exists = true;
-      break;
+      if (vec[0] == tempVect[0])
+      {
+        exists = true;
+        break;
+      }
     }
-  }
 
-  if (!exists)
-  {
-    queueVector.push_back(tempVect);
-  }
+    if (!exists)
+    {
+      queueVector.push_back(tempVect);
+    }
+  
+    break;
+
+  case 1: // Ta bort annan från vektorn
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it) {
+        if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple))) {
+            queueVector.erase(it);
+            cout << "Vector removed successfully." << endl;
+            break;  // Exit the loop after erasing the element
+        } else {
+            cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
+ }
+ }
 }
+  /*
+    for (const auto &vec : queueVector)
+    {
+      if (vec[0][0] == static_cast<float>(get<1>(queueTuple)))
+      {
+        queueVector.erase(queueVector[queueVector.begin]);
+
+        break;
+      }
+      else
+      {
+        cout << "ERROR TRIED TO REMOVE BUT COULDNT" << endl;
+      }
+    }
+    break;
+*/
+
+ 
 
 void newConnectionCallback(uint32_t nodeId)
 {

@@ -34,6 +34,20 @@ void updateQueue()
          });
 }
 
+bool isAlone()
+{
+    bool isAlone = false;
+    if (node.queueVector.size() == 1)
+    {
+       if(node.queueVector[0][0] = node.nod_id){
+        isAlone = true;
+       }
+      else isAlone = false;
+    }
+return isAlone;
+}
+
+
 void setup()
 {
     cout << "SETUP START" << endl;
@@ -95,7 +109,7 @@ void loop()
                 this_thread::sleep_for(chrono::seconds(1));
 
                 // Optional: Display iteration number
-                node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar beteri % för att simulera att vi rör oss framåt
+                node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
                 cout << "Nod-Förlyttning " << i << "/10. "
                      << "Nodens batteri status är nu: " << node.battery_charge << endl;
                 // UPPDATERA BATTERI STATUS-FUNKTION TILL OLED
@@ -144,12 +158,12 @@ void loop()
         // HÄR RÄKNAS KÖPOÄNG UT
         // cout << "Nodens köpoäng är: " << node.queue_point << endl;
 
-        for (size_t i = 0; i < 20; i++)
-        {
-            updateCommunication();
-            sendQ(node.nod_id, node.queue_point);
-            this_thread::sleep_for(chrono::milliseconds(100));
-        }
+        /* for (size_t i = 0; i < 20; i++)
+         {
+             updateCommunication();
+             sendQ(node.nod_id, node.queue_point);
+             this_thread::sleep_for(chrono::milliseconds(100));
+         }*/
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
@@ -166,7 +180,7 @@ void loop()
             cout << '\n';
         }
 
-        if (node.queueVector[0][0] = node.nod_id)
+        if (node.queueVector[0][0] = node.nod_id) //(!isAlone())//node.queueVector[0][0] = node.nod_id
         {
             cout << "Nod-" << node.nod_id << " är först i kön. Dags att börja ladda :)" << endl;
             state = CHARGE;
@@ -185,6 +199,7 @@ void loop()
         this_thread::sleep_for(chrono::milliseconds(500));
 
         break;
+
     case CHARGE:
         updateQueue();
         // Om man kommer in i detta tillstånd ska man omedelbart börja ladda
@@ -197,8 +212,9 @@ void loop()
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         loading();
+        
         //  OM: man är ensam på laddstationen laddar man mot 100%
-        if (node.battery_charge < 100)
+        if (isAlone() && node.battery_charge < 100)
         {
             // Chilla 1 sekund
             this_thread::sleep_for(chrono::milliseconds(200));
@@ -211,23 +227,22 @@ void loop()
                 node.battery_charge++;
             }
 
-            cout << "NOD LADDAR... " << node.battery_charge << "%" << endl;
+            cout << "NOD LADDAR... till max_charge " << node.battery_charge << "%" << endl;
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
         }
 
         // ANNARS OM: man inte var ensam, men har högst priopoäng, laddar man mot sin minimumladdning
-        else if (node.battery_charge <= node.min_charge)
+        else if (!isAlone() && node.battery_charge <= node.min_charge)
         {
-            cout << "I KÖ FÖR ATT LADDA (ELSE IF)" << endl;
+            
             // Chilla 1 sekund
-            this_thread::sleep_for(chrono::seconds(1));
+            this_thread::sleep_for(chrono::milliseconds(200));
 
             node.battery_charge++;
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
-            cout << "Nod laddar ++batteri :) "
-                 << " klar." << endl;
+            cout << "NOD LADDAR till min_charge... " << node.battery_charge << "%" << endl;
         }
         /*
                     // ANNARS OM: man laddar för nuvarande men någon annan har MYCKET högre priopoäng, eller av annan anledning får slänga ut dig --> Byt tillstånd till QUEUE
@@ -246,7 +261,7 @@ void loop()
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
             // display.destination(node.current_mission.missionDestination);
-            node.queueVector.erase(node.queueVector.begin() + 0);
+            /*node.queueVector.erase(node.queueVector.begin() + 0);
             cout << "--KÖLISTA--" << endl;
             for (const auto &row : node.queueVector)
             {
@@ -255,7 +270,9 @@ void loop()
                     cout << element << ' ';
                 }
                 cout << '\n';
-            }
+            }*/
+            sendRemove(node.nod_id);
+            node.queueVector.clear();
             state = TRANSIT;
         }
 

@@ -14,7 +14,8 @@ void initCOM();
 void sendMessage();
 
 void sendQ(int id, float points);
-pair <int, float>  getNodePair();
+void sendRemove(int id);
+pair<int, float> getNodePair();
 
 void changeCS(string zoneCode);
 
