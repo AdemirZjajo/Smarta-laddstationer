@@ -2,35 +2,53 @@
 #include "mission.hpp"
 #include <iostream>
 #include "node.hpp"
-
 class IntegerClass {
 public:
     // Constructor
-    IntegerClass(int value) : integerValue(value), integerValue2(0), prioValue(0.0) {}
+    IntegerClass(int value){}
 
-    // Member function that returns the stored integer value
-    // här ska vi hämta värdet från noden 
-    int getbat() const {
-        return integerValue;
+
+    // This method  is to calculate priority and return an integer value that represents a priority status
+    int calculatePriority(float battery_charge ,float min_charge)  {       
+
+    // Initialize variables bat_pt and min_pt
+    int bat_pt = 0;
+    int min_pt = 0;
+
+    // Conditions based on bat and min values
+        if (battery_charge <= 1 && min_charge <= 5) {
+            bat_pt = 100;
+            min_pt = 60;
+        } else if (battery_charge <= 1 && min_charge > 5) {
+            bat_pt = 100;
+            min_pt = 30;
+        } else if (battery_charge > 1 && battery_charge <= 5 && min_charge <= 5) {
+            bat_pt = 60;
+            min_pt = 60;
+        } else if (battery_charge > 1 && battery_charge <= 5 && min_charge > 5) {
+            bat_pt = 60;
+            min_pt = 30;
+        } else if (battery_charge > 5 && battery_charge <= 10 && min_charge <= 5) {
+            bat_pt = 20;
+            min_pt = 60;
+        } else if (battery_charge > 5 && battery_charge <= 10 && min_charge > 5) {
+            bat_pt = 20;
+            min_pt = 30;
+        } else {
+            bat_pt = 0;
+            min_pt = 30;
+        }
+
+            // Output the results
+            std::cout << "bat_pt: " << bat_pt << std::endl;
+            std::cout << "min_pt: " << min_pt << std::endl;
+
+
+    int prioValue =(bat_pt * 0,6) + (min_pt * 0,4);
+    return prioValue;
+}
     }
 
-    // Method to set minlad value
-    void setMinLad(int minCharge) {
-        integerValue2 = minCharge;
-    }
-
-    // Method to calculate priority and return an integer value
-    int calculatePriority(float battery_charge)  {
-        // Example calculation, replace this with your logic
-        prioValue = battery_charge;
-        return static_cast<int>(prioValue);
-    }
-
-private:
-    int integerValue;
-    int integerValue2;
-    float prioValue;
-};
 
 
 
@@ -44,30 +62,3 @@ private:
 
 
 
-
-
-
-
-
-
-
-
-// #include <string>
-
-// class Laddstation1 {
-//   public: // Accesstyp
-// };
-
-// int main() {
-//   string state = ; // vilken laddstaionsrutt vi ska välja, beroende på vilket uppdrag noden har när den kallar på funktionen
-//   switch (state) {
-//   case "till_LS_2":
-//     return // returna listan för denna rutt
-//     break;
-//   case "till_LS_3":
-//     break;
-//   case "till_LS_4":
-//     break;
-//   }
-//   return 0;
-// }
