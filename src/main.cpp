@@ -18,8 +18,21 @@ Node node(0); // Type casta integern för nod id till en float för att kunna an
 State state = TRANSIT;
 bool activeMission = false; // Starttillståndet
 
-
 using namespace std;
+
+void updateQueue()
+{
+    // Uppdaterar nodens kövektor
+    node.queueVector = getComQueueVector();
+
+    // Sorterar vektorn
+    sort(node.queueVector.begin(),
+         node.queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+             return a[1] > b[1];
+         });
+}
 
 void setup()
 {
@@ -140,8 +153,7 @@ void loop()
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
-// Uppdaterar nodens kövektor
-        node.queueVector = getComQueueVector();
+        updateQueue();
 
         // Skriver ut kövektorn
         cout << "--KÖLISTA--" << endl;
@@ -174,7 +186,7 @@ void loop()
 
         break;
     case CHARGE:
-
+        updateQueue();
         // Om man kommer in i detta tillstånd ska man omedelbart börja ladda
 
         // In case of an emergency, quit charge
@@ -234,7 +246,16 @@ void loop()
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
             // display.destination(node.current_mission.missionDestination);
-
+            node.queueVector.erase(node.queueVector.begin() + 0);
+            cout << "--KÖLISTA--" << endl;
+            for (const auto &row : node.queueVector)
+            {
+                for (const auto &element : row)
+                {
+                    cout << element << ' ';
+                }
+                cout << '\n';
+            }
             state = TRANSIT;
         }
 

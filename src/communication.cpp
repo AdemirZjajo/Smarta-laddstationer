@@ -22,24 +22,24 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
-Scheduler userScheduler;      // Scheduler to control tasks
-painlessMesh mesh;            // instance for our mesh
-std::list<uint32_t> nodeList; // instance for our list
+Scheduler userScheduler; // Scheduler to control tasks
+painlessMesh mesh;       // instance for our mesh
+list<uint32_t> nodeList; // instance for our list
 String MESH_PREFIX = "meshOrigin";
 String MESH_PASSWORD = "123456789";
 int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
 
-pair<int, float> nodePair;
+tuple<int, int, float> queueTuple;
 
 vector<vector<float>> queueVector;
 
 vector<float> tempVect;
-vector<float> tempVect2;
 pair<int, float> tempNodeMsg;
 bool exists;
 
@@ -56,21 +56,21 @@ void sendMessage()
   String msg = "Hello from node ";
   nodeId = mesh.getNodeId() % 1000;
   msg += nodeId;
-  mesh.sendBroadcast(msg);
-  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+ // mesh.sendBroadcast(msg);
+  //taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
 void sendQ(int id, float points)
 {
   // mesh.getNodeId()%1000;
-  String qPoints = "";
+  String qPoints = "1";
   qPoints += id;
   qPoints += "-";
   qPoints += points;
   mesh.sendBroadcast(qPoints);
   taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-  // Serial.printf("Sent %s\n", qPoints.c_str());
+  Serial.printf(qPoints.c_str());
   /*
   String qPoints = String(id) + "-" + String(points);
   mesh.sendBroadcast(qPoints);
@@ -95,14 +95,6 @@ void sendQ(int id, float points)
   {
     queueVector.push_back(tempVect);
   }
-  
-  // Sorterar vektorn
-  sort(queueVector.begin(),
-       queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-         return a[1] > b[1];
-       });
 }
 
 void changeCS(string zoneCode)
@@ -139,31 +131,34 @@ int getID()
   return mesh.getNodeId() % 1000;
 }
 
-pair<int, float> splitString(const string &input)
+tuple<int, int, float> splitString(const string &input)
 {
-  // Find the position of the "-" character
-  size_t pos = input.find('-');
+  // Find the positions of the "-" characters
+  size_t pos1 = input.find('-');
+  size_t pos2 = input.find('-', pos1 + 1);
 
-  // Check if the "-" character is found
-  if (pos != string::npos)
+  // Check if both "-" characters are found
+  if (pos1 != string::npos && pos2 != string::npos)
   {
-    // Extract the substrings before and after the "-"
-    string firstPart = input.substr(0, pos);
-    string secondPart = input.substr(pos + 1);
+    // Extract the substrings between the "-" characters
+    string firstPart = input.substr(0, pos1);
+    string secondPart = input.substr(pos1 + 1, pos2 - pos1 - 1);
+    string thirdPart = input.substr(pos2 + 1);
 
-    // Convert the substrings to double values
-    int firstValue = stod(firstPart);
-    float secondValue = stod(secondPart);
+    // Convert the substrings to integer and float values
+    int firstValue = stoi(firstPart);
+    int secondValue = stoi(secondPart);
+    float thirdValue = stof(thirdPart);
 
-    // Return a pair of double values
-    return make_pair(firstValue, secondValue);
+    // Return a tuple of integer and float values
+    return make_tuple(firstValue, secondValue, thirdValue);
   }
   else
   {
-    // Handle the case where "-" is not found
+    // Handle the case where one or both "-" characters are not found
     // You might want to throw an exception or handle it differently based on your needs
-    cerr << "Error: '-' not found in the input string" << endl;
-    return make_pair(0.0, 0.0); // Return default values or handle the error accordingly
+    cerr << "Error: One or both '-' characters not found in the input string" << endl;
+    return make_tuple(0, 0, 0.0f); // Return default values or handle the error accordingly
   }
 }
 
@@ -172,7 +167,7 @@ void receivedCallback(uint32_t from, String &msg)
 {
   // cout << msg.c_str() << endl;
   string stringMsg = msg.c_str();
-  pair<int, float> result = splitString(stringMsg);
+  tuple<int, int, float> result = splitString(stringMsg);
 
   // Print the results
   // cout << "First value: " << result.first << endl;
@@ -182,7 +177,7 @@ void receivedCallback(uint32_t from, String &msg)
 
   // Serial.printf("Received  %s\n", q.c_str());
 
-  nodePair = result;
+  queueTuple = result;
 
   /* if (Counter < 5)
    {
@@ -197,12 +192,12 @@ void receivedCallback(uint32_t from, String &msg)
    }*/
 
   // Lägger till andra i vektorn
-  tempVect2 = {static_cast<float>(nodePair.first), nodePair.second};
+  tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
   exists = false;
   for (const auto &vec : queueVector)
   {
-    if (vec[0] == tempVect2[0])
+    if (vec[0] == tempVect[0])
     {
       exists = true;
       break;
@@ -211,23 +206,9 @@ void receivedCallback(uint32_t from, String &msg)
 
   if (!exists)
   {
-    queueVector.push_back(tempVect2);
+    queueVector.push_back(tempVect);
   }
-
-  // Sorterar vektorn
-  sort(queueVector.begin(),
-       queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-         return a[1] > b[1];
-       });
 }
-
-pair<int, float> getNodePair()
-{
-  // cout << "Pair: (" << nodePair.first << ", " << nodePair.second << ")" << endl;
-  return nodePair;
-};
 
 void newConnectionCallback(uint32_t nodeId)
 {
@@ -237,7 +218,7 @@ void newConnectionCallback(uint32_t nodeId)
   for (const auto &node : nodeList)
   {
     printf("node list :\n");
-    std::cout << node << std::endl;
+    cout << node << endl;
   }
 }
 
@@ -287,7 +268,7 @@ void initCOM()
   mesh.onChangedConnections(&changedConnectionCallback);
 
   userScheduler.addTask(taskSendMessage);
-  delay(3000);
+  // delay(3000);
   taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
 }
