@@ -18,10 +18,6 @@ Node node(0); // Type casta integern för nod id till en float för att kunna an
 State state = TRANSIT;
 bool activeMission = false; // Starttillståndet
 
-vector<float> tempVect;
-vector<float> tempVect2;
-pair<int, float> tempNodeMsg;
-bool exists;
 
 using namespace std;
 
@@ -144,48 +140,8 @@ void loop()
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
-        tempNodeMsg = getNodePair();
-
-        tempVect2 = {static_cast<float>(tempNodeMsg.first), tempNodeMsg.second};
-
-        exists = false;
-        for (const auto &vec : node.queueVector)
-        {
-            if (vec[0] == tempVect2[0])
-            {
-                exists = true;
-                break;
-            }
-        }
-
-        if (!exists)
-        {
-            node.queueVector.push_back(tempVect2);
-        }
-
-        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
-
-        exists = false;
-        for (const auto &vec : node.queueVector)
-        {
-            if (vec[0] == tempVect[0])
-            {
-                exists = true;
-                break;
-            }
-        }
-
-        if (!exists)
-        {
-            node.queueVector.push_back(tempVect);
-        }
-
-        sort(node.queueVector.begin(),
-             node.queueVector.end(),
-             [](const vector<float> &a, const vector<float> &b)
-             {
-                 return a[1] > b[1];
-             });
+// Uppdaterar nodens kövektor
+        node.queueVector = getComQueueVector();
 
         // Skriver ut kövektorn
         cout << "--KÖLISTA--" << endl;

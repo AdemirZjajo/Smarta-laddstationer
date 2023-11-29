@@ -33,7 +33,15 @@ String MESH_PASSWORD = "123456789";
 int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
+
 pair<int, float> nodePair;
+
+vector<vector<float>> queueVector;
+
+vector<float> tempVect;
+vector<float> tempVect2;
+pair<int, float> tempNodeMsg;
+bool exists;
 
 // User stub
 
@@ -69,6 +77,32 @@ void sendQ(int id, float points)
   taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
   Serial.printf("Sent %s\n", qPoints.c_str());
   */
+
+  // Lägger till sig själv i vektorn
+  tempVect = {static_cast<float>(id), points};
+
+  exists = false;
+  for (const auto &vec : queueVector)
+  {
+    if (vec[0] == tempVect[0])
+    {
+      exists = true;
+      break;
+    }
+  }
+
+  if (!exists)
+  {
+    queueVector.push_back(tempVect);
+  }
+  
+  // Sorterar vektorn
+  sort(queueVector.begin(),
+       queueVector.end(),
+       [](const vector<float> &a, const vector<float> &b)
+       {
+         return a[1] > b[1];
+       });
 }
 
 void changeCS(string zoneCode)
@@ -147,7 +181,9 @@ void receivedCallback(uint32_t from, String &msg)
   // Serial.printf("Received  %s\n", msg.c_str());
 
   // Serial.printf("Received  %s\n", q.c_str());
+
   nodePair = result;
+
   /* if (Counter < 5)
    {
      Counter = Counter + 1;
@@ -159,6 +195,32 @@ void receivedCallback(uint32_t from, String &msg)
      printf("Changed MESH perfix \n");
      Counter += 1;
    }*/
+
+  // Lägger till andra i vektorn
+  tempVect2 = {static_cast<float>(nodePair.first), nodePair.second};
+
+  exists = false;
+  for (const auto &vec : queueVector)
+  {
+    if (vec[0] == tempVect2[0])
+    {
+      exists = true;
+      break;
+    }
+  }
+
+  if (!exists)
+  {
+    queueVector.push_back(tempVect2);
+  }
+
+  // Sorterar vektorn
+  sort(queueVector.begin(),
+       queueVector.end(),
+       [](const vector<float> &a, const vector<float> &b)
+       {
+         return a[1] > b[1];
+       });
 }
 
 pair<int, float> getNodePair()
@@ -206,6 +268,11 @@ void updateCommunication()
      printf("MESH UPDATED \n");
      Counter += 1;
    }*/
+}
+
+vector<vector<float>> getComQueueVector()
+{
+  return queueVector;
 }
 
 void initCOM()

@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <painlessMesh.h>
+#include <vector>
 
 using namespace std;
 
@@ -25,5 +26,7 @@ void newConnectionCallback(uint32_t nodeId);
 
 void changedConnectionCallback();
 void updateCommunication();
+
+vector<vector<float>> getComQueueVector();
 
 #endif
