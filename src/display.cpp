@@ -3,7 +3,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <string>
-//#include "display.hpp"
+// #include "display.hpp"
 
 // OLED inställningar
 #define SCREEN_WIDTH 128
@@ -44,14 +44,14 @@ void setupDIS()
     display.clearDisplay();
     display.setTextColor(WHITE);
     display.setTextSize(0, 1);
-    //battery = getRandom(batteryOptions, arraySize);
-    //weight = getRandom(weightOptions, arraySize);
-    //loadType = getRandom(loadTypeOptions, arraySize);
+    // battery = getRandom(batteryOptions, arraySize);
+    // weight = getRandom(weightOptions, arraySize);
+    // loadType = getRandom(loadTypeOptions, arraySize);
 
     pinMode(buttonAPin, INPUT_PULLUP);
     pinMode(buttonBPin, INPUT_PULLUP);
 
-    randomSeed(analogRead(0));
+    // randomSeed(analogRead(0));
 
     // setupCommunication();
 }
@@ -92,10 +92,10 @@ void clearArea()
     display.print("         ");
     display.setCursor(75, 50);
     display.print("            ");
-    //display.setCursor(32, 30);
-    //display.print("            ");
-    //display.setCursor(65, 30);
-    //display.print("            ");
+    // display.setCursor(32, 30);
+    // display.print("            ");
+    // display.setCursor(65, 30);
+    // display.print("            ");
 
     display.setTextColor(WHITE);
     display.display();
@@ -106,13 +106,13 @@ void setID(int id)
     String temp = String(id);
     display.setCursor(35, 20);
     display.println("Nod: " + temp);
-    //display.println(temp);
+    // display.println(temp);
     display.display();
 }
 
 void setBat(float battery)
 {
-    //clearArea();
+    // clearArea();
     String temp = String(battery);
     display.setCursor(32, 30);
     display.print("Bat: ");
@@ -133,16 +133,19 @@ void setWeight(int weight)
 
 void setLoadType(bool loadType)
 {
-    //String temp = String(loadType);
+    // String temp = String(loadType);
     display.setCursor(32, 50);
     display.print("Lasttyp:");
     display.setCursor(80, 50);
-    if(loadType){
+    if (loadType)
+    {
         display.println("*");
-    } else {
-    display.println("");
     }
-   // display.println(temp);
+    else
+    {
+        display.println("");
+    }
+    // display.println(temp);
     display.display();
 }
 

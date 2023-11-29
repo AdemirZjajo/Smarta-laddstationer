@@ -14,7 +14,7 @@ list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 // Randomly selects a charging station to spawn at
 ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4)
 {
-  int randomInt = rand() % 4;
+  int randomInt = randomNumber(0, 3, 34);
 
   // Map the random number to one of the four objects
   switch (randomInt)
@@ -38,7 +38,7 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
   ChargingStation chosenCS;
   do
   {
-    int randomInt = rand() % 4;
+    int randomInt = randomNumber(0, 3, 35);
 
     // Map the random number to one of the four objects
     switch (randomInt)
@@ -79,7 +79,7 @@ Node::Node(int id)
   zon = init_CS.zon;   // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
-  battery_charge = rand() % 100;
+  battery_charge = randomNumber(1, 100, 36);
   // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
@@ -88,7 +88,7 @@ Node::Node(int id)
 
   min_charge = 50;
   // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
-  queue_point = rand() % 100;
+  queue_point = randomNumber(1, 100, 34);
 }
 
 // Nodens initieringsprocess börjar här
@@ -209,3 +209,14 @@ float Node::calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
 };
+
+int randomNumber(int from, int to, int seed)
+{
+  // Seed the random number generator with a value (you can change this value)
+  randomSeed(analogRead(seed));
+
+  // Generate a pseudo-random number between 1 and 100
+  int randomNumber = random(from, to);
+
+  return randomNumber;
+}

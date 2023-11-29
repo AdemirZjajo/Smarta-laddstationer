@@ -5,6 +5,7 @@
 #include "chargingStation.hpp"
 #include "mission.hpp"
 #include <list>
+#include <Arduino.h>
 // Randomize function in this class and show on display
 // Prio
 // State
@@ -28,9 +29,10 @@ public:
   float queue_point;
 
   vector<vector<float>> queueVector{
-      /*{001, 50},
-      {002, 59},
-      {003, 70}*/
+      /*
+      {0, 0},
+      {999, 999}
+      */
   };
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
@@ -53,5 +55,7 @@ public:
 
   float calcMinCharge(float battery_consumption, int steps_needed);
 };
+
+int randomNumber(int from, int to, int seed);
 
 #endif

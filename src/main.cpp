@@ -19,7 +19,9 @@ State state = TRANSIT;
 bool activeMission = false; // Starttillståndet
 
 vector<float> tempVect;
+vector<float> tempVect2;
 pair<int, float> tempNodeMsg;
+bool exists;
 
 using namespace std;
 
@@ -50,6 +52,7 @@ void setup()
 
 void loop()
 {
+
     if (node.nod_id == 0)
     {
         getID();
@@ -68,7 +71,7 @@ void loop()
     switch (state)
     {
     case TRANSIT:
-        cout << "NOD är i Transit-state" << endl;
+        cout << "** NOD är i Transit-state **" << endl;
         if (node.battery_charge >= node.min_charge) // Jämföra batterinivå med minimumladdning, för att stanna kvar i transit
         {
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zon << endl;
@@ -118,37 +121,63 @@ void loop()
         else
         { // Om batterinivån är lägre än minimumladdningen --> byta tillstånd till queue
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << " men uppdraget kräver: " << node.min_charge << endl;
+            cout << "** NOD är i Queue-state **" << endl;
             state = QUEUE;
             break;
         }
         break;
 
     case QUEUE:
+        // changeCS(node.current_mission.missionOrigin.zon);
+
         updateCommunication();
         sendQ(node.nod_id, node.queue_point);
-        tempNodeMsg = getNodePair();
-        /*string stringTest = "(" + to_string(testPar.first) + ", " + to_string(testPar.second) + ")";
-        cout << " TEST: " << stringTest << endl;
-
-        cout << " NOD är i Queue-state" << endl;*/
-        // changeCS(node.current_mission.missionOrigin.zon);
-        cout << "Nodens köpoäng är: " << node.queue_point << endl;
         // HÄR RÄKNAS KÖPOÄNG UT
+        // cout << "Nodens köpoäng är: " << node.queue_point << endl;
 
-        // display.clearArea();
-        displayClear();
-        setID(node.nod_id);
-        setBat(node.battery_charge);
-        position(node.xcor, node.ycor);
-        queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(500));
+        for (size_t i = 0; i < 20; i++)
+        {
+            updateCommunication();
+            sendQ(node.nod_id, node.queue_point);
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
 
         /// HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...)
 
-        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
-        if (find(node.queueVector.begin(), node.queueVector.end(), tempVect) != node.queueVector.end()) // Om den egna noden inte redan finns i sin egna lista
+        tempNodeMsg = getNodePair();
+
+        tempVect2 = {static_cast<float>(tempNodeMsg.first), tempNodeMsg.second};
+
+        exists = false;
+        for (const auto &vec : node.queueVector)
         {
-            node.queueVector.insert(node.queueVector.end(), tempVect); // Lägger in nodens egna id och köpoäng i vektorn
+            if (vec[0] == tempVect2[0])
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            node.queueVector.push_back(tempVect2);
+        }
+
+        tempVect = {static_cast<float>(node.nod_id), node.queue_point};
+
+        exists = false;
+        for (const auto &vec : node.queueVector)
+        {
+            if (vec[0] == tempVect[0])
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            node.queueVector.push_back(tempVect);
         }
 
         sort(node.queueVector.begin(),
@@ -158,13 +187,35 @@ void loop()
                  return a[1] > b[1];
              });
 
-        if (false)
+        // Skriver ut kövektorn
+        cout << "--KÖLISTA--" << endl;
+        for (const auto &row : node.queueVector)
         {
-            state = CHARGE; // TEMP skickar bara en till CHARGE direkt
-            cout << " NOD är i Charge-state" << endl;
+            for (const auto &element : row)
+            {
+                cout << element << ' ';
+            }
+            cout << '\n';
         }
+
+        if (node.queueVector[0][0] = node.nod_id)
+        {
+            cout << "Nod-" << node.nod_id << " är först i kön. Dags att börja ladda :)" << endl;
+            state = CHARGE;
+            cout << "** NOD är i Charge-state **" << endl;
+        }
+
         // OM: ingen annan nod är vid laddstationen; alltså att man inte är med i något meshnät --> byt tillstånd till CHARGE och börja ladda mot 100% (eftersom det inte finns någon annan i kö)
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
+
+        // display.clearArea();
+        displayClear();
+        setID(node.nod_id);
+        setBat(node.battery_charge);
+        position(node.xcor, node.ycor);
+        queuePoints(node.queue_point);
+        this_thread::sleep_for(chrono::milliseconds(500));
+
         break;
     case CHARGE:
 
@@ -233,4 +284,32 @@ void loop()
 
         break;
     }
+}
+
+// används ej just nu :)
+float getFirstValue(const vector<vector<float>> &queue)
+{
+    // Check if the vector of vectors is not empty
+    if (!queue.empty())
+    {
+        // Check if the first element is not empty
+        if (!queue[0].empty())
+        {
+            // Return the first value of the first element
+            return queue[0][0];
+        }
+        else
+        {
+            // Handle the case where the first element is empty
+            cerr << "Error: First element is empty" << endl;
+        }
+    }
+    else
+    {
+        // Handle the case where the vector of vectors is empty
+        cerr << "Error: Vector of vectors is empty" << endl;
+    }
+
+    // Return a default value or handle the error accordingly
+    return 0.0f; // Adjust the default value as needed
 }
