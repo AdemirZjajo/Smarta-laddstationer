@@ -5,6 +5,7 @@
 #include "chargingStation.hpp"
 #include "mission.hpp"
 #include <list>
+#include <Arduino.h>
 // Randomize function in this class and show on display
 // Prio
 // State
@@ -54,5 +55,7 @@ public:
 
   float calcMinCharge(float battery_consumption, int steps_needed);
 };
+
+int randomNumber(int from, int to, int seed);
 
 #endif
