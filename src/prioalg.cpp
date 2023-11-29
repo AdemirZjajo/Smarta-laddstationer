@@ -3,12 +3,13 @@
 #include <iostream>
 #include "node.hpp"
 
-/*class IntegerClass {
+class IntegerClass {
 public:
     // Constructor
     IntegerClass(int value) : integerValue(value), integerValue2(0), prioValue(0.0) {}
 
     // Member function that returns the stored integer value
+    // här ska vi hämta värdet från noden 
     int getbat() const {
         return integerValue;
     }
@@ -19,7 +20,7 @@ public:
     }
 
     // Method to calculate priority and return an integer value
-    int calculatePriority(float battery_charge) const {
+    int calculatePriority(float battery_charge)  {
         // Example calculation, replace this with your logic
         prioValue = battery_charge;
         return static_cast<int>(prioValue);
@@ -30,7 +31,7 @@ private:
     int integerValue2;
     float prioValue;
 };
-*/
+
 
 
 
