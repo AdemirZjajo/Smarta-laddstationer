@@ -292,8 +292,8 @@ void initCOM()
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
 
-  userScheduler.addTask(taskSendMessage);
+  //userScheduler.addTask(taskSendMessage);
   // delay(3000);
-  taskSendMessage.enable(); // Enable continuous message sending task
+  //taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
 }
