@@ -17,7 +17,7 @@ using namespace std;
 class Node
 {
 public:
-  int nod_id;
+  int node_id;
   float battery_charge;
   float battery_consumption;  // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
   float min_charge;           // Minimum laddning för aktivt upprag
