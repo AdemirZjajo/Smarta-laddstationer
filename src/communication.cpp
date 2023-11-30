@@ -275,13 +275,6 @@ void updateCommunication()
 {
   // it will run the user scheduler as well
   mesh.update();
-
-  /* if (Counter == 6)
-   {
-     mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
-     printf("MESH UPDATED \n");
-     Counter += 1;
-   }*/
 }
 
 vector<vector<float>> getComQueueVector()

@@ -2,6 +2,7 @@
 #include "communication.hpp"
 #include "display.hpp"
 #include "mission.hpp"
+#include "priorityAlgorithm.hpp"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -23,10 +24,10 @@ using namespace std;
 // Metod som hämtar den kontinuerligt uppdaterade kölistan från kommunikationen, samt sorterar den
 void updateQueue()
 {
-    // Uppdaterar nodens kövektor
+    // Uppdaterar nodens kölista
     node.queueVector = getComQueueVector();
 
-    // Sorterar vektorn
+    // Sorterar listan
     sort(node.queueVector.begin(),
          node.queueVector.end(),
          [](const vector<float> &a, const vector<float> &b)
@@ -35,7 +36,7 @@ void updateQueue()
          });
 }
 
-// Returnerar true om den enda noden som finns i vektorn är sig själv, annars false; det finns även andra noder i vektorn
+// Returnerar true om den enda noden som finns i listan är sig själv, annars false; det finns även andra noder i listan
 bool isAlone()
 {
     bool isAlone = false;
@@ -56,7 +57,7 @@ bool isAlone()
         // Loopar genom queueVector och letar efter andra noder...
         for (const auto &vect : node.queueVector)
         {
-            // ...om den hittar någon annan nod sätts isAlone till false; det är andra i vektorn
+            // ...om den hittar någon annan nod sätts isAlone till false; det är andra i listan
             if (!vect.empty() && vect[0] != node.node_id)
             {
                 isAlone = false;
@@ -115,8 +116,9 @@ void loop()
     switch (state)
     {
     case TRANSIT:
-        cout << "** NOD är i Transit-state **" << endl;
-        if (node.battery_charge >= node.min_charge) // Jämföra batterinivå med minimumladdning, för att stanna kvar i transit
+        cout << "** NOD är i Transit-state **" << endl; // För debugging
+        // OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
+        if (node.battery_charge >= node.min_charge)
         {
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zon << endl;
 
@@ -163,6 +165,7 @@ void loop()
                 //  display.destination(node.current_mission.missionDestination);
             }
         }
+        // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE 
         else
         { // Om batterinivån är lägre än minimumladdningen --> byta tillstånd till queue
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << " men uppdraget kräver: " << node.min_charge << endl;
@@ -173,17 +176,17 @@ void loop()
         break;
 
     case QUEUE:
-        // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation;
-        // gör det bara möjligt för noden att kommunicera med de noder som är på samma laddstation.
+        // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
+        // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
         // changeCS(node.current_mission.missionOrigin.zon);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+
         updateQueue();
 
-        // HÄR RÄKNAS KÖPOÄNG UT
-        // cout << "Nodens köpoäng är: " << node.queue_point << endl;
+        
 
         /* Ska nog tas bort, men har kvar eftersom jag är osäker -Simon
         for (size_t i = 0; i < 20; i++)
@@ -194,18 +197,6 @@ void loop()
          }
          */
 
-        // ***** HÄR DEFINERAS LADDSTATIONENS SPECIFIKA KÖLISTA(INSERT + SORT OSV...) *****
-
-        // Skriver ut kövektorn för debugging
-        cout << "--KÖLISTA--" << endl;
-        for (const auto &row : node.queueVector)
-        {
-            for (const auto &element : row)
-            {
-                cout << element << ' ';
-            }
-            cout << '\n';
-        }
         // Ska inte vara med i slutversionen, men för testning finns denna if-sats kvar
         /*
         if (node.queueVector[0][0] = node.node_id) //(!isAlone())//node.queueVector[0][0] = node.node_id
@@ -227,9 +218,11 @@ void loop()
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         else if (!isAlone())
         {
-            sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
-            updateQueue();
-            if (node.queueVector[0][0] = node.node_id)
+            node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng  // Avkommenterat 11:30 30/11 -Simon
+            cout << "Nodens köpoäng är: " << node.queue_point << endl; // För debugging
+            sendQ(node.node_id, node.queue_point);     // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
+            updateQueue();                             // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
+            if (node.queueVector[0][0] = node.node_id) // Kollar om noden är först i kön, om den är det får den börja ladda
             {
                 cout << "Nod-" << node.node_id << " är först i kön. Dags att börja ladda :)" << endl;
                 state = CHARGE;
@@ -237,22 +230,31 @@ void loop()
             }
         }
 
+        // Skriver ut kölistan för debugging
+        cout << "--KÖLISTA--" << endl;
+        for (const auto &row : node.queueVector)
+        {
+            for (const auto &element : row)
+            {
+                cout << element << ' ';
+            }
+            cout << '\n';
+        }
+
+        // Display saker
         displayClear();
         setID(node.node_id);
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(500));
-
+        this_thread::sleep_for(chrono::milliseconds(500)); // Finns för att artificiellt slöa ner programmet, annars blir saker oläsbara ibland
         break;
 
     case CHARGE:
         updateQueue();
         // Om man kommer in i detta tillstånd ska man omedelbart börja ladda
 
-        // In case of an emergency, quit charge
-        // One second, one procent added to battery
-
+        // Display saker
         displayClear();
         setID(node.node_id);
         setBat(node.battery_charge);
@@ -262,7 +264,7 @@ void loop()
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
-            // Chilla 1 sekund
+            // Slöa ner programmet; det tar ju faktiskt tid att ladda
             this_thread::sleep_for(chrono::milliseconds(200));
             if (node.battery_charge >= 99)
             {
@@ -270,40 +272,42 @@ void loop()
             }
             else
             {
-                node.battery_charge++;
+                node.battery_charge++; // Öka batterinivån
             }
 
-            cout << "NOD LADDAR... till max_charge " << node.battery_charge << "%" << endl;
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
+            cout << "NOD LADDAR... till max_charge " << node.battery_charge << "%" << endl; // För debugging
         }
 
-        // ANNARS OM: man inte var ensam, men har högst priopoäng, laddar man mot sin minimumladdning
-        // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
-        else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge)
+        // ANNARS OM: man inte är ensam, och har högst priopoäng, laddar man mot sin minimumladdning
+        else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge) // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
         {
-
-            // Chilla 1 sekund
+            // Slöa ner programmet; det tar ju faktiskt tid att ladda
             this_thread::sleep_for(chrono::milliseconds(200));
 
-            node.battery_charge++;
+            node.battery_charge++; // Öka batterinivån
+
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
-            cout << "NOD LADDAR till min_charge... " << node.battery_charge << "%" << endl;
+            cout << "NOD LADDAR till min_charge... " << node.battery_charge << "%" << endl; // För debugging
         }
-        /*
-                    // ANNARS OM: man laddar för nuvarande men någon annan har MYCKET högre priopoäng, eller av annan anledning får slänga ut dig --> Byt tillstånd till QUEUE
-                    else if (true)
-                    {
-                        state = QUEUE;
-                    }*/
+
+        // ANNARS OM: man laddar för nuvarande men någon annan har MYCKET högre priopoäng, eller av annan anledning får slänga ut dig --> Byt tillstånd till QUEUE
+        // JUST NU slängs noden ut från laddning så fort någon annan har högre köpoäng
+        else if (!isAlone() && (node.queueVector[0][0] != node.node_id) && node.battery_charge <= node.min_charge)
+        {
+            state = QUEUE;
+        }
 
         // ANNARS: nu har vi tillräckligt med laddning för att slutföra uppdraget --> Byt tillstånd till TRANSIT
         else
         {
-            // TA BORT SIG SJÄLV FRÅN VEKTORLISTAN
-            // Iterera genom vektorn av vektorer och sök efter den vektor som innehåller nodens egna node_id
-            // Använd sedan vector.erase(...) för att ta bort vektorn
+            // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
+            // Därefter raderar noden sin egna kölista
+            sendRemove(node.node_id);
+            node.queueVector.clear();
+            clearComVector();
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
@@ -318,9 +322,7 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            sendRemove(node.node_id);
-            node.queueVector.clear();
-            clearComVector();
+
             state = TRANSIT;
         }
 

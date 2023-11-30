@@ -84,11 +84,11 @@ Node::Node(int id)
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  // min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
+  min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
 
-  min_charge = 50;
+  // min_charge = 50; // Bortkommenterat 11:30 30/11 -Simon
   // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
-  queue_point = randomNumber(1, 100, 34);
+  // queue_point = randomNumber(1, 100, 34); // Bortkommenterat 11:30 30/11 -Simon
 }
 
 // Nodens initieringsprocess börjar här
