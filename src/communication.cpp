@@ -43,8 +43,6 @@ vector<vector<float>> queueVector;
 vector<float> tempVect;
 bool exists;
 
-// User stub
-
 void sendMessage(); // Prototype so PlatformIO doesn't complain
 
 // Create the task
@@ -151,7 +149,7 @@ void changeCS(string zoneCode)
     //String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
     mesh.update();
-    printf("changed LS  to LS4\n", zoneCode);
+    printf("changed LS to LS4\n", zoneCode);
     delay(2000);
   }
 }

@@ -95,7 +95,6 @@ void setup()
 
 void loop()
 {
-
     if (node.node_id == 0)
     {
         getID();
@@ -143,7 +142,7 @@ void loop()
                 setWeight(node.current_mission.last);
                 setLoadType(node.current_mission.kylvara);
                 // position(node.xcor, node.ycor); // Display saker
-                // destination(node.current_mission.missionDestination.zon); // Display saker
+                // destination(node.current_mission.missionDestination.zone); // Display saker
             }
             // Dessa två rader finns just nu eftersom vi inte har någon riktig förflyttningskod, ska bort när den är skriven. If-satsen nedan bör funka även efter förflyttningskoden är skriven
             node.xcor = node.current_mission.missionDestination.xcor;
@@ -165,7 +164,7 @@ void loop()
                 cout << "Nodens förbrukning är nu: " << node.battery_consumption << endl;
 
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget
-                //  display.destination(node.current_mission.missionDestination);
+                // display.destination(node.current_mission.missionDestination);
             }
         }
         // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE
@@ -181,7 +180,7 @@ void loop()
     case QUEUE:
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        // changeCS(node.current_mission.missionOrigin.zon);
+        changeCS(node.current_mission.missionOrigin.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
@@ -310,6 +309,10 @@ void loop()
             sendRemove(node.node_id);
             node.queueVector.clear();
             clearComVector();
+
+            printf("DISCONNECTION\n");
+            delay(2000);
+            disconnect();
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
