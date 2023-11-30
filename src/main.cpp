@@ -165,7 +165,7 @@ void loop()
                 //  display.destination(node.current_mission.missionDestination);
             }
         }
-        // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE 
+        // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE
         else
         { // Om batterinivån är lägre än minimumladdningen --> byta tillstånd till queue
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << " men uppdraget kräver: " << node.min_charge << endl;
@@ -185,8 +185,6 @@ void loop()
         // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
 
         updateQueue();
-
-        
 
         /* Ska nog tas bort, men har kvar eftersom jag är osäker -Simon
         for (size_t i = 0; i < 20; i++)
@@ -219,10 +217,10 @@ void loop()
         else if (!isAlone())
         {
             node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng  // Avkommenterat 11:30 30/11 -Simon
-            cout << "Nodens köpoäng är: " << node.queue_point << endl; // För debugging
-            sendQ(node.node_id, node.queue_point);     // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
-            updateQueue();                             // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
-            if (node.queueVector[0][0] = node.node_id) // Kollar om noden är först i kön, om den är det får den börja ladda
+            cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
+            sendQ(node.node_id, node.queue_point);                                      // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
+            updateQueue();                                                              // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
+            if (node.queueVector[0][0] = node.node_id)                                  // Kollar om noden är först i kön, om den är det får den börja ladda
             {
                 cout << "Nod-" << node.node_id << " är först i kön. Dags att börja ladda :)" << endl;
                 state = CHARGE;
@@ -251,8 +249,10 @@ void loop()
         break;
 
     case CHARGE:
+        // Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
+        // Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
+        // noder med högre köpoäng som ska kunna "slänga ut" den nuvarande laddande noden
         updateQueue();
-        // Om man kommer in i detta tillstånd ska man omedelbart börja ladda
 
         // Display saker
         displayClear();
