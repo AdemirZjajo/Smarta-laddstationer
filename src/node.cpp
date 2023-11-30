@@ -85,9 +85,9 @@ Node::Node(int id)
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
   min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
+  queue_point = 0;
 
   // min_charge = 50; // Bortkommenterat 11:30 30/11 -Simon
-  // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
   // queue_point = randomNumber(1, 100, 34); // Bortkommenterat 11:30 30/11 -Simon
 }
 
@@ -138,7 +138,7 @@ float Node::calcBatConsumption(Mission mission)
 
 int Node::calcStepsNeeded(Mission current_mission)
 {
-  int steps_needed;
+  int steps_needed = 0;
   ChargingStation start = current_mission.missionOrigin;
   ChargingStation finish = current_mission.missionDestination;
   switch (start.id)
