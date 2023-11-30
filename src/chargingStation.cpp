@@ -10,10 +10,10 @@ vector<int> route_CS4 = {10, 20, 10}; // CS4 --> CS1 | CS4 --> CS2 | CS4 --> CS3
 
 ChargingStation::ChargingStation(){};
 
-ChargingStation::ChargingStation(int idCS, int xcorCS, int ycorCS, string zonCS)
+ChargingStation::ChargingStation(int idCS, int xcorCS, int ycorCS, string zoneCS)
 {
   id = idCS;
   xcor = xcorCS;
   ycor = ycorCS;
-  zon = zonCS;
+  zone = zoneCS;
 }

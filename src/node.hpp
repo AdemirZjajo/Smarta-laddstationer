@@ -17,7 +17,7 @@ using namespace std;
 class Node
 {
 public:
-  int nod_id;
+  int node_id;
   float battery_charge;
   float battery_consumption;  // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
   float min_charge;           // Minimum laddning för aktivt upprag
@@ -25,7 +25,7 @@ public:
   ChargingStation current_CS; // Laddstationen som noden är vid just nu
   int xcor;                   // Nodens x-koordinat
   int ycor;                   // Nodens y-koordinat
-  string zon;                 // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
+  string zone;                // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
 
   vector<vector<float>> queueVector{

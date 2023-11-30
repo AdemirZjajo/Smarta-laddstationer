@@ -67,7 +67,7 @@ Node::Node(int id)
 {
 
   // Nodens ID blir tlldelat :)
-  nod_id = id;
+  node_id = id;
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
 
@@ -76,7 +76,7 @@ Node::Node(int id)
   current_CS = init_CS;
   xcor = init_CS.xcor; // Nodens initiala x-koordinat
   ycor = init_CS.ycor; // Nodens initiala y-koordinat
-  zon = init_CS.zon;   // Nodens initiala zon
+  zone = init_CS.zone;   // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
   battery_charge = randomNumber(1, 100, 36);
@@ -84,11 +84,11 @@ Node::Node(int id)
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  // min_charge = calcMinCharge(battery_consumption, current_mission); // Beräkna minimumladdning baserat på uppdraget
+  min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
 
-  min_charge = 50;
+  // min_charge = 50; // Bortkommenterat 11:30 30/11 -Simon
   // calcMinCharge(battery_consumption, calcStepsNeeded(current_mission));
-  queue_point = randomNumber(1, 100, 34);
+  // queue_point = randomNumber(1, 100, 34); // Bortkommenterat 11:30 30/11 -Simon
 }
 
 // Nodens initieringsprocess börjar här
@@ -103,7 +103,7 @@ Mission Node::generateMission(ChargingStation current_CS)
   mission.missionDestination = goal_CS;
 
   return mission;
-};
+}
 
 float Node::calcBatConsumption(Mission mission)
 {
@@ -132,83 +132,85 @@ float Node::calcBatConsumption(Mission mission)
   case 10:
     return 5.5;
   default:
-    return 1.3;
+    return 1;
   }
 }
 
 int Node::calcStepsNeeded(Mission current_mission)
 {
   int steps_needed;
-  switch (current_mission.missionOrigin.id)
+  ChargingStation start = current_mission.missionOrigin;
+  ChargingStation finish = current_mission.missionDestination;
+  switch (start.id)
   {
   case 1:
-    switch (current_mission.missionDestination.id)
+    switch (finish.id)
     {
     case 2:
-      steps_needed = current_mission.missionOrigin.route_CS1[0];
+      steps_needed = start.route_CS1[0];
       break;
     case 3:
-      steps_needed = current_mission.missionOrigin.route_CS1[1];
+      steps_needed = start.route_CS1[1];
       break;
     case 4:
-      steps_needed = current_mission.missionOrigin.route_CS1[2];
+      steps_needed = start.route_CS1[2];
       break;
     }
     break;
 
   case 2:
-    switch (current_mission.missionDestination.id)
+    switch (finish.id)
     {
     case 3:
-      steps_needed = current_mission.missionOrigin.route_CS2[0];
+      steps_needed = start.route_CS2[0];
       break;
     case 4:
-      steps_needed = current_mission.missionOrigin.route_CS2[1];
+      steps_needed = start.route_CS2[1];
       break;
     case 1:
-      steps_needed = current_mission.missionOrigin.route_CS2[2];
+      steps_needed = start.route_CS2[2];
       break;
     }
     break;
 
   case 3:
-    switch (current_mission.missionDestination.id)
+    switch (finish.id)
     {
     case 4:
-      steps_needed = current_mission.missionOrigin.route_CS3[0];
+      steps_needed = start.route_CS3[0];
       break;
     case 1:
-      steps_needed = current_mission.missionOrigin.route_CS3[1];
+      steps_needed = start.route_CS3[1];
       break;
     case 2:
-      steps_needed = current_mission.missionOrigin.route_CS3[2];
+      steps_needed = start.route_CS3[2];
       break;
     }
     break;
 
   case 4:
-    switch (current_mission.missionDestination.id)
+    switch (finish.id)
     {
     case 1:
-      steps_needed = current_mission.missionOrigin.route_CS4[0];
+      steps_needed = start.route_CS4[0];
       break;
     case 2:
-      steps_needed = current_mission.missionOrigin.route_CS4[1];
+      steps_needed = start.route_CS4[1];
       break;
     case 3:
-      steps_needed = current_mission.missionOrigin.route_CS4[2];
+      steps_needed = start.route_CS4[2];
       break;
     }
     break;
   }
 
   return steps_needed;
-};
+}
 
 float Node::calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
-};
+}
 
 int randomNumber(int from, int to, int seed)
 {
