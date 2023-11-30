@@ -74,9 +74,9 @@ void setup()
     initCOM();
     setupDIS();
     node.node_id = getID();
-    cout << "Nod-" << node.node_id << " har spawnat på: " << node.current_CS.zon << endl;
+    cout << "Nod-" << node.node_id << " har spawnat på: " << node.current_CS.zone << endl;
     cout << "Noden har " << node.battery_charge << "% batteri" << endl;
-    cout << "Nodens första destination är: " << node.current_mission.missionDestination.zon << endl;
+    cout << "Nodens första destination är: " << node.current_mission.missionDestination.zone << endl;
     cout << "Noden har " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
     cout << "Noden har " << node.battery_consumption << " batteriförbrukning" << endl;
 
@@ -120,7 +120,7 @@ void loop()
         // OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
         {
-            cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zon << endl;
+            cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zone << endl;
 
             // FÖRLYTTNINGS LOOP
             // Iteration med tidsfördröjning
@@ -158,7 +158,7 @@ void loop()
                 node.current_mission = node.generateMission(node.current_mission.missionOrigin); // Generera nytt uppdrag med last, typ av last, och förbrukning
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);        // Beräkna batteriförbrukning baserat på upppdrag
                 node.min_charge = 40;
-                cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zon << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
+                cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Nodens förbrukning är nu: " << node.battery_consumption << endl;
 
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget

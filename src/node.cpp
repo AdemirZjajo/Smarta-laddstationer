@@ -76,7 +76,7 @@ Node::Node(int id)
   current_CS = init_CS;
   xcor = init_CS.xcor; // Nodens initiala x-koordinat
   ycor = init_CS.ycor; // Nodens initiala y-koordinat
-  zon = init_CS.zon;   // Nodens initiala zon
+  zone = init_CS.zone;   // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
   battery_charge = randomNumber(1, 100, 36);
