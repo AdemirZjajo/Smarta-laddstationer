@@ -50,7 +50,8 @@ void sendMessage(); // Prototype so PlatformIO doesn't complain
 Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
 
 // Clear the list
-void clearComVector(){
+void clearComVector()
+{
   queueVector.clear();
 }
 
@@ -299,8 +300,8 @@ void initCOM()
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
 
-  //userScheduler.addTask(taskSendMessage);
-  // delay(3000);
-  //taskSendMessage.enable(); // Enable continuous message sending task
+  // userScheduler.addTask(taskSendMessage);
+  //  delay(3000);
+  // taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
 }

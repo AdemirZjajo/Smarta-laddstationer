@@ -67,7 +67,7 @@ Node::Node(int id)
 {
 
   // Nodens ID blir tlldelat :)
-  nod_id = id;
+  node_id = id;
 
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
 

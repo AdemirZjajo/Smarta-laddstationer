@@ -3,6 +3,8 @@
 #include <iostream>
 #include "node.hpp"
 
+using namespace std;
+
 class IntegerClass
 {
 public:
@@ -55,8 +57,8 @@ public:
         }
 
         // Output the results
-        std::cout << "bat_pt: " << bat_pt << std::endl;
-        std::cout << "min_pt: " << min_pt << std::endl;
+        cout << "bat_pt: " << bat_pt << endl;
+        cout << "min_pt: " << min_pt << endl;
 
         int prioValue = (bat_pt * 0, 6) + (min_pt * 0, 4);
         return prioValue;
