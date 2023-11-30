@@ -156,8 +156,8 @@ void loop()
                 cout << "Noden har nått sin destination"
                      << " X: " << node.xcor << " Y: " << node.ycor << endl;
 
-                node.current_mission = node.generateMission(node.current_mission.missionOrigin); // Generera nytt uppdrag med last, typ av last, och förbrukning
-                node.battery_consumption = node.calcBatConsumption(node.current_mission);        // Beräkna batteriförbrukning baserat på upppdrag
+                node.current_mission = node.generateMission(node.current_mission.missionDestination); // Generera nytt uppdrag, skicka in nuvarande plats
+                node.battery_consumption = node.calcBatConsumption(node.current_mission);             // Beräkna batteriförbrukning baserat på uppdrag
                 // node.min_charge = 40;
                 node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission));
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;

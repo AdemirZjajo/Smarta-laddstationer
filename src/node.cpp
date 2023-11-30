@@ -95,6 +95,7 @@ Node::Node(int id)
 /* Destinationsgenerering och uträkning av miniladdning görs en gång innan
 state machinen för att låta noden bestämma vilket dess första state ska bli. */
 
+// Genererar ett nytt uppdrag för noden, inparametern är den plats som noden är just nu; ofta current_mission.missionDestination eftersom noden vill ha ett nytt uppdrag efter den avslutat det tidigare uppdraget 
 Mission Node::generateMission(ChargingStation current_CS)
 {
   ChargingStation goal_CS = randomNotCurrentCS(CS1, CS2, CS3, CS4, current_CS);
