@@ -38,7 +38,7 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
   ChargingStation chosenCS;
   do
   {
-    int randomInt = randomNumber(0, 3, 35);
+    int randomInt = randomNumber(0, 3, 1);
 
     // Map the random number to one of the four objects
     switch (randomInt)
@@ -76,15 +76,16 @@ Node::Node(int id)
   current_CS = init_CS;
   xcor = init_CS.xcor; // Nodens initiala x-koordinat
   ycor = init_CS.ycor; // Nodens initiala y-koordinat
-  zone = init_CS.zone;   // Nodens initiala zon
+  zone = init_CS.zone; // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
-  battery_charge = randomNumber(1, 100, 36);
+  battery_charge = randomNumber(1, 100, 1);
   // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
+  min_charge = 50;
+  // min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
   queue_point = 0;
 
   // min_charge = 50; // Bortkommenterat 11:30 30/11 -Simon
@@ -95,7 +96,7 @@ Node::Node(int id)
 /* Destinationsgenerering och uträkning av miniladdning görs en gång innan
 state machinen för att låta noden bestämma vilket dess första state ska bli. */
 
-// Genererar ett nytt uppdrag för noden, inparametern är den plats som noden är just nu; ofta current_mission.missionDestination eftersom noden vill ha ett nytt uppdrag efter den avslutat det tidigare uppdraget 
+// Genererar ett nytt uppdrag för noden, inparametern är den plats som noden är just nu; ofta current_mission.missionDestination eftersom noden vill ha ett nytt uppdrag efter den avslutat det tidigare uppdraget
 Mission Node::generateMission(ChargingStation current_CS)
 {
   ChargingStation goal_CS = randomNotCurrentCS(CS1, CS2, CS3, CS4, current_CS);

@@ -51,8 +51,8 @@ int calculatePriority(float battery_charge, float min_charge)
     }
 
     // Output the results
-    cout << "bat_pt: " << bat_pt << endl;
-    cout << "min_pt: " << min_pt << endl;
+    //cout << "bat_pt: " << bat_pt << endl;
+    //cout << "min_pt: " << min_pt << endl;
 
     int prioValue = (bat_pt * 0, 6) + (min_pt * 0, 4);
     return prioValue;

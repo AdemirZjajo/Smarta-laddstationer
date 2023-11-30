@@ -17,7 +17,6 @@ enum State
 
 Node node(0);          // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
-bool activeMission = false;
 String CurrentZon;
 using namespace std;
 
@@ -119,12 +118,13 @@ void loop()
         // OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
         {
+            node.zone = "Transit-zone";
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zone << endl;
 
             // FÖRLYTTNINGS LOOP
             // Iteration med tidsfördröjning
             // int steps = 10;
-            int steps = node.calcStepsNeeded(node.current_mission);
+            int steps = 10; // node.calcStepsNeeded(node.current_mission);
             for (int i = 1; i < steps; i++)
             {
                 // Chilla 1 sekund
@@ -152,14 +152,14 @@ void loop()
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
             {
-
+                node.zone = node.current_mission.missionDestination.zone;
                 cout << "Noden har nått sin destination"
                      << " X: " << node.xcor << " Y: " << node.ycor << endl;
-
                 node.current_mission = node.generateMission(node.current_mission.missionDestination); // Generera nytt uppdrag, skicka in nuvarande plats
-                node.battery_consumption = node.calcBatConsumption(node.current_mission);             // Beräkna batteriförbrukning baserat på uppdrag
-                // node.min_charge = 40;
-                node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission));
+                node.current_CS = node.current_mission.missionOrigin;
+                node.battery_consumption = node.calcBatConsumption(node.current_mission); // Beräkna batteriförbrukning baserat på uppdrag
+                node.min_charge = 40;
+                // node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission));
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Nodens förbrukning är nu: " << node.battery_consumption << endl;
 
@@ -180,7 +180,8 @@ void loop()
     case QUEUE:
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        changeCS(node.current_mission.missionOrigin.zone);
+        cout << "TEST: " << node.current_CS.zone << endl;
+        changeCS(node.current_CS.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 

@@ -119,7 +119,7 @@ void changeCS(string zoneCode)
   if (zoneCode == "LADDSTATION-1")
   {
     MESH_PREFIX = "station1";
-    //String MESH_PASSWORD = "station1";
+    // String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
     mesh.update();
     printf("changed LS  to LS1\n", zoneCode);
@@ -128,25 +128,25 @@ void changeCS(string zoneCode)
   else if (zoneCode == "LADDSTATION-2")
   {
     MESH_PREFIX = "station2";
-    //String MESH_PASSWORD = "station2";
+    // String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
     mesh.update();
     printf("changed LS to LS2\n", zoneCode);
     delay(2000);
   }
-  else if (zoneCode == "LADDSTATION-3\n")
+  else if (zoneCode == "LADDSTATION-3")
   {
     MESH_PREFIX = "station3";
-    //String MESH_PASSWORD = "station3";
+    // String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
     mesh.update();
-    printf("changed LS from %s to LS3\n", zoneCode);
+    printf("changed LS from to LS3\n", zoneCode);
     delay(2000);
   }
   else if (zoneCode == "LADDSTATION-4")
   {
     MESH_PREFIX = "station4";
-    //String MESH_PASSWORD = "station4";
+    // String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
     mesh.update();
     printf("changed LS to LS4\n", zoneCode);
@@ -311,9 +311,7 @@ void initCOM()
   mesh.getNodeId() % 1000;
 }
 
-
 void disconnect()
 {
   mesh.stop();
-
 }
