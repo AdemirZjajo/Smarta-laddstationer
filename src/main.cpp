@@ -15,8 +15,8 @@ enum State
 };
 
 Node node(0); // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
-State state = TRANSIT;
-bool activeMission = false; // Starttillståndet
+State state = TRANSIT; // Starttillståndet
+bool activeMission = false;
 
 using namespace std;
 
@@ -34,6 +34,7 @@ void updateQueue()
          });
 }
 
+// Returnerar true om den enda noden som finns i vektorn är sig själv, annars false; det finns även andra noder i vektorn
 bool isAlone()
 {
     bool isAlone = false;
@@ -45,8 +46,23 @@ bool isAlone()
       else isAlone = false;
     }
 return isAlone;
-}
+// Otestad ny metod som bör vara mer säker än den övre -Simon
+/*
+    bool isAlone = true;
 
+    // Loopar genom queueVector och letar efter andra noder...
+    for (const auto &vect : node.queueVector)
+    {
+        // ...om den hittar någon annan nod sätts isAlone till false; det är andra i vektorn
+        if (!vect.empty() && vect[0] != node.nod_id)
+        {
+            isAlone = false;
+        }
+    }
+
+    return isAlone; 
+    */
+}
 
 void setup()
 {
@@ -212,7 +228,7 @@ void loop()
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         loading();
-        
+
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
@@ -233,9 +249,10 @@ void loop()
         }
 
         // ANNARS OM: man inte var ensam, men har högst priopoäng, laddar man mot sin minimumladdning
-        else if (!isAlone() && node.battery_charge <= node.min_charge)
+        // Otestat, har lagt till "&& (node.queueVector[0][0] == node.nod_id)" -Simon
+        else if (!isAlone() && (node.queueVector[0][0] == node.nod_id) && node.battery_charge <= node.min_charge)
         {
-            
+
             // Chilla 1 sekund
             this_thread::sleep_for(chrono::milliseconds(200));
 
@@ -273,6 +290,7 @@ void loop()
             }*/
             sendRemove(node.nod_id);
             node.queueVector.clear();
+            clearComVector();
             state = TRANSIT;
         }
 

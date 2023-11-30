@@ -28,6 +28,8 @@ void newConnectionCallback(uint32_t nodeId);
 void changedConnectionCallback();
 void updateCommunication();
 
+void clearComVector();
+
 vector<vector<float>> getComQueueVector();
 
 #endif

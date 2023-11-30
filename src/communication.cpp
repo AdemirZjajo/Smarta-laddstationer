@@ -49,6 +49,11 @@ void sendMessage(); // Prototype so PlatformIO doesn't complain
 // Create the task
 Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
 
+// Clear the list
+void clearComVector(){
+  queueVector.clear();
+}
+
 // Creating the message and broadcast it here
 void sendMessage()
 {
@@ -201,39 +206,41 @@ void receivedCallback(uint32_t from, String &msg)
     {
       queueVector.push_back(tempVect);
     }
-  
+
     break;
 
   case 1: // Ta bort annan från vektorn
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it) {
-        if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple))) {
-            queueVector.erase(it);
-            cout << "Vector removed successfully." << endl;
-            break;  // Exit the loop after erasing the element
-        } else {
-            cout << "ERROR: Tried to remove but couldn't" << endl;
-        }
- }
- }
-}
-  /*
-    for (const auto &vec : queueVector)
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
-      if (vec[0][0] == static_cast<float>(get<1>(queueTuple)))
+      if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple)))
       {
-        queueVector.erase(queueVector[queueVector.begin]);
-
-        break;
+        queueVector.erase(it);
+        cout << "Vector removed successfully." << endl;
+        break; // Exit the loop after erasing the element
       }
       else
       {
-        cout << "ERROR TRIED TO REMOVE BUT COULDNT" << endl;
+        cout << "ERROR: Tried to remove but couldn't" << endl;
       }
     }
-    break;
-*/
+  }
+}
+/*
+  for (const auto &vec : queueVector)
+  {
+    if (vec[0][0] == static_cast<float>(get<1>(queueTuple)))
+    {
+      queueVector.erase(queueVector[queueVector.begin]);
 
- 
+      break;
+    }
+    else
+    {
+      cout << "ERROR TRIED TO REMOVE BUT COULDNT" << endl;
+    }
+  }
+  break;
+*/
 
 void newConnectionCallback(uint32_t nodeId)
 {
