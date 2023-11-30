@@ -17,7 +17,7 @@ enum State
 Node node(0); // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
 bool activeMission = false;
-
+String CurrentZon;
 using namespace std;
 
 void updateQueue()
@@ -75,6 +75,7 @@ void setup()
     cout << "Nodens första destination är: " << node.current_mission.missionDestination.zon << endl;
     cout << "Noden har " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
     cout << "Noden har " << node.battery_consumption << " batteriförbrukning" << endl;
+    
 
     /* HÄR DEFINIERAS DISPLAYEN för första gången med TRANSIT A och B sida
     Display display();
@@ -110,11 +111,16 @@ void loop()
     switch (state)
     {
     case TRANSIT:
+        //CurrentZon = node.zon.c_str();
+        printf("current zon %s\n", node.current_CS.zon.c_str());
+        
+        delay(2000);
         cout << "** NOD är i Transit-state **" << endl;
         if (node.battery_charge >= node.min_charge) // Jämföra batterinivå med minimumladdning, för att stanna kvar i transit
         {
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zon << endl;
-
+            
+            
             // FÖRLYTTNINGS LOOP
             // Iteration med tidsfördröjning
             int steps = 10; // node.calcStepsNeeded(node.current_mission);
@@ -139,11 +145,14 @@ void loop()
             }
             node.xcor = node.current_mission.missionDestination.xcor;
             node.ycor = node.current_mission.missionDestination.ycor;
+            changeCS(node.current_mission.missionDestination.zon.c_str());
+            
             // position(node.xcor,node.ycor);
 
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
             {
+
                 cout << "Noden har nått sin destination"
                      << " X: " << node.xcor << " Y: " << node.ycor << endl;
 
@@ -165,7 +174,7 @@ void loop()
             break;
         }
         break;
-
+    
     case QUEUE:
         // changeCS(node.current_mission.missionOrigin.zon);
 
@@ -291,6 +300,10 @@ void loop()
             sendRemove(node.nod_id);
             node.queueVector.clear();
             clearComVector();
+            printf("DISCONNECTION\n");
+            delay(2000);
+            disconnect();
+
             state = TRANSIT;
         }
 

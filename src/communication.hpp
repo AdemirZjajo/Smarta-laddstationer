@@ -32,4 +32,6 @@ void clearComVector();
 
 vector<vector<float>> getComQueueVector();
 
+void disconnect();
+
 #endif

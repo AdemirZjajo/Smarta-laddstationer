@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include "node.hpp"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ String MESH_PASSWORD = "123456789";
 int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
-
+String currentZon;
 tuple<int, int, float> queueTuple;
 
 vector<vector<float>> queueVector;
@@ -115,29 +116,42 @@ void sendRemove(int id)
 
 void changeCS(string zoneCode)
 {
-  if (zoneCode == "CS1_ZON")
+  printf("changing Zone \n");
+  if (zoneCode == "LADDSTATION-1")
   {
     MESH_PREFIX = "station1";
-    String MESH_PASSWORD = "station1";
+    //String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
+    mesh.update();
+    printf("changed LS  to LS1\n", zoneCode);
+    delay(2000);
   }
-  else if (zoneCode == "CS2_ZON")
+  else if (zoneCode == "LADDSTATION-2")
   {
     MESH_PREFIX = "station2";
-    String MESH_PASSWORD = "station2";
+    //String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
+    mesh.update();
+    printf("changed LS to LS2\n", zoneCode);
+    delay(2000);
   }
-  else if (zoneCode == "CS3_ZON")
+  else if (zoneCode == "LADDSTATION-3\n")
   {
     MESH_PREFIX = "station3";
-    String MESH_PASSWORD = "station3";
+    //String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
+    mesh.update();
+    printf("changed LS from %s to LS3\n", zoneCode);
+    delay(2000);
   }
-  else if (zoneCode == "CS4_ZON")
+  else if (zoneCode == "LADDSTATION-4")
   {
     MESH_PREFIX = "station4";
-    String MESH_PASSWORD = "station4";
+    //String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
+    mesh.update();
+    printf("changed LS  to LS4\n", zoneCode);
+    delay(2000);
   }
 }
 
@@ -303,4 +317,11 @@ void initCOM()
   // delay(3000);
   //taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
+}
+
+
+void disconnect()
+{
+  mesh.stop();
+
 }
