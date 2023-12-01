@@ -7,7 +7,7 @@
 //
 
 /*
-1. TEst for intializing the mes
+1. Test for intializing the mes
 2. Test for connection/changed connection
 3. Test for sending/broadcasting
 4. test for recieving
@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include "node.hpp"
 
 using namespace std;
 
@@ -259,7 +258,7 @@ void newConnectionCallback(uint32_t nodeId)
 {
 
   nodeList.push_back(nodeId);
-  Serial.printf("-->New Connection, nodeId = %u\n", nodeId);
+  Serial.printf("-->New Connection, nodeId = %u\n", nodeId % 1000);
   for (const auto &node : nodeList)
   {
     printf("node list :\n");

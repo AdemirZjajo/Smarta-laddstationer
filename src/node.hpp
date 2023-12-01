@@ -35,6 +35,11 @@ public:
       */
   };
 
+  vector<int> route_CS1;
+  vector<int> route_CS2;
+  vector<int> route_CS3;
+  vector<int> route_CS4;
+
   // En lista med objekt av laddsationerna som i sin tur innehåller sitt namn (eg. ls_1) och sina paths till andra laddstationer
   ChargingStation LS1, LS2, LS3, LS4;
   list<ChargingStation> chargingStations = {LS1, LS2, LS3, LS4};
@@ -55,7 +60,6 @@ public:
 
   float calcMinCharge(float battery_consumption, int steps_needed);
 };
-
-int randomNumber(int from, int to, int seed);
+int randomNumber(int from, int to);
 
 #endif

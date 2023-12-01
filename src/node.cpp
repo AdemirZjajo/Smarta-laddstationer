@@ -1,4 +1,6 @@
 #include "node.hpp"
+#include <iostream>
+#include <vector>
 
 // randomize function in this class and show on display
 // Prio
@@ -11,10 +13,22 @@ using namespace std;
 ChargingStation CS1(1, 0, 0, "LADDSTATION-1"), CS2(2, 0, 9, "LADDSTATION-2"), CS3(3, 9, 0, "LADDSTATION-3"), CS4(4, 9, 9, "LADDSTATION-4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
+// Returnar ett slumpat tal 
+int randomNumber(int from, int to)
+{
+  // Seed the random number generator with a value (you can change this value)
+  randomSeed(analogRead(32));
+
+  // Generate a pseudo-random number between 1 and 100
+  int randomNumber = random(from, to);
+
+  return randomNumber;
+}
+
 // Randomly selects a charging station to spawn at
 ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4)
 {
-  int randomInt = randomNumber(0, 3, 34);
+  int randomInt = randomNumber(0, 3);
 
   // Map the random number to one of the four objects
   switch (randomInt)
@@ -24,21 +38,22 @@ ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStati
   case 1:
     return CS2;
   case 2:
-    return CS3;
+    return CS1;
   case 3:
-    return CS4;
+    return CS2;
   default:
     return CS1;
   }
 };
 
+// Returnar en slumpvis vald laddstation som inte är den nuvarande laddstationen
 ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4, ChargingStation notThisCS)
 {
 
   ChargingStation chosenCS;
   do
   {
-    int randomInt = randomNumber(0, 3, 1);
+    int randomInt = randomNumber(0, 3);
 
     // Map the random number to one of the four objects
     switch (randomInt)
@@ -50,10 +65,10 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
       chosenCS = CS2;
       break;
     case 2:
-      chosenCS = CS3;
+      chosenCS = CS1;
       break;
     case 3:
-      chosenCS = CS4;
+      chosenCS = CS2;
       break;
     default:
       chosenCS = CS1;
@@ -73,23 +88,19 @@ Node::Node(int id)
 
   // NODEN spawnar randomly på en av de fyra Laddstationer
   ChargingStation init_CS = randomCS(CS1, CS2, CS3, CS4);
-  current_CS = init_CS;
-  xcor = init_CS.xcor; // Nodens initiala x-koordinat
-  ycor = init_CS.ycor; // Nodens initiala y-koordinat
-  zone = init_CS.zone; // Nodens initiala zon
+  current_CS = CS1;//init_CS;
+  xcor = current_CS.xcor; // Nodens initiala x-koordinat
+  ycor = current_CS.ycor; // Nodens initiala y-koordinat
+  zone = current_CS.zone; // Nodens initiala zon
 
   // NODEN får en random batterinivå som utgångsvärde
-  battery_charge = randomNumber(1, 100, 1);
+  battery_charge = randomNumber(1, 100);
   // Hur många procentenheter batteri som noden kräver för att förflytta sig ett steg i x-led eller y-led
 
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
-  min_charge = 50;
-  // min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget  // Avkommenterat 11:30 30/11 -Simon
-  queue_point = 0;
-
-  // min_charge = 50; // Bortkommenterat 11:30 30/11 -Simon
-  // queue_point = randomNumber(1, 100, 34); // Bortkommenterat 11:30 30/11 -Simon
+  min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget
+  queue_point = randomNumber(1, 100);
 }
 
 // Nodens initieringsprocess börjar här
@@ -107,8 +118,10 @@ Mission Node::generateMission(ChargingStation current_CS)
   return mission;
 }
 
+// Returnerar batteriförbruking beroende på lasten hos det nuvarande uppdraget
 float Node::calcBatConsumption(Mission mission)
 {
+  // Last varierar mellan 0-10 ton
   switch (mission.last)
   {
   case 0:
@@ -138,11 +151,13 @@ float Node::calcBatConsumption(Mission mission)
   }
 }
 
-int Node::calcStepsNeeded(Mission current_mission)
+// Beräknar antalet steg som noden behöver ta i koordinatsystemet, detta används för att senare beräkna minimumladdning
+int Node::calcStepsNeeded(Mission currentMission)
 {
-  int steps_needed = 0;
-  ChargingStation start = current_mission.missionOrigin;
-  ChargingStation finish = current_mission.missionDestination;
+  int steps_needed = 0; 
+  ChargingStation start = currentMission.missionOrigin;
+  ChargingStation finish = currentMission.missionDestination;
+
   switch (start.id)
   {
   case 1:
@@ -205,22 +220,12 @@ int Node::calcStepsNeeded(Mission current_mission)
     }
     break;
   }
-
   return steps_needed;
 }
 
+// Beräknar minimumladdning
 float Node::calcMinCharge(float battery_consumption, int steps_needed)
 {
   return steps_needed * battery_consumption;
 }
 
-int randomNumber(int from, int to, int seed)
-{
-  // Seed the random number generator with a value (you can change this value)
-  randomSeed(analogRead(seed));
-
-  // Generate a pseudo-random number between 1 and 100
-  int randomNumber = random(from, to);
-
-  return randomNumber;
-}
