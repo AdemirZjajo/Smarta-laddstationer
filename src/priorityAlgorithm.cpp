@@ -10,8 +10,8 @@ float calculatePriority(float battery_charge, float min_charge)
 {
 
     // Initialize variables bat_pt and min_pt
-    int bat_pt = 0;
-    int min_pt = 0;
+    float bat_pt = 0;
+    float min_pt = 0;
 
     // Conditions based on bat and min values
     if (battery_charge <= 1 && min_charge <= 5)
@@ -55,5 +55,6 @@ float calculatePriority(float battery_charge, float min_charge)
     // cout << "min_pt: " << min_pt << endl;
 
     float prioValue = (bat_pt * 0.6) + (min_pt * 0.4);
+    cout << "Köpoäng från prioAlg.cpp: " << prioValue << endl;
     return prioValue;
 }

@@ -1,6 +1,7 @@
 #include "node.hpp"
 #include <iostream>
 #include <vector>
+#include <esp_adc_cal.h>
 
 // randomize function in this class and show on display
 // Prio
@@ -13,6 +14,7 @@ using namespace std;
 ChargingStation CS1(1, 0, 0, "LADDSTATION-1"), CS2(2, 0, 9, "LADDSTATION-2"), CS3(3, 9, 0, "LADDSTATION-3"), CS4(4, 9, 9, "LADDSTATION-4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
+/*
 // Returnar ett slumpat tal 
 int randomNumber(int from, int to)
 {
@@ -22,6 +24,15 @@ int randomNumber(int from, int to)
   // Generate a pseudo-random number between 1 and 100
   int randomNumber = random(from, to);
 
+  return randomNumber;
+}
+*/
+
+int randomNumber(int from, int to)
+{
+  int seedValue = analogRead(A0);
+  randomSeed(seedValue);
+  int randomNumber = random(from, to);
   return randomNumber;
 }
 
@@ -100,7 +111,7 @@ Node::Node(int id)
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
   min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget
-  queue_point = randomNumber(1, 100);
+  queue_point = 0; /*randomNumber(1, 100);*/
 }
 
 // Nodens initieringsprocess börjar här

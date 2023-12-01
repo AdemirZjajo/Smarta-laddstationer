@@ -73,7 +73,8 @@ void sendQ(int id, float points)
   qPoints += "-";
   qPoints += points;
   mesh.sendBroadcast(qPoints);
-  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+
   // cout << qPoints.c_str() << endl;
   /*
   String qPoints = String(id) + "-" + String(points);
@@ -83,12 +84,12 @@ void sendQ(int id, float points)
   */
 
   // Lägger till sig själv i vektorn
-  tempVect = {static_cast<float>(id), points};
-
+  tempVect = {static_cast<float>(id), static_cast<float>(points)};
   exists = false;
   for (const auto &vec : queueVector)
   {
-    if (vec[0] == tempVect[0])
+    // if (vec[0] == tempVect[0])
+    if (vec == tempVect)
     {
       exists = true;
       break;
@@ -109,7 +110,7 @@ void sendRemove(int id)
   tempStr += "-";
   tempStr += "";
   mesh.sendBroadcast(tempStr);
-  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
 }
 
 void changeCS(string zoneCode)
@@ -122,7 +123,7 @@ void changeCS(string zoneCode)
     MESH_PORT = 1111;
     mesh.update();
     printf("changed LS  to LS1\n", zoneCode);
-    delay(2000);
+    // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-2")
   {
@@ -131,7 +132,7 @@ void changeCS(string zoneCode)
     MESH_PORT = 2222;
     mesh.update();
     printf("changed LS to LS2\n", zoneCode);
-    delay(2000);
+    // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-3")
   {
@@ -140,7 +141,7 @@ void changeCS(string zoneCode)
     MESH_PORT = 3333;
     mesh.update();
     printf("changed LS from to LS3\n", zoneCode);
-    delay(2000);
+    // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-4")
   {
@@ -149,7 +150,7 @@ void changeCS(string zoneCode)
     MESH_PORT = 4444;
     mesh.update();
     printf("changed LS to LS4\n", zoneCode);
-    delay(2000);
+    // delay(2000);
   }
 }
 
@@ -202,12 +203,14 @@ void receivedCallback(uint32_t from, String &msg)
   switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
+    cout << "case 0 in communication.cpp" << endl;
     tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
     exists = false;
     for (const auto &vec : queueVector)
     {
-      if (vec[0] == tempVect[0])
+      // if (vec[0] == tempVect[0])
+      if (vec == tempVect)
       {
         exists = true;
         break;
@@ -222,6 +225,7 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
+    cout << "case 1 in communication.cpp" << endl;
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
       if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple)))
