@@ -26,7 +26,7 @@ using namespace std;
 // 3. Hämtar den kontinuerligt uppdaterade kölistan från kommunikationen, samt sorterar den
 void updateQueue()
 {
-    removeMissingNodes();
+    //removeMissingNodes();
     updateCommunication();
 
     // Uppdaterar nodens kölista
@@ -329,7 +329,6 @@ void loop()
                 cout << '\n';
             }*/
             //disconnect();
-            changeCS("TRANSIT");
             state = TRANSIT;
         }
 

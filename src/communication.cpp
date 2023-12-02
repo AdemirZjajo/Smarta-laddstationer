@@ -70,25 +70,25 @@ void removeMissingNodes()
   for (const auto &node : nodeList)
   {
     if (!(mesh.isConnected(node)))
+    {
+      printf("%u is disconnected\n", node % 1000);
+
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
-        printf("%u is disconnected\n", node);
-
-        for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+        if ((*it)[0] == static_cast<float>(node % 1000))
         {
-          if ((*it)[0] == static_cast<float>(node % 1000))
-          {
-            queueVector.erase(it);
-            cout << "Vector removed successfully." << endl;
-            break;
-          }
-          else
-          {
-            cout << "ERROR: Tried to remove but couldn't" << endl;
-          }
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
         }
-
-        nodeList.remove(node);
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
       }
+
+      nodeList.remove(node);
+    }
   }
 }
 
@@ -152,7 +152,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station1";
     // String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
-    mesh.update();
+    //mesh.update();
+    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
   }
@@ -161,7 +162,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station2";
     // String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
-    mesh.update();
+    //mesh.update();
+    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
   }
@@ -170,7 +172,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station3";
     // String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
-    mesh.update();
+    //mesh.update();
+    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
   }
@@ -179,16 +182,10 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station4";
     // String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
-    mesh.update();
+    //mesh.update();
+    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
-  }
-  else if (zoneCode == "TRANSIT")
-  {
-    MESH_PREFIX = "TRANSIT";
-    MESH_PORT = 1234;
-    mesh.update();
-    printf("changed LS to TRANSIT\n", zoneCode);
   }
 }
 
@@ -311,6 +308,18 @@ void updateCommunication()
 {
   // it will run the user scheduler as well
   mesh.update();
+  for (const auto &node : nodeList)
+  {
+    if (!(mesh.isConnected(node)))
+    {
+      nodeList.remove(node);
+    }
+  }
+  cout << "Node list in mesh after update:" << endl;
+  for (const auto &node : nodeList)
+  {
+    cout << "Node id: " << node % 1000 << endl;
+  }
 }
 
 vector<vector<float>> getComQueueVector()
