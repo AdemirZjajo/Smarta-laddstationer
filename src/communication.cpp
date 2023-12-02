@@ -94,22 +94,13 @@ void removeMissingNodes()
 
 void sendQ(int id, float points)
 {
-  // mesh.getNodeId()%1000;
+  cout << "Broadcastar sendQ i nätverk: " << MESH_PREFIX << endl;
   String qPoints = "0";
   qPoints += "-";
   qPoints += id;
   qPoints += "-";
   qPoints += points;
   mesh.sendBroadcast(qPoints);
-  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-
-  // cout << qPoints.c_str() << endl;
-  /*
-  String qPoints = String(id) + "-" + String(points);
-  mesh.sendBroadcast(qPoints);
-  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-  Serial.printf("Sent %s\n", qPoints.c_str());
-  */
 
   // Lägger till sig själv i vektorn
   tempVect = {static_cast<float>(id), static_cast<float>(points)};
@@ -152,9 +143,7 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station1";
     // String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
-    // mesh.update();
-    mesh.stop();
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    mesh.update();
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
   }
@@ -163,9 +152,7 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station2";
     // String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
-    // mesh.update();
-    mesh.stop();
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    mesh.update();
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
   }
@@ -174,9 +161,7 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station3";
     // String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
-    // mesh.update();
-    mesh.stop();
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    mesh.update();
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
   }
@@ -185,9 +170,7 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station4";
     // String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
-    // mesh.update();
-    mesh.stop();
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    mesh.update();
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
   }

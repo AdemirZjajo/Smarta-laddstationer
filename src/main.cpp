@@ -26,7 +26,7 @@ using namespace std;
 // 3. Hämtar den kontinuerligt uppdaterade kölistan från kommunikationen, samt sorterar den
 void updateQueue()
 {
-    //removeMissingNodes();
+    // removeMissingNodes();
     updateCommunication();
 
     // Uppdaterar nodens kölista
@@ -192,12 +192,12 @@ void loop()
         {
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << "% men uppdraget kräver: " << node.min_charge << "%" << endl;
             state = QUEUE;
-            cout << "** NOD är i QUEUE-state **" << endl;
             break;
         }
         break;
 
     case QUEUE:
+        cout << "** NOD är i QUEUE-state **" << endl;
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
         changeCS(node.current_CS.zone);
@@ -205,7 +205,6 @@ void loop()
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-        cout << "Rad 203, skickat sendQ" << endl;
 
         updateQueue();
 
@@ -214,7 +213,6 @@ void loop()
         //     Dock är det osannolikt att den kommer ladda mot 100% i vårt system eftersom det är många noder på få laddstationer
         if (isAlone())
         {
-            // cout << "Rad 212, ensam" << endl;
             state = CHARGE;
         }
 
@@ -234,7 +232,6 @@ void loop()
             {
                 cout << "Dags att börja ladda :)" << endl;
                 state = CHARGE;
-                cout << "** NOD är i CHARGE-state **" << endl;
             }
         }
 
@@ -248,6 +245,7 @@ void loop()
         break;
 
     case CHARGE:
+        cout << "** NOD är i CHARGE-state **" << endl;
         // updateCommunication();
         // Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
         // Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
@@ -328,7 +326,7 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            //disconnect();
+            // disconnect();
             state = TRANSIT;
         }
 
