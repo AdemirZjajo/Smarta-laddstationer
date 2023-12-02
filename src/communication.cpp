@@ -94,8 +94,9 @@ void removeMissingNodes()
 
 void sendQ(int id, float points)
 {
-  if (points == 99.99)
+  if (points == 9999)
   {
+    cout << "Start of 9999." << endl;
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
       if ((*it)[0] == id)
