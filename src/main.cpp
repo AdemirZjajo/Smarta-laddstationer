@@ -328,7 +328,8 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            disconnect();
+            //disconnect();
+            changeCS("TRANSIT");
             state = TRANSIT;
         }
 
