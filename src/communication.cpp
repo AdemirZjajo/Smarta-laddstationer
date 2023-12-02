@@ -106,12 +106,12 @@ void sendQ(int id, float points)
 
 void sendRemove(int id)
 {
-  cout << "ÄR I SENDREMOVE" << endl;
+  cout << "Början av sendRemove" << endl;
   String tempStr = "1";
   tempStr += "-";
   tempStr += id;
   tempStr += "-";
-  tempStr += "";
+  tempStr += "Guar";
   mesh.sendBroadcast(tempStr);
   // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
 }
@@ -210,17 +210,6 @@ void receivedCallback(uint32_t from, String &msg)
     tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
     exists = false;
-    /*
-    for (const auto &vec : queueVector)
-    {
-      // if (vec[0] == tempVect[0])
-      if (vec == tempVect)
-      {
-        exists = true;
-        break;
-      }
-    }
-    */
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
       if ((*it)[0] == tempVect[0])
@@ -240,7 +229,7 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
-    cout << "case 1 in communication.cpp" << endl;
+    cout << "Början av case 1; ta bort från listan" << endl;
 
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {

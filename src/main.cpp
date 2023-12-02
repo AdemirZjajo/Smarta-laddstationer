@@ -218,7 +218,7 @@ void loop()
         else if (!isAlone())
         {
             node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            cout << "Nodens köpoäng är: " << node.queue_point << endl; // För debugging
+            cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
 
             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateCommunication();
@@ -278,7 +278,7 @@ void loop()
         else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge) // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
         {
             // Slöa ner programmet; det tar ju faktiskt tid att ladda
-            this_thread::sleep_for(chrono::milliseconds(50));
+            this_thread::sleep_for(chrono::milliseconds(200));
 
             node.battery_charge++; // Öka batterinivån
 
@@ -301,9 +301,15 @@ void loop()
         {
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            // sendRemove(node.node_id);
+            cout << "Innan sendRemove" << endl;
+            sendRemove(node.node_id);
+
+            // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
             clearComVector();
+            // cout << "***CHECKING CLEARED LISTS***" << endl;
+            // cout << "***THE LIST BELOW SHOULD BE CLEARED***" << endl;
+            updateQueue();
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();

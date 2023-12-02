@@ -82,7 +82,6 @@ float calculatePriority(float battery_charge, float min_charge)
     }
 
     float prioValue = (bat_pt * 0.6) + (min_pt * 0.4);
-    cout << "Köpoäng från prioAlg.cpp: " << prioValue << endl;
     return prioValue;
 }
 
