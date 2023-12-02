@@ -96,20 +96,12 @@ void sendQ(int id, float points)
 {
   if (points == 9999)
   {
-    cout << "Start of 9999." << endl;
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-    {
-      if ((*it)[0] == id)
-      {
-        queueVector.erase(it);
-        cout << "Vector removed successfully." << endl;
-        break;
-      }
-      else
-      {
-        cout << "ERROR: Tried to remove but couldn't" << endl;
-      }
-    }
+    String qPoints = "0";
+    qPoints += "-";
+    qPoints += id;
+    qPoints += "-";
+    qPoints += points;
+    mesh.sendBroadcast(qPoints);
   }
   else
   {
@@ -242,26 +234,45 @@ void receivedCallback(uint32_t from, String &msg)
   switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
-    cout << "case 0: lägg till någon i kölistan." << endl;
-    tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
-
-    exists = false;
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    if (get<1>(queueTuple) == 9999)
     {
-      if ((*it)[0] == tempVect[0])
+      cout << "Start of 9999." << endl;
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
-        exists = true;
-        (*it)[0] = tempVect[0];
-        (*it)[1] = tempVect[1];
-        break;
+        if ((*it)[0] == get<0>(queueTuple))
+        {
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
+        }
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
       }
     }
-
-    if (!exists)
+    else
     {
-      queueVector.push_back(tempVect);
-    }
+      cout << "case 0: lägg till någon i kölistan." << endl;
+      tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
+      exists = false;
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+          break;
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector.push_back(tempVect);
+      }
+    }
     break;
 
   case 1: // Ta bort annan från vektorn
