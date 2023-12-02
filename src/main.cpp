@@ -28,7 +28,7 @@ void updateQueue()
 {
     removeMissingNodes();
     updateCommunication();
-    
+
     // Uppdaterar nodens kölista
     node.queueVector = getComQueueVector();
 
@@ -134,9 +134,6 @@ void loop()
     switch (state)
     {
     case TRANSIT:
-        // printf("DISCONNECTION\n");
-        //  disconnect();
-
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
@@ -308,8 +305,8 @@ void loop()
         {
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            //cout << "Innan sendRemove" << endl;
-            //sendRemove(node.node_id);
+            // cout << "Innan sendRemove" << endl;
+            // sendRemove(node.node_id);
 
             // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
@@ -331,6 +328,7 @@ void loop()
                 }
                 cout << '\n';
             }*/
+            disconnect();
             state = TRANSIT;
         }
 

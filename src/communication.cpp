@@ -329,5 +329,6 @@ void initCOM()
 
 void disconnect()
 {
+  printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
