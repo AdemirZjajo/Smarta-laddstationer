@@ -152,7 +152,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station1";
     // String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
-    //mesh.update();
+    // mesh.update();
+    mesh.stop();
     mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
@@ -162,7 +163,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station2";
     // String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
-    //mesh.update();
+    // mesh.update();
+    mesh.stop();
     mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
@@ -172,7 +174,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station3";
     // String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
-    //mesh.update();
+    // mesh.update();
+    mesh.stop();
     mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
@@ -182,7 +185,8 @@ void changeCS(string zoneCode)
     MESH_PREFIX = "station4";
     // String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
-    //mesh.update();
+    // mesh.update();
+    mesh.stop();
     mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
