@@ -20,10 +20,15 @@ State state = TRANSIT; // Starttillståndet
 String CurrentZon;
 using namespace std;
 
-// Metod som hämtar den kontinuerligt uppdaterade kölistan från kommunikationen, samt sorterar den
+// Metod som:
+// 1. Rensar gamla nodlister i meshnätet
+// 2. Uppdaterar kommunikationen
+// 3. Hämtar den kontinuerligt uppdaterade kölistan från kommunikationen, samt sorterar den
 void updateQueue()
 {
+    removeMissingNodes();
     updateCommunication();
+    
     // Uppdaterar nodens kölista
     node.queueVector = getComQueueVector();
 

@@ -64,6 +64,33 @@ void sendMessage()
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
+// Itererar genom meshnätets anslutna noder lista, om en nod inte finns här men finns i köistan tas den bort
+void removeMissingNodes()
+{
+  for (const auto &node : nodeList)
+  {
+    if (!(mesh.isConnected(node)))
+    {
+      printf("%u is disconnected\n", node);
+      nodeList.remove(node);
+
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == static_cast<float>(node % 1000))
+        {
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
+        }
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
+      }
+    }
+  }
+}
+
 void sendQ(int id, float points)
 {
   // mesh.getNodeId()%1000;
@@ -268,20 +295,6 @@ void changedConnectionCallback()
     {
       printf("%u is disconnected\n", node);
       nodeList.remove(node);
-
-      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-      {
-        if ((*it)[0] == static_cast<float>(node % 1000))
-        {
-          queueVector.erase(it);
-          cout << "Vector removed successfully." << endl;
-          break;
-        }
-        else
-        {
-          cout << "ERROR: Tried to remove but couldn't" << endl;
-        }
-      }
     }
   }
 }
