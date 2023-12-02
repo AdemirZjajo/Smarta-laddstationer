@@ -54,7 +54,8 @@ void updateQueue()
 
 // Returnerar true om den enda noden som finns i listan är sig själv, annars false; det finns även andra noder i listan
 bool isAlone()
-{bool isAlone = false;
+{
+    bool isAlone = false;
     if (node.queueVector.size() == 1)
     {
         if (node.queueVector[0][0] == node.node_id)
@@ -67,8 +68,8 @@ bool isAlone()
     return isAlone;
 
     // Otestad ny metod som bör vara mer säker än den övre -Simon
-    
-    /*   
+
+    /*
         bool isAlone = true;
 
         // Loopar genom queueVector och letar efter andra noder...
@@ -83,7 +84,6 @@ bool isAlone()
 
         return isAlone;
     */
-        
 }
 
 void setup()
@@ -135,6 +135,8 @@ void loop()
     switch (state)
     {
     case TRANSIT:
+        node.queueVector.clear();
+        clearComVector();
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
@@ -205,7 +207,9 @@ void loop()
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
+        node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+
         updateQueue();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
@@ -219,12 +223,9 @@ void loop()
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         else if (!isAlone())
         {
-            node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            //cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
-
-            sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
-            // updateCommunication();
-            updateQueue(); // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
+            // node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
+            // sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
+            // updateQueue(); // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
 
             cout << "Nod-" << node.queueVector[0][0] << " är först i kön." << endl;
 
@@ -305,8 +306,8 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
             sendQ(node.node_id, 9999);
-            //sendRemove(node.node_id);
-            //updateCommunication();
+            // sendRemove(node.node_id);
+            // updateCommunication();
 
             // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
