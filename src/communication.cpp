@@ -66,54 +66,41 @@ void sendMessage()
 
 void sendQ(int id, float points)
 {
-  if (points == 9999)
+  // mesh.getNodeId()%1000;
+  String qPoints = "0";
+  qPoints += "-";
+  qPoints += id;
+  qPoints += "-";
+  qPoints += points;
+  mesh.sendBroadcast(qPoints);
+  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+
+  // cout << qPoints.c_str() << endl;
+  /*
+  String qPoints = String(id) + "-" + String(points);
+  mesh.sendBroadcast(qPoints);
+  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
+  Serial.printf("Sent %s\n", qPoints.c_str());
+  */
+
+  // Lägger till sig själv i vektorn
+  tempVect = {static_cast<float>(id), static_cast<float>(points)};
+  exists = false;
+
+  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
   {
-    cout << "Början av sendRemove" << endl;
-    String tempStr = "1";
-    tempStr += "-";
-    tempStr += id;
-    tempStr += "-";
-    tempStr += "Guar";
-    mesh.sendBroadcast(tempStr);
+    if ((*it)[0] == tempVect[0])
+    {
+      exists = true;
+      (*it)[0] = tempVect[0];
+      (*it)[1] = tempVect[1];
+      break;
+    }
   }
-  else
+
+  if (!exists)
   {
-    // mesh.getNodeId()%1000;
-    String qPoints = "0";
-    qPoints += "-";
-    qPoints += id;
-    qPoints += "-";
-    qPoints += points;
-    mesh.sendBroadcast(qPoints);
-    // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-
-    // cout << qPoints.c_str() << endl;
-    /*
-    String qPoints = String(id) + "-" + String(points);
-    mesh.sendBroadcast(qPoints);
-    taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-    Serial.printf("Sent %s\n", qPoints.c_str());
-    */
-
-    // Lägger till sig själv i vektorn
-    tempVect = {static_cast<float>(id), static_cast<float>(points)};
-    exists = false;
-
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-    {
-      if ((*it)[0] == tempVect[0])
-      {
-        exists = true;
-        (*it)[0] = tempVect[0];
-        (*it)[1] = tempVect[1];
-        break;
-      }
-    }
-
-    if (!exists)
-    {
-      queueVector.push_back(tempVect);
-    }
+    queueVector.push_back(tempVect);
   }
 }
 

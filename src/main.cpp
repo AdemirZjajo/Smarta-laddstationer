@@ -129,6 +129,8 @@ void loop()
     case TRANSIT:
         // printf("DISCONNECTION\n");
         //  disconnect();
+        cout << "Innan sendRemove" << endl;
+        sendRemove(node.node_id);
 
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
@@ -301,8 +303,6 @@ void loop()
         {
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            cout << "Innan sendRemove" << endl;
-            sendQ(node.node_id, 9999);
 
             // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
