@@ -106,6 +106,7 @@ void sendQ(int id, float points)
 
 void sendRemove(int id)
 {
+  cout << "ÄR I SENDREMOVE" << endl;
   String tempStr = "1";
   tempStr += "-";
   tempStr += id;

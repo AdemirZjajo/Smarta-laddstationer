@@ -302,8 +302,8 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
             // sendRemove(node.node_id);
-            // node.queueVector.clear();
-            // clearComVector();
+            node.queueVector.clear();
+            clearComVector();
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
