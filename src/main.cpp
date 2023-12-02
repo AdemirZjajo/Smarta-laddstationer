@@ -76,7 +76,7 @@ bool isAlone()
         for (const auto &vect : node.queueVector)
         {
             // ...om den hittar någon annan nod sätts isAlone till false; det är andra i listan
-            if (!vect.empty() && vect[0] != node.node_id)
+            if (vect[0] != node.node_id)
             {
                 isAlone = false;
             }
