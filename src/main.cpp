@@ -219,7 +219,7 @@ void loop()
         else if (!isAlone())
         {
             node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
+            //cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
 
             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateCommunication();
@@ -272,7 +272,7 @@ void loop()
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
-            cout << "NOD LADDAR till max_charge... " << node.battery_charge << "%" << endl; // För debugging
+            cout << "NOD LADDAR till max_charge... " << node.battery_charge << "% på LS: " << node.current_CS.id << endl; // För debugging
         }
 
         // ANNARS OM: man inte är ensam, och har högst priopoäng, laddar man mot sin minimumladdning
@@ -285,7 +285,7 @@ void loop()
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.setBat(node.battery_charge);
-            cout << "NOD LADDAR till min_charge... " << node.battery_charge << "%" << endl; // För debugging
+            cout << "NOD LADDAR till min_charge... " << node.battery_charge << "% på LS: " << node.current_CS.id << endl; // För debugging
         }
 
         // ANNARS OM: man laddar för nuvarande men någon annan har MYCKET högre priopoäng, eller av annan anledning får slänga ut dig --> Byt tillstånd till QUEUE
