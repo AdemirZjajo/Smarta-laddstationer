@@ -234,12 +234,12 @@ void receivedCallback(uint32_t from, String &msg)
   switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
-    if (get<1>(queueTuple) == 9999)
+    if (get<2>(queueTuple) == 9999)
     {
       cout << "Start of 9999." << endl;
       for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
-        if ((*it)[0] == get<0>(queueTuple))
+        if ((*it)[0] == get<1>(queueTuple))
         {
           queueVector.erase(it);
           cout << "Vector removed successfully." << endl;
