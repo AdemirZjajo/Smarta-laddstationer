@@ -304,7 +304,8 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            // sendRemove(node.node_id);
+            sendRemove(node.node_id);
+            updateCommunication();
 
             // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
