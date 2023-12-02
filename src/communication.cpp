@@ -217,14 +217,12 @@ void receivedCallback(uint32_t from, String &msg)
 {
   // cout << msg.c_str() << endl;
   string stringMsg = msg.c_str();
-  tuple<int, int, float> result = splitString(stringMsg);
-
-  queueTuple = result;
+  tuple<int, int, float> queueTuple = splitString(stringMsg);
 
   switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
-    cout << "case 0 in communication.cpp" << endl;
+    cout << "case 0: lägg till någon i kölistan." << endl;
     tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
     exists = false;

@@ -301,9 +301,9 @@ void loop()
         // ANNARS: nu har vi tillräckligt med laddning för att slutföra uppdraget --> Byt tillstånd till TRANSIT
         else
         {
+            cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            // cout << "Innan sendRemove" << endl;
             // sendRemove(node.node_id);
 
             // cout << "***CLEARING LISTS***" << endl;
