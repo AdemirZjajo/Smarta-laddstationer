@@ -86,12 +86,14 @@ void sendQ(int id, float points)
   // Lägger till sig själv i vektorn
   tempVect = {static_cast<float>(id), static_cast<float>(points)};
   exists = false;
-  for (const auto &vec : queueVector)
+
+  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
   {
-    // if (vec[0] == tempVect[0])
-    if (vec == tempVect)
+    if ((*it)[0] == tempVect[0])
     {
       exists = true;
+      (*it)[0] = tempVect[0];
+      (*it)[1] = tempVect[1];
       break;
     }
   }
