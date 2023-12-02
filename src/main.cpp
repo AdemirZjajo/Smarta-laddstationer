@@ -15,6 +15,7 @@ enum State
     CHARGE
 };
 
+
 Node node(0);          // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
 String CurrentZon;
