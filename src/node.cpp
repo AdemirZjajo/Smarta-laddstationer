@@ -30,8 +30,6 @@ int randomNumber(int from, int to)
 
 int randomNumber(int from, int to)
 {
-  int seedValue = analogRead(A0);
-  randomSeed(seedValue);
   int randomNumber = random(from, to);
   return randomNumber;
 }

@@ -264,13 +264,24 @@ void changedConnectionCallback()
   Serial.printf("Changed connections\n");
   for (const auto &node : nodeList)
   {
-    if (mesh.isConnected(node))
-    {
-    }
-    else
+    if (!(mesh.isConnected(node)))
     {
       printf("%u is disconnected\n", node);
       nodeList.remove(node);
+
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == static_cast<float>(node % 1000))
+        {
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
+        }
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
+      }
     }
   }
 }
@@ -292,7 +303,7 @@ void initCOM()
 
   // ... other initialization code ...
 
-  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
