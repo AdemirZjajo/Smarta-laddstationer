@@ -54,8 +54,7 @@ void updateQueue()
 
 // Returnerar true om den enda noden som finns i listan är sig själv, annars false; det finns även andra noder i listan
 bool isAlone()
-{
-    /*   bool isAlone = false;
+{bool isAlone = false;
     if (node.queueVector.size() == 1)
     {
         if (node.queueVector[0][0] == node.node_id)
@@ -66,10 +65,10 @@ bool isAlone()
             isAlone = false;
     }
     return isAlone;
-    */
 
     // Otestad ny metod som bör vara mer säker än den övre -Simon
     
+    /*   
         bool isAlone = true;
 
         // Loopar genom queueVector och letar efter andra noder...
@@ -83,6 +82,7 @@ bool isAlone()
         }
 
         return isAlone;
+    */
         
 }
 
