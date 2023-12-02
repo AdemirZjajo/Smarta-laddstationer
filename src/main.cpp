@@ -259,7 +259,7 @@ void loop()
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
-            this_thread::sleep_for(chrono::milliseconds(50)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
+            this_thread::sleep_for(chrono::milliseconds(200)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
             if (node.battery_charge >= 99)
             {
                 node.battery_charge = 100;

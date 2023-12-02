@@ -209,12 +209,24 @@ void receivedCallback(uint32_t from, String &msg)
     tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
     exists = false;
+    /*
     for (const auto &vec : queueVector)
     {
       // if (vec[0] == tempVect[0])
       if (vec == tempVect)
       {
         exists = true;
+        break;
+      }
+    }
+    */
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
         break;
       }
     }
@@ -228,13 +240,14 @@ void receivedCallback(uint32_t from, String &msg)
 
   case 1: // Ta bort annan från vektorn
     cout << "case 1 in communication.cpp" << endl;
+
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
-      if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple)))
+      if ((*it)[0] == static_cast<float>(get<1>(queueTuple)))
       {
         queueVector.erase(it);
         cout << "Vector removed successfully." << endl;
-        break; // Exit the loop after erasing the element
+        break;
       }
       else
       {
@@ -243,22 +256,6 @@ void receivedCallback(uint32_t from, String &msg)
     }
   }
 }
-/*
-  for (const auto &vec : queueVector)
-  {
-    if (vec[0][0] == static_cast<float>(get<1>(queueTuple)))
-    {
-      queueVector.erase(queueVector[queueVector.begin]);
-
-      break;
-    }
-    else
-    {
-      cout << "ERROR TRIED TO REMOVE BUT COULDNT" << endl;
-    }
-  }
-  break;
-*/
 
 void newConnectionCallback(uint32_t nodeId)
 {
