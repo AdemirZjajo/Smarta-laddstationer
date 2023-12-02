@@ -64,53 +64,84 @@ void sendMessage()
   Serial.printf("Sent %s\n", msg.c_str());
 }
 
-void sendQ(int id, float points)
+// Itererar genom meshnätets anslutna noder lista, om en nod inte finns här men finns i köistan tas den bort
+void removeMissingNodes()
 {
-  // mesh.getNodeId()%1000;
-  String qPoints = "0";
-  qPoints += "-";
-  qPoints += id;
-  qPoints += "-";
-  qPoints += points;
-  mesh.sendBroadcast(qPoints);
-  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-
-  // cout << qPoints.c_str() << endl;
-  /*
-  String qPoints = String(id) + "-" + String(points);
-  mesh.sendBroadcast(qPoints);
-  taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-  Serial.printf("Sent %s\n", qPoints.c_str());
-  */
-
-  // Lägger till sig själv i vektorn
-  tempVect = {static_cast<float>(id), static_cast<float>(points)};
-  exists = false;
-
-  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+  for (const auto &node : nodeList)
   {
-    if ((*it)[0] == tempVect[0])
+    if (!(mesh.isConnected(node)))
     {
-      exists = true;
-      (*it)[0] = tempVect[0];
-      (*it)[1] = tempVect[1];
-      break;
+      printf("%u is disconnected\n", node % 1000);
+
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == static_cast<float>(node % 1000))
+        {
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
+        }
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
+      }
+
+      nodeList.remove(node);
     }
   }
+}
 
-  if (!exists)
+void sendQ(int id, float points)
+{
+  if (points == 9999)
   {
-    queueVector.push_back(tempVect);
+    String qPoints = "0";
+    qPoints += "-";
+    qPoints += id;
+    qPoints += "-";
+    qPoints += points;
+    mesh.sendBroadcast(qPoints);
+  }
+  else
+  {
+    String qPoints = "0";
+    qPoints += "-";
+    qPoints += id;
+    qPoints += "-";
+    qPoints += points;
+    mesh.sendBroadcast(qPoints);
+
+    // Lägger till sig själv i vektorn
+    tempVect = {static_cast<float>(id), static_cast<float>(points)};
+    exists = false;
+
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
+        break;
+      }
+    }
+
+    if (!exists)
+    {
+      queueVector.push_back(tempVect);
+    }
   }
 }
 
 void sendRemove(int id)
 {
+  cout << "Början av sendRemove" << endl;
   String tempStr = "1";
   tempStr += "-";
   tempStr += id;
   tempStr += "-";
-  tempStr += "";
+  tempStr += "Guar";
   mesh.sendBroadcast(tempStr);
   // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
 }
@@ -198,67 +229,70 @@ void receivedCallback(uint32_t from, String &msg)
 {
   // cout << msg.c_str() << endl;
   string stringMsg = msg.c_str();
-  tuple<int, int, float> result = splitString(stringMsg);
-
-  queueTuple = result;
+  tuple<int, int, float> queueTuple = splitString(stringMsg);
 
   switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
-    cout << "case 0 in communication.cpp" << endl;
-    tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
-
-    exists = false;
-    for (const auto &vec : queueVector)
+    if (get<2>(queueTuple) == 9999)
     {
-      // if (vec[0] == tempVect[0])
-      if (vec == tempVect)
+      //cout << "Start of 9999." << endl;
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
-        exists = true;
-        break;
+        if ((*it)[0] == get<1>(queueTuple))
+        {
+          queueVector.erase(it);
+          cout << "Vector removed successfully." << endl;
+          break;
+        }
+        else
+        {
+          cout << "ERROR: Tried to remove but couldn't" << endl;
+        }
       }
     }
-
-    if (!exists)
+    else
     {
-      queueVector.push_back(tempVect);
-    }
+      //cout << "case 0: lägg till någon i kölistan." << endl;
+      tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
+      exists = false;
+      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+          break;
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector.push_back(tempVect);
+      }
+    }
     break;
 
   case 1: // Ta bort annan från vektorn
-    cout << "case 1 in communication.cpp" << endl;
+    //cout << "Början av case 1; ta bort från listan" << endl;
+
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
-      if ((*it)[0] == static_cast<float>(std::get<1>(queueTuple)))
+      if ((*it)[0] == static_cast<float>(get<1>(queueTuple)))
       {
         queueVector.erase(it);
-        cout << "Vector removed successfully." << endl;
-        break; // Exit the loop after erasing the element
+        cout << "Node id removed from list: " << get<1>(queueTuple) << endl;
+        break;
       }
       else
       {
-        cout << "ERROR: Tried to remove but couldn't" << endl;
+        cout << "Failed to remove node id from list: " << get<1>(queueTuple) << endl;
       }
     }
   }
 }
-/*
-  for (const auto &vec : queueVector)
-  {
-    if (vec[0][0] == static_cast<float>(get<1>(queueTuple)))
-    {
-      queueVector.erase(queueVector[queueVector.begin]);
-
-      break;
-    }
-    else
-    {
-      cout << "ERROR TRIED TO REMOVE BUT COULDNT" << endl;
-    }
-  }
-  break;
-*/
 
 void newConnectionCallback(uint32_t nodeId)
 {
@@ -277,10 +311,7 @@ void changedConnectionCallback()
   Serial.printf("Changed connections\n");
   for (const auto &node : nodeList)
   {
-    if (mesh.isConnected(node))
-    {
-    }
-    else
+    if (!(mesh.isConnected(node)))
     {
       printf("%u is disconnected\n", node);
       nodeList.remove(node);
@@ -305,7 +336,7 @@ void initCOM()
 
   // ... other initialization code ...
 
-  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
@@ -318,5 +349,6 @@ void initCOM()
 
 void disconnect()
 {
+  printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
