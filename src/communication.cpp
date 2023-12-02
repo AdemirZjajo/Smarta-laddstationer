@@ -94,7 +94,6 @@ void removeMissingNodes()
 
 void sendQ(int id, float points)
 {
-  cout << "Broadcastar sendQ i nätverk: " << MESH_PREFIX << endl;
   String qPoints = "0";
   qPoints += "-";
   qPoints += id;
@@ -295,18 +294,6 @@ void updateCommunication()
 {
   // it will run the user scheduler as well
   mesh.update();
-  for (const auto &node : nodeList)
-  {
-    if (!(mesh.isConnected(node)))
-    {
-      nodeList.remove(node);
-    }
-  }
-  cout << "Node list in mesh after update:" << endl;
-  for (const auto &node : nodeList)
-  {
-    cout << "Node id: " << node % 1000 << endl;
-  }
 }
 
 vector<vector<float>> getComQueueVector()
