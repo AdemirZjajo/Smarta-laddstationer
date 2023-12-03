@@ -144,9 +144,8 @@ void loop()
     // displayLooping(node.node_id);
 
     // updateQueue();
-    updateCommunication();
-    printQueue();
-
+    // updateCommunication();
+    // printQueue();
 
     switch (state)
     {
@@ -217,6 +216,7 @@ void loop()
 
     case QUEUE:
         cout << "** NOD är i QUEUE-state **" << endl;
+
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
         // changeCS(node.current_CS.zone);
@@ -224,8 +224,14 @@ void loop()
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         // node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
-        // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
         // updateQueue();
+        for (int i = 0; i < 5; i++)
+        {
+            sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+            updateCommunication();
+            this_thread::sleep_for(chrono::milliseconds(50));
+        }
+        printQueue();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
         //     Noden vill alltid ladda så högt som möjligt i förebyggande syfte; kanske det är många som ska ladda på nästa laddstation
@@ -239,7 +245,7 @@ void loop()
         else if (!isAlone())
         {
             // node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
+            // sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateQueue();                         // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
 
             cout << "Nod-" << getComQueueVector()[0][0] << " är först i kön." << endl;
@@ -262,6 +268,7 @@ void loop()
 
     case CHARGE:
         cout << "** NOD är i CHARGE-state **" << endl;
+
         // updateCommunication();
         // Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
         // Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
@@ -277,6 +284,7 @@ void loop()
         sendQ(node.node_id, node.queue_point);
         // updateQueue();
 
+        printQueue();
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {

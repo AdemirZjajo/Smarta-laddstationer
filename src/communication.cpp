@@ -301,15 +301,15 @@ void receivedCallback(uint32_t from, String &msg)
     }
   }
 
- sort(queueVector.begin(),
-         queueVector.end(),
-         [](const vector<float> &a, const vector<float> &b)
-         {
-             if (a[1] == b[1])
-                 return a[0] > b[0];
+  sort(queueVector.begin(),
+       queueVector.end(),
+       [](const vector<float> &a, const vector<float> &b)
+       {
+         if (a[1] == b[1])
+           return a[0] > b[0];
 
-             return a[1] > b[1];
-         });
+         return a[1] > b[1];
+       });
 }
 
 void newConnectionCallback(uint32_t nodeId)
@@ -345,7 +345,8 @@ void updateCommunication()
 
 vector<vector<float>> getComQueueVector()
 {
-    return queueVector;
+  mesh.update();
+  return queueVector;
 }
 
 // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
