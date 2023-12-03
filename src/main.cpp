@@ -52,19 +52,6 @@ void updateQueue()
     }
 }
 
-void printQueue()
-{
-    cout << "--KÖLISTA--" << endl;
-    for (const auto &row : getComQueueVector())
-    {
-        for (const auto &element : row)
-        {
-            cout << element << ' ';
-        }
-        cout << '\n';
-    }
-}
-
 // Returnerar true om den enda noden som finns i listan är sig själv, annars false; det finns även andra noder i listan
 bool isAlone()
 {
@@ -219,21 +206,20 @@ void loop()
 
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        // changeCS(node.current_CS.zone);
+        changeCS(node.current_CS.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         // node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         // updateQueue();
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-        updateCommunication();
-        /*for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
-            sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+            //sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
             updateCommunication();
             this_thread::sleep_for(chrono::milliseconds(50));
-        }*/
-        printQueue();
+        }
+        printQueueVector();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
         //     Noden vill alltid ladda så högt som möjligt i förebyggande syfte; kanske det är många som ska ladda på nästa laddstation
@@ -286,7 +272,7 @@ void loop()
         sendQ(node.node_id, node.queue_point);
         // updateQueue();
 
-        printQueue();
+        printQueueVector();
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {

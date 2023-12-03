@@ -35,4 +35,6 @@ vector<vector<float>> getComQueueVector();
 void disconnect();
 void removeMissingNodes();
 
+void printQueueVector();
+
 #endif
