@@ -300,6 +300,16 @@ void receivedCallback(uint32_t from, String &msg)
       }
     }
   }
+
+ sort(queueVector.begin(),
+         queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+             if (a[1] == b[1])
+                 return a[0] > b[0];
+
+             return a[1] > b[1];
+         });
 }
 
 void newConnectionCallback(uint32_t nodeId)
@@ -335,15 +345,6 @@ void updateCommunication()
 
 vector<vector<float>> getComQueueVector()
 {
-    sort(queueVector.begin(),
-         queueVector.end(),
-         [](const vector<float> &a, const vector<float> &b)
-         {
-             if (a[1] == b[1])
-                 return a[0] > b[0];
-
-             return a[1] > b[1];
-         });
     return queueVector;
 }
 
