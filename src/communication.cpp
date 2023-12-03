@@ -235,7 +235,7 @@ tuple<int, int, float> splitString(const string &input)
 // This notifies the ESP when a message is recieved
 void receivedCallback(uint32_t from, String &msg)
 {
-  // cout << msg.c_str() << endl;
+  cout << from << ", in callback, msg: " << msg.c_str() << endl;
   string stringMsg = msg.c_str();
   tuple<int, int, float> queueTuple = splitString(stringMsg);
 
