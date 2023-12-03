@@ -261,7 +261,7 @@ void receivedCallback(uint32_t from, String &msg)
     }
     else
     {
-      // cout << "case 0: lägg till någon i kölistan." << endl;
+      cout << "case 0: lägg till någon i kölistan." << endl;
       tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
       exists = false;
