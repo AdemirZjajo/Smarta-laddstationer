@@ -28,6 +28,7 @@ using namespace std;
 void updateQueue()
 {
     // removeMissingNodes();
+    //updateCommunication triggar watchdog när noden byter mesh nätverk, kommenteras bort för tillfälligt
     updateCommunication();
 
     // Uppdaterar nodens kölista
@@ -122,6 +123,7 @@ void setup()
 
 void loop()
 {
+
     if (node.node_id == 0)
     {
         getID();
@@ -180,6 +182,7 @@ void loop()
             {
                 node.zone = node.current_mission.missionDestination.zone; // Sätt zonen till den nya startplatsen, alltså det förra uppdragets destination
                 cout << "Noden har nått sin destination, X: " << node.xcor << " Y: " << node.ycor << endl;
+                
                 node.current_mission = node.generateMission(node.current_mission.missionDestination); // Generera nytt uppdrag, skicka in nuvarande plats
                 node.current_CS = node.current_mission.missionOrigin;
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);                                   // Beräkna batteriförbrukning baserat på uppdrag
@@ -331,7 +334,8 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            // disconnect();
+            
+            //disconnect();
             state = TRANSIT;
         }
 

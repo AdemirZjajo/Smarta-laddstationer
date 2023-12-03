@@ -50,6 +50,7 @@ Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
 // Clear the list
 void clearComVector()
 {
+
   queueVector.clear();
 }
 
@@ -151,36 +152,44 @@ void changeCS(string zoneCode)
   printf("changing Zone \n");
   if (zoneCode == "LADDSTATION-1")
   {
+    mesh.stop();
     MESH_PREFIX = "station1";
-    // String MESH_PASSWORD = "station1";
+    //MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
+    initCOM();
     mesh.update();
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-2")
   {
+    mesh.stop();
     MESH_PREFIX = "station2";
-    // String MESH_PASSWORD = "station2";
+    //MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
+    initCOM();
     mesh.update();
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-3")
   {
+    mesh.stop();
     MESH_PREFIX = "station3";
-    // String MESH_PASSWORD = "station3";
+    //MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
+    initCOM();
     mesh.update();
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-4")
   {
+    mesh.stop();
     MESH_PREFIX = "station4";
-    // String MESH_PASSWORD = "station4";
+    //MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
+    initCOM();
     mesh.update();
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
@@ -330,7 +339,7 @@ vector<vector<float>> getComQueueVector()
   return queueVector;
 }
 
-void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
+//void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
 
     void initCOM()
 {
@@ -347,10 +356,13 @@ void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFi
   //  delay(3000);
   // taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
+
+  printf("MESH : %s\n", MESH_PREFIX);
 }
 
-void disconnect()
+// disconnect trigger watchdog så använd inte den 
+/*void disconnect()
 {
   printf("***NODE DISCONNECTED***\n");
   mesh.stop();
-}
+}*/
