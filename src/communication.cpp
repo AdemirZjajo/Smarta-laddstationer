@@ -352,7 +352,7 @@ vector<vector<float>> getComQueueVector()
 void printQueueVector()
 {
   cout << "--KÖLISTA--" << endl;
-  for (const auto &row : getComQueueVector())
+  for (const auto &row : queueVector)
   {
     for (const auto &element : row)
     {
