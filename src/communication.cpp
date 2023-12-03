@@ -141,7 +141,7 @@ void sendRemove(int id)
   tempStr += "-";
   tempStr += id;
   tempStr += "-";
-  tempStr += "Guar";
+  tempStr += 123;
   mesh.sendBroadcast(tempStr);
   // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
 }
@@ -252,7 +252,7 @@ void receivedCallback(uint32_t from, String &msg)
           queueVector.erase(it);
           cout << "Vector removed successfully." << endl;
           printQueueVector();
-          //break;
+          // break;
         }
         else
         {
@@ -273,10 +273,9 @@ void receivedCallback(uint32_t from, String &msg)
           exists = true;
           (*it)[0] = tempVect[0];
           (*it)[1] = tempVect[1];
-          //break;
-           printQueueVector();
+          // break;
+          printQueueVector();
         }
-        
       }
 
       if (!exists)
@@ -287,21 +286,23 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
-    // cout << "Början av case 1; ta bort från listan" << endl;
+          // cout << "Början av case 1; ta bort från listan" << endl;
 
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
-      if ((*it)[0] == static_cast<float>(get<1>(queueTuple)))
+      if ((*it)[0] == get<1>(queueTuple))
       {
         queueVector.erase(it);
-        cout << "Node id removed from list: " << get<1>(queueTuple) << endl;
-        break;
+        cout << "Vector removed successfully." << endl;
+        printQueueVector();
+        // break;
       }
       else
       {
-        cout << "Failed to remove node id from list: " << get<1>(queueTuple) << endl;
+        cout << "ERROR: Tried to remove but couldn't......." << endl;
       }
     }
+    break;
   }
 
   sort(queueVector.begin(),

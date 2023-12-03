@@ -212,7 +212,8 @@ void loop()
 
         // node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         // updateQueue();
-        //sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+        sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+
         for (int i = 0; i < 5; i++)
         {
             // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
@@ -233,7 +234,7 @@ void loop()
         else if (!isAlone())
         {
             // node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
+            // sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateQueue();                         // Uppdatera kölistan för säkerhets skull, i nästa steg börjar den ladda vilket noden inte ska göra om den inte är 100% säker på att den faktiskt får
 
             cout << "Nod-" << getComQueueVector()[0][0] << " är först i kön." << endl;
@@ -269,7 +270,7 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-         sendQ(node.node_id, node.queue_point);
+        sendQ(node.node_id, node.queue_point);
         //  updateQueue();
 
         printQueueVector();
@@ -321,9 +322,9 @@ void loop()
             this_thread::sleep_for(chrono::milliseconds(200));
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            //sendRemove(node.node_id);
+            sendRemove(node.node_id);
 
-            sendQ(node.node_id, 9999);
+            // sendQ(node.node_id, 9999);
             clearComVector();
             // cout << "***CLEARING LISTS***" << endl;
             // getComQueueVector().clear();
