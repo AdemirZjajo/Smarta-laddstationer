@@ -251,7 +251,8 @@ void receivedCallback(uint32_t from, String &msg)
         {
           queueVector.erase(it);
           cout << "Vector removed successfully." << endl;
-          break;
+          printQueueVector();
+          //break;
         }
         else
         {
@@ -272,8 +273,10 @@ void receivedCallback(uint32_t from, String &msg)
           exists = true;
           (*it)[0] = tempVect[0];
           (*it)[1] = tempVect[1];
-          break;
+          //break;
+           printQueueVector();
         }
+        
       }
 
       if (!exists)
