@@ -74,10 +74,10 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
       chosenCS = CS2;
       break;
     case 2:
-      chosenCS = CS1;
+      chosenCS = CS3;
       break;
     case 3:
-      chosenCS = CS2;
+      chosenCS = CS4;
       break;
     default:
       chosenCS = CS1;
