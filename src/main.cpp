@@ -219,7 +219,7 @@ void loop()
         {
             // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
             updateCommunication();
-            this_thread::sleep_for(chrono::milliseconds(50));
+            //this_thread::sleep_for(chrono::milliseconds(50));
         }
         printQueueVector();
 
@@ -271,7 +271,7 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-        sendQ(node.node_id, node.queue_point);
+        //sendQ(node.node_id, node.queue_point);
         // updateQueue();
 
         printQueueVector();
