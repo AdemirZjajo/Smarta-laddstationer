@@ -137,6 +137,8 @@ void loop()
     switch (state)
     {
     case TRANSIT:
+        sendQ(node.node_id, 9999);
+        clearComVector();
         // getComQueueVector().clear();
         // clearComVector();
         cout << "** NOD är i Transit-state **" << endl; // För debugging
@@ -215,7 +217,7 @@ void loop()
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
         for (int i = 0; i < 5; i++)
         {
-            //sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+            // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
             updateCommunication();
             this_thread::sleep_for(chrono::milliseconds(50));
         }
@@ -321,12 +323,10 @@ void loop()
             this_thread::sleep_for(chrono::milliseconds(200));
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            sendQ(node.node_id, 9999);
             // sendRemove(node.node_id);
 
             // cout << "***CLEARING LISTS***" << endl;
             // getComQueueVector().clear();
-            clearComVector();
 
             // cout << "***CHECKING CLEARED LISTS***" << endl;
             // cout << "***THE LIST BELOW SHOULD BE CLEARED***" << endl;
