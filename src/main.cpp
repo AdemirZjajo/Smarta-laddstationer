@@ -243,7 +243,7 @@ void loop()
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(500)); // Finns för att artificiellt slöa ner programmet, annars blir saker oläsbara ibland
+        ///this_thread::sleep_for(chrono::milliseconds(500)); // Finns för att artificiellt slöa ner programmet, annars blir saker oläsbara ibland
         break;
 
     case CHARGE:
