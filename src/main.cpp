@@ -212,14 +212,16 @@ void loop()
 
         // node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         // updateQueue();
+        updateCommunication();
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-
-        for (int i = 0; i < 5; i++)
-        {
-            // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-            updateCommunication();
-            // this_thread::sleep_for(chrono::milliseconds(50));
-        }
+                                               /*
+                                                       for (int i = 0; i < 5; i++)
+                                                       {
+                                                           // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+                                                           updateCommunication();
+                                                           // this_thread::sleep_for(chrono::milliseconds(50));
+                                                       }
+                                                       */
         printQueueVector();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
@@ -270,6 +272,7 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
+        updateCommunication();
         sendQ(node.node_id, node.queue_point);
         //  updateQueue();
 

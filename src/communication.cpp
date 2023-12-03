@@ -158,7 +158,7 @@ void changeCS(string zoneCode)
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
     // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    mesh.update();
+    //mesh.update();
   }
   else if (zoneCode == "LADDSTATION-2")
   {
@@ -169,7 +169,7 @@ void changeCS(string zoneCode)
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
     // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    mesh.update();
+    //mesh.update();
   }
   else if (zoneCode == "LADDSTATION-3")
   {
@@ -180,7 +180,7 @@ void changeCS(string zoneCode)
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
     // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    mesh.update();
+    //mesh.update();
   }
   else if (zoneCode == "LADDSTATION-4")
   {
@@ -191,7 +191,7 @@ void changeCS(string zoneCode)
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
     // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    mesh.update();
+    //mesh.update();
   }
 }
 
@@ -349,7 +349,7 @@ void updateCommunication()
 
 vector<vector<float>> getComQueueVector()
 {
-  mesh.update();
+  //mesh.update();
   return queueVector;
 }
 
