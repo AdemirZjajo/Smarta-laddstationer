@@ -236,7 +236,7 @@ void receivedCallback(uint32_t from, String &msg)
   case 0: // Lägga in annan i vektorn
     if (get<2>(queueTuple) == 9999)
     {
-      //cout << "Start of 9999." << endl;
+      // cout << "Start of 9999." << endl;
       for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
         if ((*it)[0] == get<1>(queueTuple))
@@ -253,7 +253,7 @@ void receivedCallback(uint32_t from, String &msg)
     }
     else
     {
-      //cout << "case 0: lägg till någon i kölistan." << endl;
+      // cout << "case 0: lägg till någon i kölistan." << endl;
       tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
       exists = false;
@@ -276,7 +276,7 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
-    //cout << "Början av case 1; ta bort från listan" << endl;
+    // cout << "Början av case 1; ta bort från listan" << endl;
 
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
@@ -330,7 +330,9 @@ vector<vector<float>> getComQueueVector()
   return queueVector;
 }
 
-void initCOM()
+void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
+
+    void initCOM()
 {
   Serial.begin(115200);
 
