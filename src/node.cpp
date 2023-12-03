@@ -47,9 +47,9 @@ ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStati
   case 1:
     return CS2;
   case 2:
-    return CS1;
+    return CS3;
   case 3:
-    return CS2;
+    return CS4;
   default:
     return CS1;
   }
