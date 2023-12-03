@@ -30,8 +30,8 @@ int randomNumber(int from, int to)
 
 int randomNumber(int from, int to)
 {
-  int randomNumber = random(from, to);
-  return randomNumber;
+  int randomnumber = random(from, to);
+  return randomnumber;
 }
 
 // Randomly selects a charging station to spawn at
@@ -109,7 +109,7 @@ Node::Node(int id)
   current_mission = generateMission(init_CS); // Uppdateras dynamiskt under uppdragsgivande
   battery_consumption = calcBatConsumption(current_mission);
   min_charge = calcMinCharge(battery_consumption, calcStepsNeeded(current_mission)); // Beräkna minimumladdning baserat på uppdraget
-  queue_point = 0; /*randomNumber(1, 100);*/
+  queue_point = randomNumber(1, 100);
 }
 
 // Nodens initieringsprocess börjar här

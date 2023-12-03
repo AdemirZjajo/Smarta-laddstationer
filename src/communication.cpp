@@ -151,46 +151,46 @@ void changeCS(string zoneCode)
   printf("changing Zone \n");
   if (zoneCode == "LADDSTATION-1")
   {
-    //mesh.stop();
+    // mesh.stop();
     MESH_PREFIX = "station1";
     String MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
     printf("changed LS  to LS1\n", zoneCode);
     // delay(2000);
-    //mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     mesh.update();
   }
   else if (zoneCode == "LADDSTATION-2")
   {
-    //mesh.stop();
+    // mesh.stop();
     MESH_PREFIX = "station2";
     String MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
     printf("changed LS to LS2\n", zoneCode);
     // delay(2000);
-    //mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     mesh.update();
   }
   else if (zoneCode == "LADDSTATION-3")
   {
-    //mesh.stop();
+    // mesh.stop();
     MESH_PREFIX = "station3";
     String MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
     printf("changed LS from to LS3\n", zoneCode);
     // delay(2000);
-    //mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     mesh.update();
   }
   else if (zoneCode == "LADDSTATION-4")
   {
-    //mesh.stop();
+    // mesh.stop();
     MESH_PREFIX = "station4";
     String MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
     printf("changed LS to LS4\n", zoneCode);
     // delay(2000);
-    //mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
     mesh.update();
   }
 }
@@ -335,12 +335,21 @@ void updateCommunication()
 
 vector<vector<float>> getComQueueVector()
 {
-  return queueVector;
+    sort(queueVector.begin(),
+         queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+             if (a[1] == b[1])
+                 return a[0] > b[0];
+
+             return a[1] > b[1];
+         });
+    return queueVector;
 }
 
-//void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
+// void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
 
-    void initCOM()
+void initCOM()
 {
   Serial.begin(115200);
 

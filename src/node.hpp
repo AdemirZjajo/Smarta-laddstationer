@@ -28,12 +28,7 @@ public:
   string zone;                // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
 
-  vector<vector<float>> queueVector{
-      /*
-      {0, 0},
-      {999, 999}
-      */
-  };
+  vector<vector<float>> queueVector{};
 
   vector<int> route_CS1;
   vector<int> route_CS2;
@@ -51,6 +46,8 @@ public:
   Node();
   Node(int nodeID);
 
+
+  
   Mission generateMission(ChargingStation currentCS);
 
   float calcBatConsumption(Mission mission);
@@ -59,7 +56,9 @@ public:
   int calcStepsNeeded(Mission current_mission);
 
   float calcMinCharge(float battery_consumption, int steps_needed);
+
 };
-int randomNumber(int from, int to);
+
+  int randomNumber(int from, int to);
 
 #endif
