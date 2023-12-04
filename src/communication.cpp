@@ -291,7 +291,7 @@ void receivedCallback(uint32_t from, String &msg)
         cout << "ERROR: Tried to remove but couldn't" << endl;
       }
     }
-    break;
+  break;
   }
 }
 
