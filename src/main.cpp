@@ -258,8 +258,8 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-        // sendQ(node.node_id, node.queue_point);
-        // updateQueue();
+        sendQ(node.node_id, node.queue_point);
+        updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
