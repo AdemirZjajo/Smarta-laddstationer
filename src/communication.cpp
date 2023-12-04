@@ -92,7 +92,7 @@ void removeMissingNodes()
   }
 }
 
-void sendQ(int id, float points, int cs_id)
+void sendQ(int id, float points)
 {
   if (points == 9999)
   {

@@ -137,6 +137,7 @@ void loop()
     switch (state)
     {
     case TRANSIT:
+        sendQ(node.node_id, 9999);
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         // updateCommunication();
@@ -151,10 +152,10 @@ void loop()
             int steps = node.calcStepsNeeded(node.current_mission);
             for (int i = 0; i < steps; i++)
             {
-               // sendQ(node.node_id, 9998);
+                // sendQ(node.node_id, 9998);
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
-                //updateCommunication();
+                // updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(100));
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
@@ -186,7 +187,7 @@ void loop()
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission)); // Beräkna minimumladdning
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
-                node.queue_point = randomNumber(1, 100);//calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
+                node.queue_point = randomNumber(1, 100); // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
 
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget
                 // display.destination(node.current_mission.missionDestination);
@@ -322,7 +323,7 @@ void loop()
             // cout << "***CHECKING CLEARED LISTS***" << endl;
             // cout << "***THE LIST BELOW SHOULD BE CLEARED***" << endl;
             updateQueue();
-
+            sendQ(node.node_id, 9999);
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
             // display.destination(node.current_mission.missionDestination);
