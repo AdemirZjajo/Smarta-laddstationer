@@ -151,10 +151,10 @@ void loop()
             int steps = node.calcStepsNeeded(node.current_mission);
             for (int i = 0; i < steps; i++)
             {
-                sendQ(node.node_id, 9998);
+               // sendQ(node.node_id, 9998);
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
-                updateCommunication();
+                //updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(100));
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt

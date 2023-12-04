@@ -92,7 +92,7 @@ void removeMissingNodes()
   }
 }
 
-void sendQ(int id, float points)
+void sendQ(int id, float points, int cs_id)
 {
   if (points == 9999)
   {
@@ -101,6 +101,7 @@ void sendQ(int id, float points)
     qPoints += id;
     qPoints += "-";
     qPoints += points;
+
     mesh.sendBroadcast(qPoints);
   }
   else
