@@ -184,7 +184,7 @@ void loop()
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission)); // Beräkna minimumladdning
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
-                node.queue_point = randomNumber(1, 100); // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
+                node.queue_point = randomNumber(2, 100); // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
 
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget
                 // display.destination(node.current_mission.missionDestination);
@@ -306,7 +306,7 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            sendQ(node.node_id, 9999);
+            sendQ(node.node_id, 0);
             // sendRemove(node.node_id);
             // updateCommunication();
 
