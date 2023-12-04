@@ -130,7 +130,7 @@ void loop()
     // displayLooping(node.node_id);
 
     // updateCommunication(); // Utflyttat från QUEUE
-    updateQueue();
+    //updateQueue();
 
     switch (state)
     {
@@ -202,7 +202,7 @@ void loop()
         cout << "** NOD är i QUEUE-state **" << endl;
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        changeCS(node.current_CS.zone);
+        //changeCS(node.current_CS.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
@@ -220,7 +220,7 @@ void loop()
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         else if (!isAlone())
         {
-            node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
+            //node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
             // cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
 
             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
@@ -308,6 +308,7 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
 
+            sendQ(node.node_id, 9999);
             // sendRemove(node.node_id);
             // updateCommunication();
 
