@@ -276,7 +276,7 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
-    // cout << "Början av case 1; ta bort från listan" << endl;
+    cout << "Början av case 1; ta bort från listan" << endl;
 
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
@@ -291,7 +291,7 @@ void receivedCallback(uint32_t from, String &msg)
         cout << "ERROR: Tried to remove but couldn't" << endl;
       }
     }
-  break;
+    break;
   }
 }
 
