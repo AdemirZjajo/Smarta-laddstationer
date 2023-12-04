@@ -37,6 +37,9 @@ void updateQueue()
          node.queueVector.end(),
          [](const vector<float> &a, const vector<float> &b)
          {
+             if (a[1] == b[1])
+                 return a[0] > b[0];
+
              return a[1] > b[1];
          });
 
@@ -181,7 +184,7 @@ void loop()
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission)); // Beräkna minimumladdning
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
-                node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
+                node.queue_point = randomNumber(1, 100); // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
 
                 // node.min_charge = node.calcMinCharge(node.battery_consumption,node.calcStepsNeeded(node.current_mission));   // Beräkna minimumladdning baserat på uppdraget
                 // display.destination(node.current_mission.missionDestination);
@@ -204,8 +207,8 @@ void loop()
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
-        //sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-        //updateQueue();
+        // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+        // updateQueue();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
         //     Noden vill alltid ladda så högt som möjligt i förebyggande syfte; kanske det är många som ska ladda på nästa laddstation
@@ -219,7 +222,7 @@ void loop()
         else if (!isAlone())
         {
             node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            //cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
+            // cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
 
             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateCommunication();
@@ -304,8 +307,8 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
             sendQ(node.node_id, 9999);
-            //sendRemove(node.node_id);
-            //updateCommunication();
+            // sendRemove(node.node_id);
+            // updateCommunication();
 
             // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
