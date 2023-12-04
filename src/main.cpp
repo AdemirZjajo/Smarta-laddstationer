@@ -15,7 +15,6 @@ enum State
     CHARGE
 };
 
-
 Node node(0);          // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
 String CurrentZon;
@@ -28,7 +27,7 @@ using namespace std;
 void updateQueue()
 {
     // removeMissingNodes();
-    //updateCommunication triggar watchdog när noden byter mesh nätverk, kommenteras bort för tillfälligt
+    // updateCommunication triggar watchdog när noden byter mesh nätverk, kommenteras bort för tillfälligt
     updateCommunication();
 
     // Uppdaterar nodens kölista
@@ -91,7 +90,7 @@ bool isAlone()
 void setup()
 {
     cout << "SETUP START" << endl;
-    //void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
+    // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
     initCOM();
     setupDIS();
     node.node_id = getID();
@@ -182,7 +181,7 @@ void loop()
             {
                 node.zone = node.current_mission.missionDestination.zone; // Sätt zonen till den nya startplatsen, alltså det förra uppdragets destination
                 cout << "Noden har nått sin destination, X: " << node.xcor << " Y: " << node.ycor << endl;
-                
+
                 node.current_mission = node.generateMission(node.current_mission.missionDestination); // Generera nytt uppdrag, skicka in nuvarande plats
                 node.current_CS = node.current_mission.missionOrigin;
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);                                   // Beräkna batteriförbrukning baserat på uppdrag
@@ -213,8 +212,8 @@ void loop()
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
-        sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-
+        // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+        sendQ(node.node_id, node.queue_point);
         updateQueue();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
@@ -263,6 +262,9 @@ void loop()
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         loading();
+
+        sendQ(node.node_id, node.queue_point);
+        updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
@@ -334,8 +336,8 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            
-            //disconnect();
+
+            // disconnect();
             state = TRANSIT;
         }
 

@@ -158,7 +158,7 @@ void changeCS(string zoneCode)
     //MESH_PORT = 1111;
     initCOM();
     mesh.update();
-    printf("changed LS  to LS1\n", zoneCode);
+    printf("changed LS  to %s\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-2")
@@ -169,7 +169,7 @@ void changeCS(string zoneCode)
     //MESH_PORT = 2222;
     initCOM();
     mesh.update();
-    printf("changed LS to LS2\n", zoneCode);
+    printf("changed LS to %s\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-3")
@@ -180,7 +180,7 @@ void changeCS(string zoneCode)
     //MESH_PORT = 3333;
     initCOM();
     mesh.update();
-    printf("changed LS from to LS3\n", zoneCode);
+    printf("changed LS from to %s\n", zoneCode);
     // delay(2000);
   }
   else if (zoneCode == "LADDSTATION-4")
@@ -191,7 +191,7 @@ void changeCS(string zoneCode)
     //MESH_PORT = 4444;
     initCOM();
     mesh.update();
-    printf("changed LS to LS4\n", zoneCode);
+    printf("changed LS to %s\n", zoneCode);
     // delay(2000);
   }
 }
