@@ -259,12 +259,14 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-        sendQ(node.node_id, node.queue_point);
-        updateQueue();
+        //sendQ(node.node_id, node.queue_point);
+        //updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
+            sendQ(node.node_id, node.queue_point);
+        updateQueue();
             this_thread::sleep_for(chrono::milliseconds(200)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
             if (node.battery_charge >= 99)
             {
@@ -283,6 +285,8 @@ void loop()
         // ANNARS OM: man inte är ensam, och har högst priopoäng, laddar man mot sin minimumladdning
         else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge) // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
         {
+            sendQ(node.node_id, node.queue_point);
+        updateQueue();
             // Slöa ner programmet; det tar ju faktiskt tid att ladda
             this_thread::sleep_for(chrono::milliseconds(200));
 
