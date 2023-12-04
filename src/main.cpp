@@ -136,6 +136,7 @@ void loop()
     case TRANSIT:
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
+        updateCommunication();
         if (node.battery_charge >= node.min_charge)
         {
             node.zone = "Transit-zone";
@@ -149,8 +150,8 @@ void loop()
             {
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
+                 updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(200));
-
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
                 cout << "Nod-Förlyttning " << i + 1 << "/" << steps << " Batterinivå: " << node.battery_charge << "%" << endl;
@@ -304,6 +305,7 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
             sendQ(node.node_id, 9999);
+            sendRemove(node.node_id);
             //sendRemove(node.node_id);
             //updateCommunication();
 

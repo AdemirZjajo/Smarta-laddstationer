@@ -236,7 +236,7 @@ void receivedCallback(uint32_t from, String &msg)
   case 0: // Lägga in annan i vektorn
     if (get<2>(queueTuple) == 9999)
     {
-      //cout << "Start of 9999." << endl;
+      // cout << "Start of 9999." << endl;
       for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
         if ((*it)[0] == get<1>(queueTuple))
@@ -253,7 +253,7 @@ void receivedCallback(uint32_t from, String &msg)
     }
     else
     {
-      //cout << "case 0: lägg till någon i kölistan." << endl;
+      // cout << "case 0: lägg till någon i kölistan." << endl;
       tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
 
       exists = false;
@@ -276,21 +276,22 @@ void receivedCallback(uint32_t from, String &msg)
     break;
 
   case 1: // Ta bort annan från vektorn
-    //cout << "Början av case 1; ta bort från listan" << endl;
+    // cout << "Början av case 1; ta bort från listan" << endl;
 
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
     {
-      if ((*it)[0] == static_cast<float>(get<1>(queueTuple)))
+      if ((*it)[0] == get<1>(queueTuple))
       {
         queueVector.erase(it);
-        cout << "Node id removed from list: " << get<1>(queueTuple) << endl;
+        cout << "Vector removed successfully." << endl;
         break;
       }
       else
       {
-        cout << "Failed to remove node id from list: " << get<1>(queueTuple) << endl;
+        cout << "ERROR: Tried to remove but couldn't" << endl;
       }
     }
+    break;
   }
 }
 
