@@ -158,7 +158,7 @@ void loop()
             {
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
-                this_thread::sleep_for(chrono::milliseconds(200));
+                //this_thread::sleep_for(chrono::milliseconds(200));
 
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
@@ -245,7 +245,7 @@ void loop()
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         queuePoints(node.queue_point);
-        this_thread::sleep_for(chrono::milliseconds(500)); // Finns för att artificiellt slöa ner programmet, annars blir saker oläsbara ibland
+        //this_thread::sleep_for(chrono::milliseconds(500)); // Finns för att artificiellt slöa ner programmet, annars blir saker oläsbara ibland
         break;
 
     case CHARGE:
@@ -269,7 +269,7 @@ void loop()
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
-            this_thread::sleep_for(chrono::milliseconds(200)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
+            //this_thread::sleep_for(chrono::milliseconds(200)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
             if (node.battery_charge >= 99)
             {
                 node.battery_charge = 100;
@@ -288,7 +288,7 @@ void loop()
         else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge) // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
         {
             // Slöa ner programmet; det tar ju faktiskt tid att ladda
-            this_thread::sleep_for(chrono::milliseconds(200));
+            //this_thread::sleep_for(chrono::milliseconds(200));
 
             node.battery_charge++; // Öka batterinivån
 
@@ -312,11 +312,9 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            for (int i = 0; i < 5; i++)
-            {
-                sendQ(node.node_id, 9999);
-                updateQueue();
-            }
+
+            sendQ(node.node_id, 9999);
+            updateQueue();
 
             // sendRemove(node.node_id);
 
