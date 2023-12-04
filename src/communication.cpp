@@ -153,9 +153,9 @@ void changeCS(string zoneCode)
   printf("changing Zone \n");
   if (zoneCode == "LADDSTATION-1")
   {
-    mesh.stop();
+    //mesh.stop();
     MESH_PREFIX = "station1";
-    //MESH_PASSWORD = "station1";
+    MESH_PASSWORD = "station1";
     MESH_PORT = 1111;
     initCOM();
     mesh.update();
@@ -164,9 +164,9 @@ void changeCS(string zoneCode)
   }
   else if (zoneCode == "LADDSTATION-2")
   {
-    mesh.stop();
+    //mesh.stop();
     MESH_PREFIX = "station2";
-    //MESH_PASSWORD = "station2";
+    MESH_PASSWORD = "station2";
     MESH_PORT = 2222;
     initCOM();
     mesh.update();
@@ -175,9 +175,9 @@ void changeCS(string zoneCode)
   }
   else if (zoneCode == "LADDSTATION-3")
   {
-    mesh.stop();
+    //mesh.stop();
     MESH_PREFIX = "station3";
-    //MESH_PASSWORD = "station3";
+    MESH_PASSWORD = "station3";
     MESH_PORT = 3333;
     initCOM();
     mesh.update();
@@ -186,9 +186,9 @@ void changeCS(string zoneCode)
   }
   else if (zoneCode == "LADDSTATION-4")
   {
-    mesh.stop();
+    //mesh.stop();
     MESH_PREFIX = "station4";
-    //MESH_PASSWORD = "station4";
+    MESH_PASSWORD = "station4";
     MESH_PORT = 4444;
     initCOM();
     mesh.update();
