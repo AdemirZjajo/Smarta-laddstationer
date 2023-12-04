@@ -303,7 +303,6 @@ void loop()
         else if (!isAlone() && (node.queueVector[0][0] != node.node_id) && node.battery_charge <= node.min_charge)
         {
             cout << "Noden har blivit utslängd av en annan med högre köpoäng." << endl; // För debugging
-            this_thread::sleep_for(chrono::milliseconds(1000));
             state = QUEUE;
         }
 
