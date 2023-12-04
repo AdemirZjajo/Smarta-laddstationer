@@ -36,11 +36,14 @@ void updateQueue()
 
     // Sorterar listan
     sort(node.queueVector.begin(),
-         node.queueVector.end(),
-         [](const vector<float> &a, const vector<float> &b)
-         {
-             return a[1] > b[1];
-         });
+       node.queueVector.end(),
+       [](const vector<float> &a, const vector<float> &b)
+       {
+         if (a[1] == b[1])
+           return a[0] > b[0];
+
+         return a[1] > b[1];
+       });
 
     // Skriver ut kölistan för debugging
     cout << "--KÖLISTA--" << endl;
