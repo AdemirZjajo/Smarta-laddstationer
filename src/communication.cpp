@@ -103,6 +103,7 @@ void sendQ(int id, float points)
     qPoints += "-";
     qPoints += points;
     mesh.sendBroadcast(qPoints);
+    cout << "Sending message to delete me from other's lists." << endl;
   }
   else
   {
@@ -245,7 +246,7 @@ void receivedCallback(uint32_t from, String &msg)
   case 0: // Lägga in annan i vektorn
     if (get<2>(queueTuple) == 9999)
     {
-      // cout << "Start of 9999." << endl;
+      cout << "Deleting node " << get<1>(queueTuple) << " from list." << endl;
       for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
       {
         if ((*it)[0] == get<1>(queueTuple))

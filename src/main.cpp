@@ -15,7 +15,6 @@ enum State
     CHARGE
 };
 
-
 Node node(0);          // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
 String CurrentZon;
@@ -28,7 +27,7 @@ using namespace std;
 void updateQueue()
 {
     // removeMissingNodes();
-    //updateCommunication triggar watchdog när noden byter mesh nätverk, kommenteras bort för tillfälligt
+    // updateCommunication triggar watchdog när noden byter mesh nätverk, kommenteras bort för tillfälligt
     updateCommunication();
 
     // Uppdaterar nodens kölista
@@ -36,14 +35,14 @@ void updateQueue()
 
     // Sorterar listan
     sort(node.queueVector.begin(),
-       node.queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-         if (a[1] == b[1])
-           return a[0] > b[0];
+         node.queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+             if (a[1] == b[1])
+                 return a[0] > b[0];
 
-         return a[1] > b[1];
-       });
+             return a[1] > b[1];
+         });
 
     // Skriver ut kölistan för debugging
     cout << "--KÖLISTA--" << endl;
@@ -94,7 +93,7 @@ bool isAlone()
 void setup()
 {
     cout << "SETUP START" << endl;
-    //void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
+    // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
     initCOM();
     setupDIS();
     node.node_id = getID();
@@ -185,7 +184,7 @@ void loop()
             {
                 node.zone = node.current_mission.missionDestination.zone; // Sätt zonen till den nya startplatsen, alltså det förra uppdragets destination
                 cout << "Noden har nått sin destination, X: " << node.xcor << " Y: " << node.ycor << endl;
-                
+
                 node.current_mission = node.generateMission(node.current_mission.missionDestination); // Generera nytt uppdrag, skicka in nuvarande plats
                 node.current_CS = node.current_mission.missionOrigin;
                 node.battery_consumption = node.calcBatConsumption(node.current_mission);                                   // Beräkna batteriförbrukning baserat på uppdrag
@@ -313,8 +312,12 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            sendQ(node.node_id, 9999);
-            updateQueue();
+            for (int i = 0; i < 5; i++)
+            {
+                sendQ(node.node_id, 9999);
+                updateQueue();
+            }
+
             // sendRemove(node.node_id);
 
             node.queueVector.clear();
@@ -333,8 +336,8 @@ void loop()
                 }
                 cout << '\n';
             }*/
-            
-            //disconnect();
+
+            // disconnect();
             state = TRANSIT;
         }
 
