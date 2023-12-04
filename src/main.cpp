@@ -208,7 +208,7 @@ void loop()
         cout << "** NOD är i QUEUE-state **" << endl;
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        changeCS(node.current_CS.zone);
+        changeCS(node.current_CS.zone.c_str());
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
