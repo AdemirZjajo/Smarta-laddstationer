@@ -229,7 +229,6 @@ void receivedCallback(uint32_t from, String &msg)
 {
   cout << "NOD:" << from << " " << msg.c_str() << endl;
   string stringMsg = msg.c_str();
-  cout << "Innan tuple creaton" << endl;
   tuple<int, int, float> queueTuple = splitString(stringMsg);
 
   switch (get<0>(queueTuple))
@@ -243,12 +242,12 @@ void receivedCallback(uint32_t from, String &msg)
         if ((*it)[0] == get<1>(queueTuple))
         {
           queueVector.erase(it);
-          cout << "Vector removed successfully." << endl;
+          cout << (*it)[0] << " Vector removed successfully." << endl;
           break;
         }
         else
         {
-          cout << "ERROR: Tried to remove but couldn't" << endl;
+          cout << (*it)[0] << " ERROR: Tried to remove but couldn't" << endl;
         }
       }
     }

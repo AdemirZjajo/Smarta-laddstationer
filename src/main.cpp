@@ -150,7 +150,7 @@ void loop()
             {
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
-                 updateCommunication();
+                updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(200));
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
@@ -257,8 +257,8 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-        sendQ(node.node_id, node.queue_point);
-        updateQueue();
+        //sendQ(node.node_id, node.queue_point);
+        //updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
@@ -306,7 +306,7 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            sendQ(node.node_id, 9999);
+          
             //sendRemove(node.node_id);
             //updateCommunication();
 
