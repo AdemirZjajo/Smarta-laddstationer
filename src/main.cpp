@@ -250,13 +250,15 @@ void loop()
         // Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
         // Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
         // noder med högre köpoäng som ska kunna "slänga ut" den nuvarande laddande noden
-        // updateQueue();
 
         displayClear();
         setID(node.node_id);
         setBat(node.battery_charge);
         position(node.xcor, node.ycor);
         loading();
+
+        sendQ(node.node_id, node.queue_point);
+        updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
