@@ -33,13 +33,15 @@ void updateQueue()
     node.queueVector = getComQueueVector();
 
     // Sorterar listan
-    node.queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-        if (a[1] == b[1])
-            return a[0] > b[0];
-        return a[1] > b[1];
-       };
+    sort(node.queueVector.begin(),
+     node.queueVector.end(),
+     [](const vector<float> &a, const vector<float> &b)
+     {
+       if (a[1] == b[1])
+         return a[0] > b[0];
+
+       return a[1] > b[1];
+     });
 
     // Skriver ut kölistan för debugging
     cout << "--KÖLISTA--" << endl;
@@ -194,7 +196,6 @@ void loop()
         {
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << "% men uppdraget kräver: " << node.min_charge << "%" << endl;
             state = QUEUE;
-            break;
         }
         break;
 
