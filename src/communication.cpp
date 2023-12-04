@@ -29,9 +29,9 @@ using namespace std;
 Scheduler userScheduler; // Scheduler to control tasks
 painlessMesh mesh;       // instance for our mesh
 list<uint32_t> nodeList; // instance for our list
-String MESH_PREFIX = "meshOrigin";
-String MESH_PASSWORD = "123456789";
-int MESH_PORT = 5555;
+String MESH_PREFIX = "meshOrigi";
+String MESH_PASSWORD = "12345678";
+int MESH_PORT = 5556;
 int Counter = 0;
 int nodeId = 0;
 String currentZon;
@@ -251,6 +251,11 @@ void receivedCallback(uint32_t from, String &msg)
         }
       }
     }
+    else if (get<2>(queueTuple) == 9998)
+    {
+      cout << from << " in transit" << endl;
+    }
+
     else
     {
       // cout << "case 0: lägg till någon i kölistan." << endl;

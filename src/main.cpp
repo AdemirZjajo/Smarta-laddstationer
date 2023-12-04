@@ -34,14 +34,14 @@ void updateQueue()
 
     // Sorterar listan
     sort(node.queueVector.begin(),
-     node.queueVector.end(),
-     [](const vector<float> &a, const vector<float> &b)
-     {
-       if (a[1] == b[1])
-         return a[0] > b[0];
+         node.queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+             if (a[1] == b[1])
+                 return a[0] > b[0];
 
-       return a[1] > b[1];
-     });
+             return a[1] > b[1];
+         });
 
     // Skriver ut kölistan för debugging
     cout << "--KÖLISTA--" << endl;
@@ -132,14 +132,14 @@ void loop()
     // displayLooping(node.node_id);
 
     // updateCommunication(); // Utflyttat från QUEUE
-    //updateQueue();
+    // updateQueue();
 
     switch (state)
     {
     case TRANSIT:
         cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
-        updateCommunication();
+        // updateCommunication();
         if (node.battery_charge >= node.min_charge)
         {
             node.zone = "Transit-zone";
@@ -151,10 +151,11 @@ void loop()
             int steps = node.calcStepsNeeded(node.current_mission);
             for (int i = 0; i < steps; i++)
             {
+                sendQ(node.node_id, 9998);
                 // Chilla 1 sekund
                 // iden är att ett steg tar 1 sec att gå (så vi pausar tråden och tror att de kommer funka)
                 updateCommunication();
-                this_thread::sleep_for(chrono::milliseconds(200));
+                this_thread::sleep_for(chrono::milliseconds(100));
                 // Optional: Display iteration number
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
                 cout << "Nod-Förlyttning " << i + 1 << "/" << steps << " Batterinivå: " << node.battery_charge << "%" << endl;
@@ -203,7 +204,7 @@ void loop()
         cout << "** NOD är i QUEUE-state **" << endl;
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        //changeCS(node.current_CS.zone);
+        // changeCS(node.current_CS.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
@@ -221,8 +222,8 @@ void loop()
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
         else if (!isAlone())
         {
-            //node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
-            // cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
+            // node.queue_point = calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng;
+            //  cout << "Nodens köpoäng är: " << node.queue_point << endl;                  // För debugging
 
             sendQ(node.node_id, node.queue_point); // Noden skickar sitt ID samt köpoäng till nätverket så fort den vet att den inte är ensam på laddstationen
             // updateCommunication();
@@ -259,14 +260,13 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
-        //sendQ(node.node_id, node.queue_point);
-        //updateQueue();
+        sendQ(node.node_id, node.queue_point);
+        updateQueue();
 
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
-            sendQ(node.node_id, node.queue_point);
-        updateQueue();
+
             this_thread::sleep_for(chrono::milliseconds(200)); // Slöa ner programmet; det tar ju faktiskt tid att ladda
             if (node.battery_charge >= 99)
             {
@@ -285,8 +285,7 @@ void loop()
         // ANNARS OM: man inte är ensam, och har högst priopoäng, laddar man mot sin minimumladdning
         else if (!isAlone() && (node.queueVector[0][0] == node.node_id) && node.battery_charge <= node.min_charge) // Otestat, har lagt till "&& (node.queueVector[0][0] == node.node_id)" -Simon
         {
-            sendQ(node.node_id, node.queue_point);
-        updateQueue();
+
             // Slöa ner programmet; det tar ju faktiskt tid att ladda
             this_thread::sleep_for(chrono::milliseconds(200));
 
