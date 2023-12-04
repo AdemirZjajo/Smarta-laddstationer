@@ -325,8 +325,10 @@ void changedConnectionCallback()
     {
       printf("%u is disconnected\n", node);
       nodeList.remove(node);
+      sendQ(node % 1000, 9999);
     }
   }
+
 }
 
 void updateCommunication()
