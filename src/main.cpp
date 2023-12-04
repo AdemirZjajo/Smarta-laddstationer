@@ -303,6 +303,7 @@ void loop()
         else if (!isAlone() && (node.queueVector[0][0] != node.node_id) && node.battery_charge <= node.min_charge)
         {
             cout << "Noden har blivit utslängd av en annan med högre köpoäng." << endl; // För debugging
+            this_thread::sleep_for(chrono::milliseconds(1000));
             state = QUEUE;
         }
 
@@ -312,11 +313,9 @@ void loop()
             cout << "Tillräckligt med laddning för uppdraget." << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            for (int i = 0; i < 5; i++)
-            {
-                sendQ(node.node_id, 9999);
-                updateQueue();
-            }
+
+            sendQ(node.node_id, 9999);
+            updateQueue();
 
             // sendRemove(node.node_id);
 
