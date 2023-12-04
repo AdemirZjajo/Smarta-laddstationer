@@ -210,11 +210,7 @@ void loop()
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
         changeCS(node.current_CS.zone);
 
-        // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
-
-        node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-
         updateQueue();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
@@ -264,6 +260,10 @@ void loop()
         position(node.xcor, node.ycor);
         loading();
 
+        // Om changeCS i början av QUEUE faktiskt funkar, så skickas nedanstående sendQ ENBART till de noder som är vid just denna LS
+        sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i CHARGE skickar den sitt ID samt köpoäng till nätverket
+        updateQueue();
+
         //  OM: man är ensam på laddstationen laddar man mot 100%
         if (isAlone() && node.battery_charge < 100)
         {
@@ -311,15 +311,11 @@ void loop()
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
             sendQ(node.node_id, 9999);
+            updateQueue();
             // sendRemove(node.node_id);
-            // updateCommunication();
 
-            // cout << "***CLEARING LISTS***" << endl;
             node.queueVector.clear();
             clearComVector();
-            // cout << "***CHECKING CLEARED LISTS***" << endl;
-            // cout << "***THE LIST BELOW SHOULD BE CLEARED***" << endl;
-            updateQueue();
 
             // UPPDATERA STATUS-FUNKTION TILL OLED
             // display.clearArea();
