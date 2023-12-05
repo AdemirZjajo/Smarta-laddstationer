@@ -11,7 +11,7 @@
 
 using namespace std;
 
-ChargingStation CS1(1, 0, 0, "LADDSTATION-1"), CS2(2, 0, 9, "LADDSTATION-2"), CS3(3, 9, 0, "LADDSTATION-3"), CS4(4, 9, 9, "LADDSTATION-4");
+ChargingStation CS1(1, 0, 0, "LADDSTATION_1"), CS2(2, 0, 9, "LADDSTATION_2"), CS3(3, 9, 0, "LADDSTATION_3"), CS4(4, 9, 9, "LADDSTATION_4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
 /*

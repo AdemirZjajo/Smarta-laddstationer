@@ -2,6 +2,7 @@
 #include "communication.hpp"
 #include "display.hpp"
 #include "mission.hpp"
+#include "message.hpp"
 #include "priorityAlgorithm.hpp"
 #include <iostream>
 #include <chrono>
@@ -18,6 +19,7 @@ enum State
 Node node(0);          // Type casta integern för nod id till en float för att kunna användas i en 2d vektor i noden
 State state = TRANSIT; // Starttillståndet
 String CurrentZon;
+Message message;
 using namespace std;
 
 // Metod som:
@@ -27,10 +29,9 @@ using namespace std;
 void updateQueue()
 {
     // removeMissingNodes();
-    updateCommunication();
+    // updateCommunication();
 
     // Uppdaterar nodens kölista
-    getComQueueVector() = getComQueueVector();
 
     // Sorterar listan
     sort(getComQueueVector().begin(),
@@ -56,8 +57,10 @@ void updateQueue()
 bool isAlone()
 {
     bool isAlone = false;
+
     if (getComQueueVector().size() == 1)
     {
+
         if (getComQueueVector()[0][0] == node.node_id)
         {
             isAlone = true;
@@ -126,12 +129,9 @@ void loop()
         getID();
         setID(node.node_id);
     }
-    // displayClear();
-
-    // displayLooping(node.node_id);
 
     // updateQueue();
-    // updateCommunication();
+    updateCommunication();
     // printQueue();
 
     switch (state)
@@ -196,6 +196,9 @@ void loop()
         else
         {
             cout << "Noden behöver ladda batteriet. Eftersom batteristatus är: " << node.battery_charge << "% men uppdraget kräver: " << node.min_charge << "%" << endl;
+            message = Message(1, "AddToQueue", ++node.messageID, node.node_id, node.queue_point, node.zone);
+            sendMessage(message);
+            addToQueue(message);
             state = QUEUE;
             break;
         }
@@ -206,23 +209,24 @@ void loop()
 
         // Bytar meshinställningar till de som gäller för det nuvarande uppdragets startladdstation
         // Gör det enbart möjligt för noden att kommunicera med de noder som är på samma laddstation
-        changeCS(node.current_CS.zone);
+        // changeCS(node.current_CS.zone);
 
         // updateCommunication(); // Testar att flytta ut denna utanför switchen, känns som att det behövs för att kommunikationen ska fungera korrekt eller?
 
         // node.queue_point = calculatePriority(node.battery_charge, node.min_charge);
         // updateQueue();
-        updateCommunication();
-        sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-                                               /*
-                                                       for (int i = 0; i < 5; i++)
-                                                       {
-                                                           // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
-                                                           updateCommunication();
-                                                           // this_thread::sleep_for(chrono::milliseconds(50));
-                                                       }
-                                                       */
-        printQueueVector();
+
+        // updateCommunication();
+        //  sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+        /*
+                for (int i = 0; i < 5; i++)
+                {
+                    // sendQ(node.node_id, node.queue_point); // Varje gång en nod kommer in i QUEUE skickar den sitt ID samt köpoäng till nätverket
+                    updateCommunication();
+                    // this_thread::sleep_for(chrono::milliseconds(50));
+                }
+                */
+        // printQueueVector();
 
         // OM: Ingen annan nod är vid laddstationen; alltså att man är den enda noden i ens egna kölista --> byt tillstånd till CHARGE och börja ladda mot 100%
         //     Noden vill alltid ladda så högt som möjligt i förebyggande syfte; kanske det är många som ska ladda på nästa laddstation
@@ -273,8 +277,8 @@ void loop()
         loading();
 
         updateCommunication();
-        sendQ(node.node_id, node.queue_point);
-        //  updateQueue();
+        // sendQ(node.node_id, node.queue_point);
+        //   updateQueue();
 
         printQueueVector();
         //  OM: man är ensam på laddstationen laddar man mot 100%
@@ -325,7 +329,7 @@ void loop()
             this_thread::sleep_for(chrono::milliseconds(200));
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-            sendRemove(node.node_id);
+            // sendRemove(node.node_id);
 
             // sendQ(node.node_id, 9999);
             clearComVector();

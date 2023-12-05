@@ -27,6 +27,7 @@ public:
   int ycor;                   // Nodens y-koordinat
   string zone;                // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
+  int messageID = 0;
 
   vector<vector<float>> queueVector{};
 
@@ -46,8 +47,6 @@ public:
   Node();
   Node(int nodeID);
 
-
-  
   Mission generateMission(ChargingStation currentCS);
 
   float calcBatConsumption(Mission mission);
@@ -56,9 +55,8 @@ public:
   int calcStepsNeeded(Mission current_mission);
 
   float calcMinCharge(float battery_consumption, int steps_needed);
-
 };
 
-  int randomNumber(int from, int to);
+int randomNumber(int from, int to);
 
 #endif

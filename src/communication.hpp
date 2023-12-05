@@ -2,6 +2,7 @@
 #ifndef COMMUNICATION_H_
 #define COMMUNICATION_H_
 
+#include "message.hpp"
 #include <stdint.h>
 #include <string>
 #include <painlessMesh.h>
@@ -11,13 +12,15 @@ using namespace std;
 
 void initCOM();
 
-void sendMessage();
+void sendMessage(Message message);
+
+void addToQueue(Message message);
 
 void sendQ(int id, float points);
 void sendRemove(int id);
 pair<int, float> getNodePair();
 
-void changeCS(string zoneCode);
+// void changeCS(string zoneCode);
 
 int getID();
 

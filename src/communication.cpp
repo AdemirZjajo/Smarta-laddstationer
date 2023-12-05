@@ -17,6 +17,7 @@
 
 //************************************************************
 #include "communication.hpp"
+#include "message.hpp"
 #include <painlessMesh.h>
 #include <list>
 #include <iostream>
@@ -39,13 +40,22 @@ tuple<int, int, float> queueTuple;
 
 vector<vector<float>> queueVector;
 
+struct MessageStruct
+{
+  String category;
+  int nodeID;
+  String cs;
+  float qp;
+  int msgID;
+};
+
 vector<float> tempVect;
 bool exists;
 
 void sendMessage(); // Prototype so PlatformIO doesn't complain
 
 // Create the task
-Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
+// Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
 
 // Clear the list
 void clearComVector()
@@ -54,14 +64,69 @@ void clearComVector()
 }
 
 // Creating the message and broadcast it here
-void sendMessage()
+void sendMessage(Message message)
 {
-  String msg = "Hello from node ";
-  nodeId = mesh.getNodeId() % 1000;
-  msg += nodeId;
-  // mesh.sendBroadcast(msg);
-  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-  Serial.printf("Sent %s\n", msg.c_str());
+  String msg = String(message.message_category.c_str());
+  msg += "-";
+  msg += message.sender_nod_id;
+  msg += "-";
+  msg += String(message.message_zone.c_str());
+  msg += "-";
+  msg += message.queue_point;
+  msg += "-";
+  msg += message.message_id;
+  mesh.sendBroadcast(msg);
+  cout << "Nod-" << message.sender_nod_id << " skickade: " << msg.c_str() << endl;
+}
+
+void addToQueue(Message message)
+{
+  // Lägger till sig själv i vektorn
+  tempVect = {static_cast<float>(message.sender_nod_id), static_cast<float>(message.queue_point)};
+  exists = false;
+
+  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+  {
+    if ((*it)[0] == tempVect[0])
+    {
+      exists = true;
+      (*it)[0] = tempVect[0];
+      (*it)[1] = tempVect[1];
+      break;
+    }
+  }
+
+  if (!exists)
+  {
+    queueVector.push_back(tempVect);
+  }
+}
+
+MessageStruct parseString(const String &input)
+{
+  MessageStruct result;
+
+  // Find the positions of "-" in the input string
+  int pos1 = input.indexOf('-');
+  int pos2 = input.indexOf('-', pos1 + 1);
+  int pos3 = input.indexOf('-', pos2 + 1);
+  int pos4 = input.indexOf('-', pos3 + 1);
+  int pos5 = input.indexOf('-', pos4 + 1);
+
+  String category;
+  int nodeID;
+  String cs;
+  float qp;
+  int msgID;
+
+  // Extract substrings based on "-" positions
+  result.category = input.substring(0, pos1);
+  result.nodeID = input.substring(pos1 + 1, pos2).toInt();
+  result.cs = input.substring(pos2 + 1, pos3);
+  result.qp = input.substring(pos3 + 1, pos4).toFloat();
+  result.msgID = input.substring(pos4 + 1, pos5).toInt();
+
+  return result;
 }
 
 // Itererar genom meshnätets anslutna noder lista, om en nod inte finns här men finns i köistan tas den bort
@@ -134,67 +199,6 @@ void sendQ(int id, float points)
   }
 }
 
-void sendRemove(int id)
-{
-  cout << "Början av sendRemove" << endl;
-  String tempStr = "1";
-  tempStr += "-";
-  tempStr += id;
-  tempStr += "-";
-  tempStr += 123;
-  mesh.sendBroadcast(tempStr);
-  // taskSendMessage.setInterval(random(TASK_SECOND * 1, TASK_SECOND * 3));
-}
-
-void changeCS(string zoneCode)
-{
-  printf("changing Zone \n");
-  if (zoneCode == "LADDSTATION-1")
-  {
-    // mesh.stop();
-    MESH_PREFIX = "station1";
-    String MESH_PASSWORD = "station1";
-    MESH_PORT = 1111;
-    printf("changed LS  to LS1\n", zoneCode);
-    // delay(2000);
-    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    //mesh.update();
-  }
-  else if (zoneCode == "LADDSTATION-2")
-  {
-    // mesh.stop();
-    MESH_PREFIX = "station2";
-    String MESH_PASSWORD = "station2";
-    MESH_PORT = 2222;
-    printf("changed LS to LS2\n", zoneCode);
-    // delay(2000);
-    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    //mesh.update();
-  }
-  else if (zoneCode == "LADDSTATION-3")
-  {
-    // mesh.stop();
-    MESH_PREFIX = "station3";
-    String MESH_PASSWORD = "station3";
-    MESH_PORT = 3333;
-    printf("changed LS from to LS3\n", zoneCode);
-    // delay(2000);
-    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    //mesh.update();
-  }
-  else if (zoneCode == "LADDSTATION-4")
-  {
-    // mesh.stop();
-    MESH_PREFIX = "station4";
-    String MESH_PASSWORD = "station4";
-    MESH_PORT = 4444;
-    printf("changed LS to LS4\n", zoneCode);
-    // delay(2000);
-    // mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
-    //mesh.update();
-  }
-}
-
 // returns the node id, mainly used in display
 int getID()
 {
@@ -235,11 +239,19 @@ tuple<int, int, float> splitString(const string &input)
 // This notifies the ESP when a message is recieved
 void receivedCallback(uint32_t from, String &msg)
 {
-  cout << from << ", in callback, msg: " << msg.c_str() << endl;
-  string stringMsg = msg.c_str();
-  tuple<int, int, float> queueTuple = splitString(stringMsg);
+  cout << "Nod-" << from % 1000 << " tog emot: " << msg.c_str() << endl;
+  //string stringMsg = msg.c_str();
+  MessageStruct callbackStruct = parseString(msg);
 
-  switch (get<0>(queueTuple))
+
+  cout << "Kategori: " << callbackStruct.category.c_str();
+  cout << ", Nod-ID: " << callbackStruct.nodeID;
+  cout << ", Laddstation: " << callbackStruct.cs.c_str();
+  cout << " Köpoäng: " << callbackStruct.qp;
+  cout << " Message-ID: "  << callbackStruct.msgID << endl;
+  // tuple<int, int, float> queueTuple = splitString(stringMsg);
+
+  /*switch (get<0>(queueTuple))
   {
   case 0: // Lägga in annan i vektorn
     if (get<2>(queueTuple) == 9999)
@@ -313,7 +325,7 @@ void receivedCallback(uint32_t from, String &msg)
            return a[0] > b[0];
 
          return a[1] > b[1];
-       });
+       });*/
 }
 
 void newConnectionCallback(uint32_t nodeId)
@@ -349,7 +361,6 @@ void updateCommunication()
 
 vector<vector<float>> getComQueueVector()
 {
-  //mesh.update();
   return queueVector;
 }
 
