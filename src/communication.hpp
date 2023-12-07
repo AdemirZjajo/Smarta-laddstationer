@@ -14,13 +14,11 @@ void initCOM();
 
 void sendMessage(Message message);
 
-void addToQueue(Message message);
+void addSelfToQueue(Message message);
 
-void sendQ(int id, float points);
-void sendRemove(int id);
-pair<int, float> getNodePair();
+void eraseSelfFromQueue(Message message);
 
-// void changeCS(string zoneCode);
+void sortQueue();
 
 int getID();
 
@@ -29,6 +27,7 @@ void receivedCallback(uint32_t from, String &msg);
 void newConnectionCallback(uint32_t nodeId);
 
 void changedConnectionCallback();
+
 void updateCommunication();
 
 void clearComVector();
@@ -36,6 +35,7 @@ void clearComVector();
 vector<vector<float>> getComQueueVector();
 
 void disconnect();
+
 void removeMissingNodes();
 
 void printQueueVector();

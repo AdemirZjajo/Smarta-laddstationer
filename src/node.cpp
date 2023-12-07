@@ -97,7 +97,7 @@ Node::Node(int id)
 
   // NODEN spawnar randomly på en av de fyra Laddstationer
   ChargingStation init_CS = randomCS(CS1, CS2, CS3, CS4);
-  current_CS = CS1;       // init_CS;
+  current_CS = init_CS;   // init_CS;
   xcor = current_CS.xcor; // Nodens initiala x-koordinat
   ycor = current_CS.ycor; // Nodens initiala y-koordinat
   zone = current_CS.zone; // Nodens initiala zon

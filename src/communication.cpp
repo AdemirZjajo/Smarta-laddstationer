@@ -36,9 +36,13 @@ int MESH_PORT = 5555;
 int Counter = 0;
 int nodeId = 0;
 String currentZon;
-tuple<int, int, float> queueTuple;
 
 vector<vector<float>> queueVector;
+vector<vector<float>> queueVector_CS1;
+vector<vector<float>> queueVector_CS2;
+vector<vector<float>> queueVector_CS3;
+vector<vector<float>> queueVector_CS4;
+vector<vector<float>> vector_transit;
 
 struct MessageStruct
 {
@@ -79,7 +83,7 @@ void sendMessage(Message message)
   cout << "Nod-" << message.sender_nod_id << " skickade: " << msg.c_str() << endl;
 }
 
-void addToQueue(Message message)
+void addSelfToQueue(Message message)
 {
   // Lägger till sig själv i vektorn
   tempVect = {static_cast<float>(message.sender_nod_id), static_cast<float>(message.queue_point)};
@@ -91,7 +95,7 @@ void addToQueue(Message message)
     {
       exists = true;
       (*it)[0] = tempVect[0];
-      (*it)[1] = tempVect[1];
+      (*it)[1] = tempVect[1];  
       break;
     }
   }
@@ -99,6 +103,33 @@ void addToQueue(Message message)
   if (!exists)
   {
     queueVector.push_back(tempVect);
+    cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
+  }
+}
+
+void eraseSelfFromQueue(Message message)
+{
+
+ for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == static_cast<float>(message.sender_nod_id))
+        {
+          queueVector.erase(it);
+          cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
+          break;
+        }
+      }
+}
+
+void sortQueue(){
+
+  if(!(queueVector.empty())){
+  sort(queueVector.begin(),
+       queueVector.end(),
+       [](const vector<float> &a, const vector<float> &b)
+       {
+         return a[1] > b[1];
+       });
   }
 }
 
@@ -157,47 +188,7 @@ void removeMissingNodes()
   }
 }
 
-void sendQ(int id, float points)
-{
-  if (points == 9999)
-  {
-    String qPoints = "0";
-    qPoints += "-";
-    qPoints += id;
-    qPoints += "-";
-    qPoints += points;
-    mesh.sendBroadcast(qPoints);
-  }
-  else
-  {
-    String qPoints = "0";
-    qPoints += "-";
-    qPoints += id;
-    qPoints += "-";
-    qPoints += points;
-    mesh.sendBroadcast(qPoints);
 
-    // Lägger till sig själv i vektorn
-    tempVect = {static_cast<float>(id), static_cast<float>(points)};
-    exists = false;
-
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-    {
-      if ((*it)[0] == tempVect[0])
-      {
-        exists = true;
-        (*it)[0] = tempVect[0];
-        (*it)[1] = tempVect[1];
-        break;
-      }
-    }
-
-    if (!exists)
-    {
-      queueVector.push_back(tempVect);
-    }
-  }
-}
 
 // returns the node id, mainly used in display
 int getID()
@@ -205,42 +196,10 @@ int getID()
   return mesh.getNodeId() % 1000;
 }
 
-tuple<int, int, float> splitString(const string &input)
-{
-  // Find the positions of the "-" characters
-  size_t pos1 = input.find('-');
-  size_t pos2 = input.find('-', pos1 + 1);
-
-  // Check if both "-" characters are found
-  if (pos1 != string::npos && pos2 != string::npos)
-  {
-    // Extract the substrings between the "-" characters
-    string firstPart = input.substr(0, pos1);
-    string secondPart = input.substr(pos1 + 1, pos2 - pos1 - 1);
-    string thirdPart = input.substr(pos2 + 1);
-
-    // Convert the substrings to integer and float values
-    int firstValue = stoi(firstPart);
-    int secondValue = stoi(secondPart);
-    float thirdValue = stof(thirdPart);
-
-    // Return a tuple of integer and float values
-    return make_tuple(firstValue, secondValue, thirdValue);
-  }
-  else
-  {
-    // Handle the case where one or both "-" characters are not found
-    // You might want to throw an exception or handle it differently based on your needs
-    cerr << "Error: One or both '-' characters not found in the input string" << endl;
-    return make_tuple(0, 0, 0.0f); // Return default values or handle the error accordingly
-  }
-}
-
 // This notifies the ESP when a message is recieved
 void receivedCallback(uint32_t from, String &msg)
 {
-  cout << "Nod-" << from % 1000 << " tog emot: " << msg.c_str() << endl;
-  //string stringMsg = msg.c_str();
+  cout << "Meddelande från Nod-" << from % 1000 << " --> " << msg.c_str() << endl;
   MessageStruct callbackStruct = parseString(msg);
 
 
@@ -249,33 +208,10 @@ void receivedCallback(uint32_t from, String &msg)
   cout << ", Laddstation: " << callbackStruct.cs.c_str();
   cout << " Köpoäng: " << callbackStruct.qp;
   cout << " Message-ID: "  << callbackStruct.msgID << endl;
-  // tuple<int, int, float> queueTuple = splitString(stringMsg);
 
-  /*switch (get<0>(queueTuple))
+  if(callbackStruct.category == "AddToQueue")
   {
-  case 0: // Lägga in annan i vektorn
-    if (get<2>(queueTuple) == 9999)
-    {
-      // cout << "Start of 9999." << endl;
-      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-      {
-        if ((*it)[0] == get<1>(queueTuple))
-        {
-          queueVector.erase(it);
-          cout << "Vector removed successfully." << endl;
-          printQueueVector();
-          // break;
-        }
-        else
-        {
-          cout << "ERROR: Tried to remove but couldn't" << endl;
-        }
-      }
-    }
-    else
-    {
-      cout << "case 0: lägg till någon i kölistan." << endl;
-      tempVect = {static_cast<float>(get<1>(queueTuple)), get<2>(queueTuple)};
+      tempVect = {static_cast<float>(callbackStruct.nodeID), callbackStruct.qp};
 
       exists = false;
       for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
@@ -285,47 +221,32 @@ void receivedCallback(uint32_t from, String &msg)
           exists = true;
           (*it)[0] = tempVect[0];
           (*it)[1] = tempVect[1];
-          // break;
-          printQueueVector();
-        }
+        } 
       }
 
       if (!exists)
       {
         queueVector.push_back(tempVect);
+        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+    
       }
-    }
-    break;
-
-  case 1: // Ta bort annan från vektorn
-          // cout << "Början av case 1; ta bort från listan" << endl;
-
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-    {
-      if ((*it)[0] == get<1>(queueTuple))
-      {
-        queueVector.erase(it);
-        cout << "Vector removed successfully." << endl;
-        printQueueVector();
-        // break;
-      }
-      else
-      {
-        cout << "ERROR: Tried to remove but couldn't......." << endl;
-      }
-    }
-    break;
   }
 
-  sort(queueVector.begin(),
-       queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-         if (a[1] == b[1])
-           return a[0] > b[0];
-
-         return a[1] > b[1];
-       });*/
+  else if(callbackStruct.category == "RemoveFromQueue")
+  {
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+      {
+        if ((*it)[0] == callbackStruct.nodeID)
+        {
+          queueVector.erase(it);
+          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str()<< endl;
+          break;
+        }
+      }
+  }
+ 
+  sortQueue();
+ 
 }
 
 void newConnectionCallback(uint32_t nodeId)
@@ -366,15 +287,66 @@ vector<vector<float>> getComQueueVector()
 
 void printQueueVector()
 {
-  cout << "--KÖLISTA--" << endl;
+  /*cout << "--KÖLISTA--" << endl;
   for (const auto &row : queueVector)
   {
-    for (const auto &element : row)
+    for (const auto &element : row)print
     {
       cout << element << ' ';
     }
     cout << '\n';
-  }
+  }*/
+
+  cout << "------------KÖLISTA------------" << endl;
+
+    // Get the maximum size among all vectors
+    size_t maxSize = max({queueVector_CS1.size(), queueVector_CS2.size(), queueVector_CS3.size(),
+                               queueVector_CS4.size(), vector_transit.size()});
+
+    // Iterate over the vectors concurrently
+    for (size_t i = 0; i < maxSize; ++i) {
+        // Print elements from queueVector_CS1
+        if (i < queueVector.size()) {
+            for (const auto &element : queueVector[i]) {
+                cout << element << ' ';
+            }
+        }
+        cout << '\t'; // Separate columns
+
+        // Print elements from queueVector_CS2
+        if (i < queueVector_CS2.size()) {
+            for (const auto &element : queueVector_CS2[i]) {
+                cout << element << ' ';
+            }
+        }
+        cout << '\t'; // Separate columns
+
+        // Print elements from queueVector_CS3
+        if (i < queueVector_CS3.size()) {
+            for (const auto &element : queueVector_CS3[i]) {
+                cout << element << ' ';
+            }
+        }
+        cout << '\t'; // Separate columns
+
+        // Print elements from queueVector_CS4
+        if (i < queueVector_CS4.size()) {
+            for (const auto &element : queueVector_CS4[i]) {
+                cout << element << ' ';
+            }
+        }
+        cout << '\t'; // Separate columns
+        
+        // Print elements from vector_transit
+        if (i < vector_transit.size()) {
+            for (const auto &element : vector_transit[i]) {
+                cout << element << ' ';
+            }
+        }
+        cout << '\t'; // Separate columns
+
+        cout << '\n'; // Move to the next row
+    }
 }
 
 // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
