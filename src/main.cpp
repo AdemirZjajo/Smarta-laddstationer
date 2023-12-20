@@ -69,23 +69,6 @@ bool isAlone()
             isAlone = false;
     }
     return isAlone;
-
-    // Otestad ny metod som bör vara mer säker än den övre -Simon
-    /*
-        bool isAlone = true;
-
-        // Loopar genom queueVector och letar efter andra noder...
-        for (const auto &vect : getComQueueVector())
-        {
-            // ...om den hittar någon annan nod sätts isAlone till false; det är andra i listan
-            if (vect[0] != node.node_id)
-            {
-                isAlone = false;
-            }
-        }
-
-        return isAlone;
-    */
 }
 
 void setup()
@@ -155,7 +138,8 @@ void loop()
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission)); // Beräkna minimumladdning
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
-                node.queue_point = randomNumber(1, 100); // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
+                node.queue_point = randomNumber(1, 100); 
+                // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
             }
         }
         // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE
