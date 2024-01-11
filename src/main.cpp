@@ -123,15 +123,16 @@ void loop()
         {
             node.zone = "Transit-zone";
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zone << endl;
-
-            int steps = node.calcStepsNeeded(node.current_mission);
-            for (int i = 0; i < steps; i++)
-            {
+            
+            vector<Coordinate> route = node.chooseRoute(node.current_mission);
+            for (const Coordinate& destination : route)
+            { 
                 updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(700));
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
-                cout << "Nod-Förlyttning " << i + 1 << "/" << steps << " Batterinivå: " << node.battery_charge << "%" << endl;
-
+                node.xcor = destination.x;
+                node.ycor = destination.y;
+                cout << "Nod-Förlyttning: x: " << destination.x << ", y: " << destination.y << " | Batterinivå: " << node.battery_charge << "%" << endl;
                 // UPPDATERA BATTERI STATUS-FUNKTION TILL OLED
                 displayClear();
                 setID(node.node_id);
@@ -141,8 +142,8 @@ void loop()
             }
             // Dessa två rader finns just nu eftersom vi inte har någon riktig förflyttningskod,
             // ska bort när den är skriven. If-satsen nedan bör funka även efter förflyttningskoden är skriven
-            node.xcor = node.current_mission.missionDestination.xcor;
-            node.ycor = node.current_mission.missionDestination.ycor;
+            //node.xcor = node.current_mission.missionDestination.xcor;
+            //node.ycor = node.current_mission.missionDestination.ycor;
 
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))

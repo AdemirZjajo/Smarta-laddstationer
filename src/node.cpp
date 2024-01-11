@@ -160,26 +160,98 @@ float Node::calcBatConsumption(Mission mission)
   }
 }
 
+// Väljer korrekt rutt till den laddstation noden ska köra till
+vector<Coordinate> Node::chooseRoute(Mission currentMission)
+{
+  {
+    vector<Coordinate> route;
+    ChargingStation start = currentMission.missionOrigin;
+    ChargingStation finish = currentMission.missionDestination;
+    switch (start.id)
+    {
+    case 1:
+      switch (finish.id)
+      {
+      case 2:
+        route = start.routes_CS1[0];
+        break;
+      case 3:
+        route = start.routes_CS1[1];
+        break;
+      case 4:
+        route = start.routes_CS1[2];
+        break;
+      }
+      break;
+
+    case 2:
+      switch (finish.id)
+      {
+      case 1:
+        route = start.routes_CS2[0];
+        break;
+      case 4:
+        route = start.routes_CS2[1];
+        break;
+      case 3:
+        route = start.routes_CS2[2];
+        break;
+      }
+      break;
+
+    case 3:
+      switch (finish.id)
+      {
+      case 1:
+        route = start.routes_CS3[0];
+        break;
+      case 4:
+        route = start.routes_CS3[1];
+        break;
+      case 2:
+        route = start.routes_CS3[2];
+        break;
+      }
+      break;
+
+    case 4:
+      switch (finish.id)
+      {
+      case 3:
+        route = start.routes_CS4[0];
+        break;
+      case 2:
+        route = start.routes_CS4[1];
+        break;
+      case 1:
+        route = start.routes_CS4[2];
+        break;
+      }
+      break;
+    }
+    return route;
+  }
+}
+
 // Beräknar antalet steg som noden behöver ta i koordinatsystemet, detta används för att senare beräkna minimumladdning
 int Node::calcStepsNeeded(Mission currentMission)
 {
   int steps_needed = 0;
   ChargingStation start = currentMission.missionOrigin;
   ChargingStation finish = currentMission.missionDestination;
-
   switch (start.id)
   {
   case 1:
     switch (finish.id)
     {
     case 2:
-      steps_needed = start.route_CS1[0];
+      steps_needed = start.routes_CS1[0].size();
       break;
     case 3:
-      steps_needed = start.route_CS1[1];
+      steps_needed = start.routes_CS1[1].size();
       break;
     case 4:
-      steps_needed = start.route_CS1[2];
+      steps_needed = start.routes_CS1[2].size();
       break;
     }
     break;
@@ -187,14 +259,14 @@ int Node::calcStepsNeeded(Mission currentMission)
   case 2:
     switch (finish.id)
     {
-    case 3:
-      steps_needed = start.route_CS2[0];
+    case 1:
+      steps_needed = start.routes_CS2[0].size();
       break;
     case 4:
-      steps_needed = start.route_CS2[1];
+      steps_needed = start.routes_CS2[1].size();
       break;
-    case 1:
-      steps_needed = start.route_CS2[2];
+    case 3:
+      steps_needed = start.routes_CS2[2].size();
       break;
     }
     break;
@@ -202,14 +274,14 @@ int Node::calcStepsNeeded(Mission currentMission)
   case 3:
     switch (finish.id)
     {
-    case 4:
-      steps_needed = start.route_CS3[0];
-      break;
     case 1:
-      steps_needed = start.route_CS3[1];
+      steps_needed = start.routes_CS3[0].size();
+      break;
+    case 4:
+      steps_needed = start.routes_CS3[1].size();
       break;
     case 2:
-      steps_needed = start.route_CS3[2];
+      steps_needed = start.routes_CS3[2].size();
       break;
     }
     break;
@@ -217,14 +289,14 @@ int Node::calcStepsNeeded(Mission currentMission)
   case 4:
     switch (finish.id)
     {
-    case 1:
-      steps_needed = start.route_CS4[0];
+    case 3:
+      steps_needed = start.routes_CS4[0].size();
       break;
     case 2:
-      steps_needed = start.route_CS4[1];
+      steps_needed = start.routes_CS4[1].size();
       break;
-    case 3:
-      steps_needed = start.route_CS4[2];
+    case 1:
+      steps_needed = start.routes_CS4[2].size();
       break;
     }
     break;
