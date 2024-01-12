@@ -2,6 +2,7 @@
 #ifndef COMMUNICATION_H_
 #define COMMUNICATION_H_
 
+#include "message.hpp"
 #include <stdint.h>
 #include <string>
 #include <painlessMesh.h>
@@ -11,13 +12,13 @@ using namespace std;
 
 void initCOM();
 
-void sendMessage();
+void sendMessage(Message message);
 
-void sendQ(int id, float points);
-void sendRemove(int id);
-pair<int, float> getNodePair();
+void addSelfToQueue(Message message);
 
-void changeCS(string zoneCode);
+void eraseSelfFromQueue(Message message);
+
+void sortQueue();
 
 int getID();
 
@@ -26,6 +27,7 @@ void receivedCallback(uint32_t from, String &msg);
 void newConnectionCallback(uint32_t nodeId);
 
 void changedConnectionCallback();
+
 void updateCommunication();
 
 void clearComVector();
@@ -33,6 +35,11 @@ void clearComVector();
 vector<vector<float>> getComQueueVector();
 
 void disconnect();
+
 void removeMissingNodes();
+
+void printQueueVector();
+
+// void sendStatus(Message message);
 
 #endif

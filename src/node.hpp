@@ -27,13 +27,9 @@ public:
   int ycor;                   // Nodens y-koordinat
   string zone;                // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
+  int messageID = 0;
 
-  vector<vector<float>> queueVector{
-      /*
-      {0, 0},
-      {999, 999}
-      */
-  };
+  vector<vector<float>> queueVector{};
 
   vector<int> route_CS1;
   vector<int> route_CS2;
@@ -55,11 +51,14 @@ public:
 
   float calcBatConsumption(Mission mission);
 
+  vector<Coordinate> chooseRoute(Mission current_mission);
+
   // Returnar antalet steg som noden behöver ta för att ta sig hela vägen fram till sin destination
   int calcStepsNeeded(Mission current_mission);
 
   float calcMinCharge(float battery_consumption, int steps_needed);
 };
+
 int randomNumber(int from, int to);
 
 #endif

@@ -6,7 +6,7 @@
 using namespace std;
 
 // This method  is to calculate priority and return an integer value that represents a priority status
-float calculatePriority(float battery_charge, float min_charge)
+float calculatePriority(float battery_charge, float min_charge )
 {
     float bat_pt = 0;
     float min_pt = 0;
