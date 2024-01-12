@@ -17,9 +17,61 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     float last_p = 0;
     float kyl_p = 0;
 
-    int last_pt = mission.last;
-    bool kyl_pt = mission.kylvara;
+    int last_pt = mission.last; // 0-10 ton
+    bool kyl_pt = mission.kylvara; // true or false 
     
+    // För last och kylvara 
+    if (last_pt >= 0)
+    {
+        if (last_pt = 0){
+            last_p == 0;
+        }
+        else if (last_pt = 1) {
+            last_p == 10;
+        }
+        else if (last_pt = 2) {
+            last_p == 20;
+        }
+        else if (last_pt = 3) {
+            last_p == 30;
+        }
+        else if (last_pt = 4) {
+            last_p == 40;
+        }
+        else if (last_pt = 5) {
+            last_p== 50;
+        }
+        
+        else if (last_pt = 6) {
+            last_p == 60;
+        }
+        
+        else if (last_pt = 7) {
+            last_p == 70;
+        }
+        
+        else if (last_pt = 8) {
+            last_p == 80;
+        }
+        
+        else if (last_pt = 9) {
+            last_p == 90;
+
+        }
+        
+        else if (last_pt = 10) {
+            last_p == 100;
+        }
+    }
+
+    if (kyl_pt == true)
+    {
+        // lägger till poäng när de e kylvara 
+        kyl_p += 100;
+    }
+    else {
+        kyl_p == 0;
+    }
 
     if (battery_charge <= 1)
     {
@@ -90,18 +142,7 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
             min_pt = 0;
         }
     }
-    // kylvara
-    if (last_pt == true)
-    {
-        // lägger till poäng baserat på last 
-        last_p += 100;
-    }
-
-    if (kyl_pt == true)
-    {
-        // lägger till poäng när de e kylvara 
-        kyl_p += 100;
-    }
+    
 
     float prioValue = (bat_pt * 0.6) + (min_pt * 0.4) + (last_p *0.5) + (kyl_p * 0.5);
     return prioValue;
