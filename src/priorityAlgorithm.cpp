@@ -96,6 +96,11 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
             bat_pt = 100;
             min_pt = 60;
         }
+        else if (min_charge <= 22.5)
+        {
+            bat_pt = 100;
+            min_pt = 50;
+        }
         else if (min_charge <= 27.0)
         {
             bat_pt = 100;
@@ -119,6 +124,11 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
             bat_pt = 50;
             min_pt = 75;
         }
+        else if (min_charge <= 22.5)
+        {
+            bat_pt = 50;
+            min_pt = 60;
+        }
         else if (min_charge <= 27.0)
         {
             bat_pt = 50;
@@ -137,10 +147,20 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     }
     else
     {
-        if (min_charge <= 27.0)
+        if (min_charge <= 22.5)
         {
             bat_pt = 0;
-            min_pt = 60;
+            min_pt = 70;
+        }
+        else if (min_charge <= 27.0)
+        {
+            bat_pt = 0;
+            min_pt = 50;
+        }
+        else if (min_charge <= 45.0)
+        {
+            bat_pt = 0;
+            min_pt = 40;
         }
         else if (min_charge <= 54.0)
         {

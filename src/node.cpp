@@ -14,7 +14,7 @@ using namespace std;
 ChargingStation CS1(1, 0, 9, "LADDSTATION_1"), CS2(2, 9, 9, "LADDSTATION_2"), CS3(3, 0, 0, "LADDSTATION_3"), CS4(4, 9, 0, "LADDSTATION_4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
-/*
+
 // Returnar ett slumpat tal
 int randomNumber(int from, int to)
 {
@@ -26,13 +26,14 @@ int randomNumber(int from, int to)
 
   return randomNumber;
 }
-*/
 
+/*
 int randomNumber(int from, int to)
 {
   int randomnumber = random(from, to);
   return randomnumber;
 }
+*/
 
 // Randomly selects a charging station to spawn at
 ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStation CS3, ChargingStation CS4)

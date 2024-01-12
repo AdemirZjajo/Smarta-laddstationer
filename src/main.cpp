@@ -139,6 +139,7 @@ void loop()
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
                 node.queue_point = calculatePriority(node.battery_charge, node.min_charge, node.current_mission); // randomNumber(1, 100); //  // Beräknar nodens köpoäng
+                cout << "Köpoäng: " << node.queue_point << " | Bat: " << node.battery_charge << " | Min: " << node.min_charge << " | Last: " << node.current_mission.last << " | Kylvara: " << node.current_mission.kylvara << endl;
             }
         }
         // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE
