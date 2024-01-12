@@ -14,6 +14,8 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
 {
     float bat_pt = 0;
     float min_pt = 0;
+    float last_p = 0;
+    float kyl_p = 0;
 
     int last_pt = mission.last;
     bool kyl_pt = mission.kylvara;
@@ -88,8 +90,20 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
             min_pt = 0;
         }
     }
+    // kylvara
+    if (last_pt == true)
+    {
+        // lägger till poäng baserat på last 
+        last_p += 100;
+    }
 
-    float prioValue = (bat_pt * 0.6) + (min_pt * 0.4);
+    if (kyl_pt == true)
+    {
+        // lägger till poäng när de e kylvara 
+        kyl_p += 100;
+    }
+
+    float prioValue = (bat_pt * 0.6) + (min_pt * 0.4) + (last_p *0.5) + (kyl_p * 0.5);
     return prioValue;
 }
 
