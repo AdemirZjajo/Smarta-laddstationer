@@ -144,7 +144,7 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     }
     
 
-    float prioValue = (bat_pt * 0.6) + (min_pt * 0.4) + (last_p *0.5) + (kyl_p * 0.5);
+    float prioValue = (bat_pt * 0.4) + (min_pt * 0.2) + (last_p *0.1) + (kyl_p * 0.3);
     return prioValue;
 }
 
