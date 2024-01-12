@@ -51,6 +51,8 @@ public:
 
   float calcBatConsumption(Mission mission);
 
+  vector<Coordinate> chooseRoute(Mission current_mission);
+
   // Returnar antalet steg som noden behöver ta för att ta sig hela vägen fram till sin destination
   int calcStepsNeeded(Mission current_mission);
 

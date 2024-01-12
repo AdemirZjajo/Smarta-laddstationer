@@ -40,4 +40,6 @@ void removeMissingNodes();
 
 void printQueueVector();
 
+// void sendStatus(Message message);
+
 #endif

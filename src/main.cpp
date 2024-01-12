@@ -20,6 +20,7 @@ Node node(0);
 State state = TRANSIT; // Starttillståndet
 String CurrentZon;
 Message message;
+Message statusMessage;
 using namespace std;
 
 // Metod som:
@@ -106,26 +107,25 @@ void loop()
         {
             node.zone = "Transit-zone";
             cout << "Noden ger sig iväg mot sin destination: " << node.current_mission.missionDestination.zone << endl;
-
-            int steps = node.calcStepsNeeded(node.current_mission);
-            for (int i = 0; i < steps; i++)
+            vector<Coordinate> route = node.chooseRoute(node.current_mission);
+            for (const Coordinate &destination : route)
             {
                 updateCommunication();
                 this_thread::sleep_for(chrono::milliseconds(700));
                 node.battery_charge = (node.battery_charge - node.battery_consumption); // vi minskar batteri % för att simulera att vi rör oss framåt
-                cout << "Nod-Förlyttning " << i + 1 << "/" << steps << " Batterinivå: " << node.battery_charge << "%" << endl;
-
+                node.xcor = destination.x;
+                node.ycor = destination.y;
+                cout << "Nod-Förlyttning: x: " << destination.x << ", y: " << destination.y << " | Batterinivå: " << node.battery_charge << "%" << endl;
                 // UPPDATERA BATTERI STATUS-FUNKTION TILL OLED
                 displayClear();
                 setID(node.node_id);
                 setBat(node.battery_charge);
                 setWeight(node.current_mission.last);
                 setLoadType(node.current_mission.kylvara);
+
+                // statusMessage = Message("Node-Status", ++node.messageID, node);
+                // sendStatus(statusMessage);
             }
-            // Dessa två rader finns just nu eftersom vi inte har någon riktig förflyttningskod,
-            // ska bort när den är skriven. If-satsen nedan bör funka även efter förflyttningskoden är skriven
-            node.xcor = node.current_mission.missionDestination.xcor;
-            node.ycor = node.current_mission.missionDestination.ycor;
 
             // Nod framme
             if ((node.xcor == node.current_mission.missionDestination.xcor) && (node.ycor == node.current_mission.missionDestination.ycor))
@@ -138,8 +138,7 @@ void loop()
                 node.min_charge = node.calcMinCharge(node.battery_consumption, node.calcStepsNeeded(node.current_mission)); // Beräkna minimumladdning
                 cout << "Noden får nytt uppdrag: " << node.current_mission.missionDestination.zone << " med lasten: " << node.current_mission.last << " ton i last. Kylvara? " << boolalpha << node.current_mission.kylvara << endl;
                 cout << "Minimumladdning: " << node.min_charge << "%, uträkning: " << node.calcStepsNeeded(node.current_mission) << " * " << node.battery_consumption << endl;
-                node.queue_point = randomNumber(1, 100); 
-                // calculatePriority(node.battery_charge, node.min_charge); // Beräknar nodens köpoäng
+                node.queue_point = randomNumber(1, 100); // calculatePriority(node.battery_charge, node.min_charge,node.current_mission); // Beräknar nodens köpoäng
             }
         }
         // ANNARS: Noden har inte tillräckligt mycket batteri för att slutföra sitt uppdrag, och måste ladda --> Byt tillstånd till QUEUE
@@ -158,6 +157,8 @@ void loop()
 
     case QUEUE:
 
+        // statusMessage = Message("Node-Status", ++node.messageID, node);
+        // sendStatus(statusMessage);
         cout << "Nod-" << node.node_id << " köar för att få ladda..." << endl;
         this_thread::sleep_for(chrono::milliseconds(500));
 
@@ -196,9 +197,11 @@ void loop()
 
     case CHARGE:
 
-        // Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
-        // Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
-        // noder med högre köpoäng som ska kunna "slänga ut" den nuvarande laddande noden
+        // statusMessage = Message("Node-Status", ++node.messageID, node);
+        // sendStatus(statusMessage);
+        //  Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
+        //  Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
+        //  noder med högre köpoäng som ska kunna "slänga ut" den nuvarande laddande noden
 
         displayClear();
         setID(node.node_id);
@@ -253,7 +256,6 @@ void loop()
             cout << "Nod-" << node.node_id << " har laddat klart och är nu redo för sitt uppdrag!" << endl;
             // Skickar ett meddelande till de andra noderna vid laddstationen när man har laddat klart och att man ska tas bort från deras kölistor
             // Därefter raderar noden sin egna kölista
-
             message = Message(1, "RemoveFromQueue", ++node.messageID, node.node_id, node.queue_point, node.zone);
             sendMessage(message);
             eraseSelfFromQueue(message);

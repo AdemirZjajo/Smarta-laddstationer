@@ -18,12 +18,17 @@
 //************************************************************
 #include "communication.hpp"
 #include "message.hpp"
+#include "mission.hpp"
 #include <painlessMesh.h>
 #include <list>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <tuple>
+#include <cstring>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -95,7 +100,7 @@ void addSelfToQueue(Message message)
     {
       exists = true;
       (*it)[0] = tempVect[0];
-      (*it)[1] = tempVect[1];  
+      (*it)[1] = tempVect[1];
       break;
     }
   }
@@ -110,26 +115,28 @@ void addSelfToQueue(Message message)
 void eraseSelfFromQueue(Message message)
 {
 
- for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
-      {
-        if ((*it)[0] == static_cast<float>(message.sender_nod_id))
-        {
-          queueVector.erase(it);
-          cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
-          break;
-        }
-      }
+  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+  {
+    if ((*it)[0] == static_cast<float>(message.sender_nod_id))
+    {
+      queueVector.erase(it);
+      cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
+      break;
+    }
+  }
 }
 
-void sortQueue(){
+void sortQueue()
+{
 
-  if(!(queueVector.empty())){
-  sort(queueVector.begin(),
-       queueVector.end(),
-       [](const vector<float> &a, const vector<float> &b)
-       {
-         return a[1] > b[1];
-       });
+  if (!(queueVector.empty()))
+  {
+    sort(queueVector.begin(),
+         queueVector.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+           return a[1] > b[1];
+         });
   }
 }
 
@@ -188,8 +195,6 @@ void removeMissingNodes()
   }
 }
 
-
-
 // returns the node id, mainly used in display
 int getID()
 {
@@ -202,51 +207,48 @@ void receivedCallback(uint32_t from, String &msg)
   cout << "Meddelande från Nod-" << from % 1000 << " --> " << msg.c_str() << endl;
   MessageStruct callbackStruct = parseString(msg);
 
-
   cout << "Kategori: " << callbackStruct.category.c_str();
   cout << ", Nod-ID: " << callbackStruct.nodeID;
   cout << ", Laddstation: " << callbackStruct.cs.c_str();
   cout << " Köpoäng: " << callbackStruct.qp;
-  cout << " Message-ID: "  << callbackStruct.msgID << endl;
+  cout << " Message-ID: " << callbackStruct.msgID << endl;
 
-  if(callbackStruct.category == "AddToQueue")
+  if (callbackStruct.category == "AddToQueue")
   {
-      tempVect = {static_cast<float>(callbackStruct.nodeID), callbackStruct.qp};
+    tempVect = {static_cast<float>(callbackStruct.nodeID), callbackStruct.qp};
 
-      exists = false;
-      for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    exists = false;
+    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
       {
-        if ((*it)[0] == tempVect[0])
-        {
-          exists = true;
-          (*it)[0] = tempVect[0];
-          (*it)[1] = tempVect[1];
-        } 
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
       }
+    }
 
-      if (!exists)
-      {
-        queueVector.push_back(tempVect);
-        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
-    
-      }
+    if (!exists)
+    {
+      queueVector.push_back(tempVect);
+      cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+    }
   }
 
-  else if(callbackStruct.category == "RemoveFromQueue")
+  else if (callbackStruct.category == "RemoveFromQueue")
   {
     for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    {
+      if ((*it)[0] == callbackStruct.nodeID)
       {
-        if ((*it)[0] == callbackStruct.nodeID)
-        {
-          queueVector.erase(it);
-          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str()<< endl;
-          break;
-        }
+        queueVector.erase(it);
+        cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
+        break;
       }
+    }
   }
- 
+
   sortQueue();
- 
 }
 
 void newConnectionCallback(uint32_t nodeId)
@@ -299,54 +301,65 @@ void printQueueVector()
 
   cout << "------------KÖLISTA------------" << endl;
 
-    // Get the maximum size among all vectors
-    size_t maxSize = max({queueVector_CS1.size(), queueVector_CS2.size(), queueVector_CS3.size(),
-                               queueVector_CS4.size(), vector_transit.size()});
+  // Get the maximum size among all vectors
+  size_t maxSize = max({queueVector_CS1.size(), queueVector_CS2.size(), queueVector_CS3.size(),
+                        queueVector_CS4.size(), vector_transit.size()});
 
-    // Iterate over the vectors concurrently
-    for (size_t i = 0; i < maxSize; ++i) {
-        // Print elements from queueVector_CS1
-        if (i < queueVector.size()) {
-            for (const auto &element : queueVector[i]) {
-                cout << element << ' ';
-            }
-        }
-        cout << '\t'; // Separate columns
-
-        // Print elements from queueVector_CS2
-        if (i < queueVector_CS2.size()) {
-            for (const auto &element : queueVector_CS2[i]) {
-                cout << element << ' ';
-            }
-        }
-        cout << '\t'; // Separate columns
-
-        // Print elements from queueVector_CS3
-        if (i < queueVector_CS3.size()) {
-            for (const auto &element : queueVector_CS3[i]) {
-                cout << element << ' ';
-            }
-        }
-        cout << '\t'; // Separate columns
-
-        // Print elements from queueVector_CS4
-        if (i < queueVector_CS4.size()) {
-            for (const auto &element : queueVector_CS4[i]) {
-                cout << element << ' ';
-            }
-        }
-        cout << '\t'; // Separate columns
-        
-        // Print elements from vector_transit
-        if (i < vector_transit.size()) {
-            for (const auto &element : vector_transit[i]) {
-                cout << element << ' ';
-            }
-        }
-        cout << '\t'; // Separate columns
-
-        cout << '\n'; // Move to the next row
+  // Iterate over the vectors concurrently
+  for (size_t i = 0; i < maxSize; ++i)
+  {
+    // Print elements from queueVector_CS1
+    if (i < queueVector.size())
+    {
+      for (const auto &element : queueVector[i])
+      {
+        cout << element << ' ';
+      }
     }
+    cout << '\t'; // Separate columns
+
+    // Print elements from queueVector_CS2
+    if (i < queueVector_CS2.size())
+    {
+      for (const auto &element : queueVector_CS2[i])
+      {
+        cout << element << ' ';
+      }
+    }
+    cout << '\t'; // Separate columns
+
+    // Print elements from queueVector_CS3
+    if (i < queueVector_CS3.size())
+    {
+      for (const auto &element : queueVector_CS3[i])
+      {
+        cout << element << ' ';
+      }
+    }
+    cout << '\t'; // Separate columns
+
+    // Print elements from queueVector_CS4
+    if (i < queueVector_CS4.size())
+    {
+      for (const auto &element : queueVector_CS4[i])
+      {
+        cout << element << ' ';
+      }
+    }
+    cout << '\t'; // Separate columns
+
+    // Print elements from vector_transit
+    if (i < vector_transit.size())
+    {
+      for (const auto &element : vector_transit[i])
+      {
+        cout << element << ' ';
+      }
+    }
+    cout << '\t'; // Separate columns
+
+    cout << '\n'; // Move to the next row
+  }
 }
 
 // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
@@ -373,3 +386,109 @@ void disconnect()
   printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
+
+/*void sendStatus(Message message) {
+    // Server address
+    const char* server_ip = "127.0.0.1";  // Replace with your server IP
+    const int server_port = 12345;         // Replace with your server port
+
+    // Create a socket
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd == -1) {
+        cerr << "Error creating socket\n";
+        return;
+    }
+
+    // Set up server address
+    sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(server_port);
+    inet_pton(AF_INET, server_ip, &serverAddr.sin_addr);
+
+    // Connect to the server
+    if (connect(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
+        cerr << "Error connecting to the server\n";
+        close(sockfd);
+        return;
+    }
+
+    string nodeID = to_string(message.sender.node_id);
+    string battery = to_string(message.sender.battery_charge);
+    string batteryCon = to_string(message.sender.battery_consumption);
+    string minCharge = to_string(message.sender.min_charge);
+    string queuePoint = to_string(message.sender.queue_point);
+    string zone = message.sender.zone;
+    string x = to_string(message.sender.xcor);
+    string y = to_string(message.sender.ycor);
+    string orgin = message.sender.current_mission.missionOrigin.zone;
+    string dest = message.sender.current_mission.missionDestination.zone;
+    string freight = to_string(message.sender.current_mission.last);
+    string coldFreight = message.sender.current_mission.kylvara ? "true" : "false";
+
+    // Creating a single string with commas between values
+    string serializedMessage = nodeID + "," + battery + "," + batteryCon + "," +
+                               minCharge + "," + queuePoint + "," + zone + "," +
+                               x + "," + y + "," + orgin + "," + dest + "," +
+                               freight + "," + coldFreight;
+
+    // Output the serialized message
+    cout << serializedMessage << endl;
+
+
+    // Send the message
+    if (send(sockfd, serializedMessage.c_str(), serializedMessage.size(), 0) == -1) {
+        cerr << "Error sending message\n";
+    }
+
+    // Close the socket
+    close(sockfd);
+}*/
+
+/*ON THE SERVER SIDE MAYBE??
+
+import React, { useEffect, useState } from 'react';
+
+const WebSocketExample = () => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    // Replace 'ws://your-server-ip:your-port' with your WebSocket server's address
+    const socket = new WebSocket('ws://127.0.0.1:12345');
+
+    // Handle connection open
+    socket.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    // Handle incoming messages
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, message]);
+      console.log('Received message:', message);
+    };
+
+    // Handle connection close
+    socket.onclose = () => {
+      console.log('WebSocket closed');
+    };
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  return (
+    <div>
+      <h2>Received Messages:</h2>
+      <ul>
+        {messages.map((message, index) => (
+          <li key={index}>{JSON.stringify(message)}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default WebSocketExample;
+ */

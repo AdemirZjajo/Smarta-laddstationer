@@ -20,3 +20,10 @@ Message::Message(int code, string cat, int msg_id, int sender_id, float queuepoi
     queue_point = queuepoint;
     message_zone = zone;
 };
+
+/*Message::Message(string cat, int msg_id, Node senderNode)
+{
+    message_category = cat;
+    message_id = msg_id;
+    sender = senderNode;
+};*/
