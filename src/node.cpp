@@ -11,7 +11,7 @@
 
 using namespace std;
 
-ChargingStation CS1(1, 0, 0, "LADDSTATION_1"), CS2(2, 0, 9, "LADDSTATION_2"), CS3(3, 9, 0, "LADDSTATION_3"), CS4(4, 9, 9, "LADDSTATION_4");
+ChargingStation CS1(1, 0, 9, "LADDSTATION_1"), CS2(2, 9, 9, "LADDSTATION_2"), CS3(3, 0, 0, "LADDSTATION_3"), CS4(4, 9, 0, "LADDSTATION_4");
 list<ChargingStation> chargingStations = {CS1, CS2, CS3, CS4};
 
 /*
@@ -47,9 +47,9 @@ ChargingStation randomCS(ChargingStation CS1, ChargingStation CS2, ChargingStati
   case 1:
     return CS2;
   case 2:
-    return CS1;
+    return CS3;
   case 3:
-    return CS2;
+    return CS4;
   default:
     return CS1;
   }
@@ -74,10 +74,10 @@ ChargingStation randomNotCurrentCS(ChargingStation CS1, ChargingStation CS2, Cha
       chosenCS = CS2;
       break;
     case 2:
-      chosenCS = CS1;
+      chosenCS = CS3;
       break;
     case 3:
-      chosenCS = CS2;
+      chosenCS = CS4;
       break;
     default:
       chosenCS = CS1;

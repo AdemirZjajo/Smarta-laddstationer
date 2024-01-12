@@ -22,6 +22,7 @@ public:
   ChargingStation();
   ChargingStation(int id, int xcor, int ycor, string zone);
 
+  private:
   // Routes from CS1
   vector<Coordinate> CS1_CS2 = {{1, 9}, {2, 9}, {3, 9}, {4, 9}, {5, 9}, {6, 9}, {7, 9}, {8, 9}, {9, 9}};
   vector<Coordinate> CS1_CS3 = {{0, 8}, {0, 7}, {0, 6}, {0, 5}, {0, 4}, {0, 3}, {0, 2}, {0, 1}, {0, 0}};
@@ -42,6 +43,7 @@ public:
   vector<Coordinate> CS4_CS2 = {{9, 1}, {9, 2}, {9, 3}, {9, 4}, {9, 5}, {9, 6}, {9, 7}, {9, 8}, {9, 9}};
   vector<Coordinate> CS4_CS1 = {{8, 0}, {8, 1}, {7, 1}, {7, 2}, {6, 2}, {6, 3}, {5, 3}, {5, 4}, {4, 4}, {4, 5}, {3, 5}, {3, 6}, {2, 6}, {2, 7}, {1, 7}, {1, 8}, {0, 8}, {0, 9}};
 
+  public:
   // CS1 coords: 0, 9 (x, y)
   // Input: 0 is to CS2, 1 is to CS3, 2 is to CS4
   vector<vector<Coordinate>> routes_CS1 = {CS1_CS2, CS1_CS3, CS1_CS4};
