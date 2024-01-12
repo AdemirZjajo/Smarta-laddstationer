@@ -11,8 +11,8 @@ Mission::Mission(/*ChargingStation initCS, ChargingStation goalCS*/)
 {
     last = rand() % 11;
     kylvara = rand() % 2;
-    //missionOrigin = initCS;
-    //missionDestination = goalCS;
+    // missionOrigin = initCS;
+    // missionDestination = goalCS;
 }
 
 // metod som genererar ett uppdrag till noden
