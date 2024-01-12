@@ -19,6 +19,7 @@
 #include "communication.hpp"
 #include "message.hpp"
 #include "mission.hpp"
+#include "node.hpp"
 #include <painlessMesh.h>
 #include <list>
 #include <iostream>
@@ -69,7 +70,6 @@ void sendMessage(); // Prototype so PlatformIO doesn't complain
 // Clear the list
 void clearComVector()
 {
-
   queueVector.clear();
 }
 
@@ -380,73 +380,80 @@ void initCOM()
   //  delay(3000);
   // taskSendMessage.enable(); // Enable continuous message sending task
   mesh.getNodeId() % 1000;
-
-  printf("MESH : %s\n", MESH_PREFIX);
 }
 
-// disconnect trigger watchdog så använd inte den 
-/*void disconnect()
+void disconnect()
 {
   printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
 
-/*void sendStatus(Message message) {
-    // Server address
-    const char* server_ip = "127.0.0.1";  // Replace with your server IP
-    const int server_port = 12345;         // Replace with your server port
+void sendStatus(Message message)
+{
 
-    // Create a socket
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1) {
-        cerr << "Error creating socket\n";
-        return;
-    }
+  // cout "TEST STATUS" << endl;
 
-    // Set up server address
-    sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(server_port);
-    inet_pton(AF_INET, server_ip, &serverAddr.sin_addr);
+  // Server address
+  const char *server_ip = "127.0.0.1"; // Replace with your server IP
+  const int server_port = 12345;       // Replace with your server port
 
-    // Connect to the server
-    if (connect(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
-        cerr << "Error connecting to the server\n";
-        close(sockfd);
-        return;
-    }
+  // Create a socket
+  int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd == -1)
+  {
+    cerr << "Error creating socket\n";
+    return;
+  }
 
-    string nodeID = to_string(message.sender.node_id);
-    string battery = to_string(message.sender.battery_charge);
-    string batteryCon = to_string(message.sender.battery_consumption);
-    string minCharge = to_string(message.sender.min_charge);
-    string queuePoint = to_string(message.sender.queue_point);
-    string zone = message.sender.zone;
-    string x = to_string(message.sender.xcor);
-    string y = to_string(message.sender.ycor);
-    string orgin = message.sender.current_mission.missionOrigin.zone;
-    string dest = message.sender.current_mission.missionDestination.zone;
-    string freight = to_string(message.sender.current_mission.last);
-    string coldFreight = message.sender.current_mission.kylvara ? "true" : "false";
+  // Set up server address
+  sockaddr_in serverAddr;
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_port = htons(server_port);
+  inet_pton(AF_INET, server_ip, &serverAddr.sin_addr);
 
-    // Creating a single string with commas between values
-    string serializedMessage = nodeID + "," + battery + "," + batteryCon + "," +
-                               minCharge + "," + queuePoint + "," + zone + "," +
-                               x + "," + y + "," + orgin + "," + dest + "," +
-                               freight + "," + coldFreight;
-
-    // Output the serialized message
-    cout << serializedMessage << endl;
-
-
-    // Send the message
-    if (send(sockfd, serializedMessage.c_str(), serializedMessage.size(), 0) == -1) {
-        cerr << "Error sending message\n";
-    }
-
-    // Close the socket
+  // Connect to the server
+  if (connect(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
+  {
+    cerr << "Error connecting to the server\n";
     close(sockfd);
-}*/
+    return;
+  }
+
+  /*string state = message.sender.state;
+  string nodeID = to_string(message.sender.node_id);
+  string battery = to_string(message.sender.battery_charge);
+  string batteryCon = to_string(message.sender.battery_consumption);
+  string minCharge = to_string(message.sender.min_charge);
+  string queuePoint = to_string(message.sender.queue_point);
+  string zone = message.sender.zone;
+  string x = to_string(message.sender.xcor);
+  string y = to_string(message.sender.ycor);
+  string orgin = message.sender.current_mission.missionOrigin.zone;
+  string dest = message.sender.current_mission.missionDestination.zone;
+  string freight = to_string(message.sender.current_mission.last);
+  string coldFreight = message.sender.current_mission.kylvara ? "true" : "false";
+
+  // Creating a single string with commas between values
+  string serializedMessage = nodeID + "," + battery + "," + batteryCon + "," +
+                             minCharge + "," + queuePoint + "," + zone + "," +
+                             x + "," + y + "," + orgin + "," + dest + "," +
+                             freight + "," + coldFreight;
+
+
+  // Output the serialized message
+  cout << serializedMessage << endl;*/
+
+  string serializedMessage = "Hejhej";
+
+  // Send the message
+  if (send(sockfd, serializedMessage.c_str(), serializedMessage.size(), 0) == -1)
+  {
+    cerr << "Error sending message\n";
+  }
+
+  // Close the socket
+  close(sockfd);
+}
 
 /*ON THE SERVER SIDE MAYBE??
 
