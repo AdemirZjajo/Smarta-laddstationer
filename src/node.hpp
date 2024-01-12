@@ -28,6 +28,7 @@ public:
   string zone;                // Kan anta värden laddstation 1-3 samt ett default värde, kanske "0" eller bara "default"
   float queue_point;
   int messageID = 0;
+  string state;
 
   vector<vector<float>> queueVector{};
 

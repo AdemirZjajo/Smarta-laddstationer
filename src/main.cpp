@@ -101,7 +101,6 @@ void loop()
     {
     case TRANSIT:
 
-        cout << "** NOD är i Transit-state **" << endl; // För debugging
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
         {
@@ -151,6 +150,7 @@ void loop()
             addSelfToQueue(message);
             sortQueue();
             state = QUEUE;
+            node.state = "queue";
             cout << "** NOD är i QUEUE-state **" << endl;
             break;
         }
@@ -172,6 +172,7 @@ void loop()
         if (isAlone())
         {
             state = CHARGE;
+            node.state = "charge";
         }
 
         // ANNARS OM: det finns någon annan i meshnätet, kommunicera med dem och skicka prioriteringspoäng för att bestämma vem som ska börja ladda --> den som ska börja byter tillstånd till CHARGE
@@ -184,6 +185,7 @@ void loop()
             {
                 cout << "Din tur att ladda Nod-" << node.node_id << " du är först i kön!" << endl;
                 state = CHARGE;
+                node.state = "charge";
                 cout << "** NOD är i CHARGE-state **" << endl;
             }
         }
@@ -249,6 +251,7 @@ void loop()
         {
             cout << "Noden har blivit utslängd av en annan med högre köpoäng." << endl; // För debugging
             state = QUEUE;
+            node.state = "queue";
         }
 
         // ANNARS: nu har vi tillräckligt med laddning för att slutföra uppdraget --> Byt tillstånd till TRANSIT
@@ -264,6 +267,7 @@ void loop()
             printQueueVector();
 
             state = TRANSIT;
+            node.state = "transit";
         }
 
         break;
