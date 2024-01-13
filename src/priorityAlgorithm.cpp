@@ -25,59 +25,59 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     {
         if (last_pt = 0)
         {
-            last_p == 0;
+            last_p = 0;
         }
         else if (last_pt = 1)
         {
-            last_p == 10;
+            last_p = 10;
         }
         else if (last_pt = 2)
         {
-            last_p == 20;
+            last_p = 20;
         }
         else if (last_pt = 3)
         {
-            last_p == 30;
+            last_p = 30;
         }
         else if (last_pt = 4)
         {
-            last_p == 40;
+            last_p = 40;
         }
         else if (last_pt = 5)
         {
-            last_p == 50;
+            last_p = 50;
         }
 
         else if (last_pt = 6)
         {
-            last_p == 60;
+            last_p = 60;
         }
 
         else if (last_pt = 7)
         {
-            last_p == 70;
+            last_p = 70;
         }
 
         else if (last_pt = 8)
         {
-            last_p == 80;
+            last_p = 80;
         }
 
         else if (last_pt = 9)
         {
-            last_p == 90;
+            last_p = 90;
         }
 
         else if (last_pt = 10)
         {
-            last_p == 100;
+            last_p = 100;
         }
     }
 
     if (kyl_pt == true)
     {
         // lägger till poäng när de e kylvara
-        kyl_p += 100;
+        kyl_p += 130;
     }
     else
     {
@@ -86,30 +86,45 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
 
     if (battery_charge <= 1)
     {
-        if (min_charge <= 9.0)
+        if (min_charge <= 5.0)
         {
             bat_pt = 100;
             min_pt = 100;
         }
+        else if (min_charge <= 9.0)
+        {
+            bat_pt = 100;
+            min_pt = 90;
+        }
         else if (min_charge <= 13.5)
         {
             bat_pt = 100;
-            min_pt = 60;
+            min_pt = 70;
         }
         else if (min_charge <= 22.5)
         {
             bat_pt = 100;
-            min_pt = 50;
+            min_pt = 55;
         }
         else if (min_charge <= 27.0)
         {
             bat_pt = 100;
-            min_pt = 40;
+            min_pt = 45;
+        }
+        else if (min_charge <= 39.0)
+        {
+            bat_pt = 100;
+            min_pt = 30;
         }
         else if (min_charge <= 54.0)
         {
             bat_pt = 100;
-            min_pt = 20;
+            min_pt = 25;
+        }
+        else if (min_charge <= 65.0)
+        {
+            bat_pt = 100;
+            min_pt = 15;
         }
         else if (min_charge <= 99.0)
         {
@@ -119,25 +134,45 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     }
     else if (battery_charge <= 5)
     {
-        if (min_charge <= 13.5)
+        if (min_charge <= 5.0)
         {
             bat_pt = 50;
-            min_pt = 75;
+            min_pt = 100;
+        }
+        else if (min_charge <= 9.0)
+        {
+            bat_pt = 50;
+            min_pt = 90;
+        }
+        else if (min_charge <= 13.5)
+        {
+            bat_pt = 50;
+            min_pt = 70;
         }
         else if (min_charge <= 22.5)
         {
             bat_pt = 50;
-            min_pt = 60;
+            min_pt = 55;
         }
         else if (min_charge <= 27.0)
         {
             bat_pt = 50;
-            min_pt = 50;
+            min_pt = 45;
+        }
+        else if (min_charge <= 39.0)
+        {
+            bat_pt = 50;
+            min_pt = 30;
         }
         else if (min_charge <= 54.0)
         {
             bat_pt = 50;
             min_pt = 25;
+        }
+        else if (min_charge <= 65.0)
+        {
+            bat_pt = 50;
+            min_pt = 15;
         }
         else if (min_charge <= 99.0)
         {
@@ -147,25 +182,45 @@ float calculatePriority(float battery_charge, float min_charge, Mission mission)
     }
     else
     {
-        if (min_charge <= 22.5)
+        if (min_charge <= 5.0)
+        {
+            bat_pt = 0;
+            min_pt = 100;
+        }
+        else if (min_charge <= 9.0)
+        {
+            bat_pt = 0;
+            min_pt = 90;
+        }
+        else if (min_charge <= 13.5)
         {
             bat_pt = 0;
             min_pt = 70;
         }
+        else if (min_charge <= 22.5)
+        {
+            bat_pt = 0;
+            min_pt = 55;
+        }
         else if (min_charge <= 27.0)
         {
             bat_pt = 0;
-            min_pt = 50;
+            min_pt = 45;
         }
-        else if (min_charge <= 45.0)
+        else if (min_charge <= 39.0)
         {
             bat_pt = 0;
-            min_pt = 40;
+            min_pt = 30;
         }
         else if (min_charge <= 54.0)
         {
             bat_pt = 0;
-            min_pt = 30;
+            min_pt = 25;
+        }
+        else if (min_charge <= 65.0)
+        {
+            bat_pt = 0;
+            min_pt = 15;
         }
         else if (min_charge <= 99.0)
         {
