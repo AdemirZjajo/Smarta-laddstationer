@@ -48,7 +48,6 @@ vector<vector<float>> queueVector_CS1;
 vector<vector<float>> queueVector_CS2;
 vector<vector<float>> queueVector_CS3;
 vector<vector<float>> queueVector_CS4;
-vector<vector<float>> vector_transit;
 
 struct MessageStruct
 {
@@ -68,10 +67,10 @@ void sendMessage(); // Prototype so PlatformIO doesn't complain
 // Task taskSendMessage(TASK_SECOND * 1, TASK_FOREVER, &sendMessage);
 
 // Clear the list
-void clearComVector()
+/*void clearComVector()
 {
   queueVector.clear();
-}
+}*/
 
 // Creating the message and broadcast it here
 void sendMessage(Message message)
@@ -95,32 +94,125 @@ void addSelfToQueue(Message message)
   tempVect = {static_cast<float>(message.sender_nod_id), static_cast<float>(message.queue_point)};
   exists = false;
 
-  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+  if (message.message_zone == "LADDSTATION_1")
   {
-    if ((*it)[0] == tempVect[0])
+    for (auto it = queueVector_CS1.begin(); it != queueVector_CS1.end(); ++it)
     {
-      exists = true;
-      (*it)[0] = tempVect[0];
-      (*it)[1] = tempVect[1];
-      break;
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
+        break;
+      }
+    }
+
+    if (!exists)
+    {
+      queueVector_CS1.push_back(tempVect);
+      cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
     }
   }
 
-  if (!exists)
+  else if (message.message_zone == "LADDSTATION_2")
   {
-    queueVector.push_back(tempVect);
-    cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
+    for (auto it = queueVector_CS2.begin(); it != queueVector_CS2.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
+        break;
+      }
+    }
+
+    if (!exists)
+    {
+      queueVector_CS2.push_back(tempVect);
+      cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
+    }
+  }
+
+  else if (message.message_zone == "LADDSTATION_3")
+  {
+    for (auto it = queueVector_CS3.begin(); it != queueVector_CS3.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
+        break;
+      }
+    }
+
+    if (!exists)
+    {
+      queueVector_CS3.push_back(tempVect);
+      cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
+    }
+  }
+
+  else if (message.message_zone == "LADDSTATION_4")
+  {
+    for (auto it = queueVector_CS4.begin(); it != queueVector_CS4.end(); ++it)
+    {
+      if ((*it)[0] == tempVect[0])
+      {
+        exists = true;
+        (*it)[0] = tempVect[0];
+        (*it)[1] = tempVect[1];
+        break;
+      }
+    }
+
+    if (!exists)
+    {
+      queueVector_CS4.push_back(tempVect);
+      cout << "Nod-" << message.sender_nod_id << " lägger till sig själv i kölistan för: " << message.message_zone << endl;
+    }
   }
 }
 
 void eraseSelfFromQueue(Message message)
 {
 
-  for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+  for (auto it = queueVector_CS1.begin(); it != queueVector_CS1.end(); ++it)
   {
     if ((*it)[0] == static_cast<float>(message.sender_nod_id))
     {
-      queueVector.erase(it);
+      queueVector_CS1.erase(it);
+      cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
+      break;
+    }
+  }
+
+  for (auto it = queueVector_CS2.begin(); it != queueVector_CS2.end(); ++it)
+  {
+    if ((*it)[0] == static_cast<float>(message.sender_nod_id))
+    {
+      queueVector_CS2.erase(it);
+      cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
+      break;
+    }
+  }
+
+  for (auto it = queueVector_CS3.begin(); it != queueVector_CS3.end(); ++it)
+  {
+    if ((*it)[0] == static_cast<float>(message.sender_nod_id))
+    {
+      queueVector_CS3.erase(it);
+      cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
+      break;
+    }
+  }
+
+  for (auto it = queueVector_CS4.begin(); it != queueVector_CS4.end(); ++it)
+  {
+    if ((*it)[0] == static_cast<float>(message.sender_nod_id))
+    {
+      queueVector_CS4.erase(it);
       cout << "Nod-" << message.sender_nod_id << " tog bort sig själv från kölistan för: " << message.message_zone << endl;
       break;
     }
@@ -130,10 +222,37 @@ void eraseSelfFromQueue(Message message)
 void sortQueue()
 {
 
-  if (!(queueVector.empty()))
+  if (!(queueVector_CS1.empty()))
   {
-    sort(queueVector.begin(),
-         queueVector.end(),
+    sort(queueVector_CS1.begin(),
+         queueVector_CS1.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+           return a[1] > b[1];
+         });
+  }
+  if (!(queueVector_CS2.empty()))
+  {
+    sort(queueVector_CS2.begin(),
+         queueVector_CS2.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+           return a[1] > b[1];
+         });
+  }
+  if (!(queueVector_CS3.empty()))
+  {
+    sort(queueVector_CS3.begin(),
+         queueVector_CS3.end(),
+         [](const vector<float> &a, const vector<float> &b)
+         {
+           return a[1] > b[1];
+         });
+  }
+  if (!(queueVector_CS4.empty()))
+  {
+    sort(queueVector_CS4.begin(),
+         queueVector_CS4.end(),
          [](const vector<float> &a, const vector<float> &b)
          {
            return a[1] > b[1];
@@ -169,7 +288,7 @@ MessageStruct parseString(const String &input)
 }
 
 // Itererar genom meshnätets anslutna noder lista, om en nod inte finns här men finns i köistan tas den bort
-void removeMissingNodes()
+/*void removeMissingNodes()
 {
   for (const auto &node : nodeList)
   {
@@ -194,7 +313,7 @@ void removeMissingNodes()
       nodeList.remove(node);
     }
   }
-}
+}*/
 
 // returns the node id, mainly used in display
 int getID()
@@ -219,62 +338,139 @@ void receivedCallback(uint32_t from, String &msg)
     tempVect = {static_cast<float>(callbackStruct.nodeID), callbackStruct.qp};
 
     exists = false;
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+
+    if (callbackStruct.cs == "LADDSTATION_1")
     {
-      if ((*it)[0] == tempVect[0])
+      for (auto it = queueVector_CS1.begin(); it != queueVector_CS1.end(); ++it)
       {
-        exists = true;
-        (*it)[0] = tempVect[0];
-        (*it)[1] = tempVect[1];
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector_CS1.push_back(tempVect);
+        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
       }
     }
 
-    if (!exists)
+    else if (callbackStruct.cs == "LADDSTATION_2")
     {
-      queueVector.push_back(tempVect);
-      cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+      for (auto it = queueVector_CS2.begin(); it != queueVector_CS2.end(); ++it)
+      {
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector_CS2.push_back(tempVect);
+        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+      }
+    }
+
+    else if (callbackStruct.cs == "LADDSTATION_3")
+    {
+      for (auto it = queueVector_CS3.begin(); it != queueVector_CS3.end(); ++it)
+      {
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector_CS3.push_back(tempVect);
+        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+      }
+    }
+    else if (callbackStruct.cs == "LADDSTATION_4")
+    {
+      for (auto it = queueVector_CS4.begin(); it != queueVector_CS4.end(); ++it)
+      {
+        if ((*it)[0] == tempVect[0])
+        {
+          exists = true;
+          (*it)[0] = tempVect[0];
+          (*it)[1] = tempVect[1];
+        }
+      }
+
+      if (!exists)
+      {
+        queueVector_CS4.push_back(tempVect);
+        cout << "Nod-" << from % 1000 << " läggs till i kölista för: " << callbackStruct.cs.c_str() << endl;
+      }
     }
   }
 
   else if (callbackStruct.category == "RemoveFromQueue")
   {
-    for (auto it = queueVector.begin(); it != queueVector.end(); ++it)
+    if (callbackStruct.cs == "LADDSTATION_1")
     {
-      if ((*it)[0] == callbackStruct.nodeID)
+      for (auto it = queueVector_CS1.begin(); it != queueVector_CS1.end(); ++it)
       {
-        queueVector.erase(it);
-        cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
-        break;
+        if ((*it)[0] == callbackStruct.nodeID)
+        {
+          queueVector_CS1.erase(it);
+          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
+          break;
+        }
+      }
+    }
+
+    else if (callbackStruct.cs == "LADDSTATION_2")
+    {
+      for (auto it = queueVector_CS2.begin(); it != queueVector_CS2.end(); ++it)
+      {
+        if ((*it)[0] == callbackStruct.nodeID)
+        {
+          queueVector_CS2.erase(it);
+          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
+          break;
+        }
+      }
+    }
+
+    if (callbackStruct.cs == "LADDSTATION_3")
+    {
+      for (auto it = queueVector_CS3.begin(); it != queueVector_CS3.end(); ++it)
+      {
+        if ((*it)[0] == callbackStruct.nodeID)
+        {
+          queueVector_CS3.erase(it);
+          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
+          break;
+        }
+      }
+    }
+
+    if (callbackStruct.cs == "LADDSTATION_4")
+    {
+      for (auto it = queueVector_CS4.begin(); it != queueVector_CS4.end(); ++it)
+      {
+        if ((*it)[0] == callbackStruct.nodeID)
+        {
+          queueVector_CS4.erase(it);
+          cout << "Nod-" << callbackStruct.nodeID << " blev borttagen från kölista för: " << callbackStruct.cs.c_str() << endl;
+          break;
+        }
       }
     }
   }
 
   sortQueue();
-}
-
-void newConnectionCallback(uint32_t nodeId)
-{
-
-  nodeList.push_back(nodeId);
-  Serial.printf("-->New Connection, nodeId = %u\n", nodeId % 1000);
-  for (const auto &node : nodeList)
-  {
-    printf("node list :\n");
-    cout << node << endl;
-  }
-}
-
-void changedConnectionCallback()
-{
-  Serial.printf("Changed connections\n");
-  for (const auto &node : nodeList)
-  {
-    if (!(mesh.isConnected(node)))
-    {
-      printf("%u is disconnected\n", node);
-      nodeList.remove(node);
-    }
-  }
 }
 
 void updateCommunication()
@@ -288,31 +484,42 @@ vector<vector<float>> getComQueueVector()
   return queueVector;
 }
 
+vector<vector<float>> getComQueueVectorCS1()
+{
+  return queueVector_CS1;
+}
+
+vector<vector<float>> getComQueueVectorCS2()
+{
+  return queueVector_CS2;
+}
+
+vector<vector<float>> getComQueueVectorCS3()
+{
+  return queueVector_CS3;
+}
+
+vector<vector<float>> getComQueueVectorCS4()
+{
+  return queueVector_CS4;
+}
+
 void printQueueVector()
 {
-  /*cout << "--KÖLISTA--" << endl;
-  for (const auto &row : queueVector)
-  {
-    for (const auto &element : row)print
-    {
-      cout << element << ' ';
-    }
-    cout << '\n';
-  }*/
 
-  cout << "------------KÖLISTA------------" << endl;
-
+  cout << "-----------KÖLISTA-----------" << endl;
+  cout << "-LS1-----LS2-----LS3-----LS4-" << endl;
   // Get the maximum size among all vectors
   size_t maxSize = max({queueVector_CS1.size(), queueVector_CS2.size(), queueVector_CS3.size(),
-                        queueVector_CS4.size(), vector_transit.size()});
+                        queueVector_CS4.size()});
 
   // Iterate over the vectors concurrently
   for (size_t i = 0; i < maxSize; ++i)
   {
     // Print elements from queueVector_CS1
-    if (i < queueVector.size())
+    if (i < queueVector_CS1.size())
     {
-      for (const auto &element : queueVector[i])
+      for (const auto &element : queueVector_CS1[i])
       {
         cout << element << ' ';
       }
@@ -349,18 +556,9 @@ void printQueueVector()
     }
     cout << '\t'; // Separate columns
 
-    // Print elements from vector_transit
-    if (i < vector_transit.size())
-    {
-      for (const auto &element : vector_transit[i])
-      {
-        cout << element << ' ';
-      }
-    }
-    cout << '\t'; // Separate columns
-
     cout << '\n'; // Move to the next row
   }
+  cout << "-----------------------------" << endl;
 }
 
 // void painlessMesh::init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, _auth_mode authmode = AUTH_WPA2_PSK, uint8_t channel = 1, phy_mode_t phymode = PHY_MODE_11G, uint8_t maxtpw = 82, uint8_t hidden = 0, uint8_t maxconn = 4)
@@ -382,16 +580,41 @@ void initCOM()
   mesh.getNodeId() % 1000;
 }
 
+void newConnectionCallback(uint32_t nodeId)
+{
+
+  nodeList.push_back(nodeId);
+  Serial.printf("-->New Connection, nodeId = %u\n", nodeId % 1000);
+  for (const auto &node : nodeList)
+  {
+    printf("node list :\n");
+    cout << node << endl;
+  }
+}
+
+void changedConnectionCallback()
+{
+  Serial.printf("Changed connections\n");
+  for (const auto &node : nodeList)
+  {
+    if (!(mesh.isConnected(node)))
+    {
+      printf("%u is disconnected\n", node);
+      nodeList.remove(node);
+    }
+  }
+}
+
 void disconnect()
 {
   printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
 
-void sendStatus(Message message)
+void sendStatus(string statusMessage)
 {
 
-  // cout "TEST STATUS" << endl;
+  cout << "TEST STATUS: " << statusMessage << endl;
 
   // Server address
   const char *server_ip = "127.0.0.1"; // Replace with your server IP
@@ -419,31 +642,7 @@ void sendStatus(Message message)
     return;
   }
 
-  /*string state = message.sender.state;
-  string nodeID = to_string(message.sender.node_id);
-  string battery = to_string(message.sender.battery_charge);
-  string batteryCon = to_string(message.sender.battery_consumption);
-  string minCharge = to_string(message.sender.min_charge);
-  string queuePoint = to_string(message.sender.queue_point);
-  string zone = message.sender.zone;
-  string x = to_string(message.sender.xcor);
-  string y = to_string(message.sender.ycor);
-  string orgin = message.sender.current_mission.missionOrigin.zone;
-  string dest = message.sender.current_mission.missionDestination.zone;
-  string freight = to_string(message.sender.current_mission.last);
-  string coldFreight = message.sender.current_mission.kylvara ? "true" : "false";
-
-  // Creating a single string with commas between values
-  string serializedMessage = nodeID + "," + battery + "," + batteryCon + "," +
-                             minCharge + "," + queuePoint + "," + zone + "," +
-                             x + "," + y + "," + orgin + "," + dest + "," +
-                             freight + "," + coldFreight;
-
-
-  // Output the serialized message
-  cout << serializedMessage << endl;*/
-
-  string serializedMessage = "Hejhej";
+  string serializedMessage = statusMessage;
 
   // Send the message
   if (send(sockfd, serializedMessage.c_str(), serializedMessage.size(), 0) == -1)

@@ -33,6 +33,10 @@ void updateCommunication();
 void clearComVector();
 
 vector<vector<float>> getComQueueVector();
+vector<vector<float>> getComQueueVectorCS1();
+vector<vector<float>> getComQueueVectorCS2();
+vector<vector<float>> getComQueueVectorCS3();
+vector<vector<float>> getComQueueVectorCS4();
 
 void disconnect();
 
@@ -40,6 +44,6 @@ void removeMissingNodes();
 
 void printQueueVector();
 
-// void sendStatus(Message message);
+void sendStatus(string statusMessage);
 
 #endif
