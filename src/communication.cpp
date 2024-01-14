@@ -612,9 +612,9 @@ void disconnect()
   mesh.stop();
 }
 
-WebsocketsClient websocketsClient;
+/*WebsocketsClient websocketsClient;
 
-/*void sendStatus(string statusMessage)
+void sendStatus(string statusMessage)
 {
   cout << "TEST STATUS: " << statusMessage << endl;
 

@@ -39,7 +39,8 @@ void queuePoints(float points);
 void loading();
 void destination(String dest);
 
-void clearArea();
+void clearArea(int x, int y);
 void position(int x, int y);
+void location(int current_CS_ID);
 
 #endif

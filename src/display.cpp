@@ -42,7 +42,8 @@ void setupDIS()
 
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay();
-    display.setTextColor(WHITE);
+    // display.setTextColor(WHITE);
+    display.setTextColor(WHITE, BLACK);
     display.setTextSize(0, 1);
     // battery = getRandom(batteryOptions, arraySize);
     // weight = getRandom(weightOptions, arraySize);
@@ -64,7 +65,7 @@ void displayClear()
 void displayLooping(int id)
 {
     display.clearDisplay();
-    display.setCursor(40, 20);
+    display.setCursor(32, 20);
     display.printf("Nod: %d", id);
 
     display.setCursor(32, 30);
@@ -85,47 +86,43 @@ void displayLooping(int id)
     display.display();
 }
 
-void clearArea()
+void clearArea(int x, int y)
 {
-    display.setTextColor(BLACK);
-    display.setCursor(32, 50);
-    display.print("         ");
-    display.setCursor(75, 50);
-    display.print("            ");
-    // display.setCursor(32, 30);
-    // display.print("            ");
-    // display.setCursor(65, 30);
-    // display.print("            ");
-
-    display.setTextColor(WHITE);
-    display.display();
+    display.fillRect(x, y, 128, 9, BLACK);
 }
 
 void setID(int id)
 {
+    clearArea(32, 20);
+
     String temp = String(id);
-    display.setCursor(35, 20);
-    display.println("Nod: " + temp);
+    display.setCursor(32, 20);
+    display.println("Nod " + temp);
     // display.println(temp);
     display.display();
 }
 
 void setBat(float battery)
 {
-    // clearArea();
-    String temp = String(battery);
+    clearArea(32, 30);
+
+    String temp = String(battery, 1) + "%";
     display.setCursor(32, 30);
-    display.print("Bat: ");
-    display.setCursor(65, 30);
+    display.print("Bat " + temp);
+    /*
+    display.setCursor(60, 30);
     display.println(temp);
+    */
     display.display();
 }
 
 void setWeight(int weight)
 {
+    clearArea(32, 40);
+
     String temp = String(weight);
     display.setCursor(32, 40);
-    display.print("Last:");
+    display.print("Last");
     display.setCursor(65, 40);
     display.println(temp);
     display.display();
@@ -133,9 +130,11 @@ void setWeight(int weight)
 
 void setLoadType(bool loadType)
 {
+    clearArea(32, 50);
+
     // String temp = String(loadType);
     display.setCursor(32, 50);
-    display.print("Lasttyp:");
+    display.print("Lasttyp ");
     display.setCursor(80, 50);
     if (loadType)
     {
@@ -143,7 +142,7 @@ void setLoadType(bool loadType)
     }
     else
     {
-        display.println("");
+        display.println("-");
     }
     // display.println(temp);
     display.display();
@@ -151,36 +150,71 @@ void setLoadType(bool loadType)
 
 void position(int x, int y)
 {
+    clearArea(32, 40);
+
     display.setCursor(32, 40);
-    display.print("Pos: ");
-    display.setCursor(60, 40);
+    display.print("Pos X");
+    display.setCursor(62, 40);
     display.print(x);
-    display.print(", ");
+    display.print("-Y");
     display.println(y);
+    display.display();
+}
+
+void location(int current_CS_ID)
+{
+    String temp;
+    if (current_CS_ID == 1){
+        temp = String("1");
+    }
+    else if (current_CS_ID == 2){
+        temp = String("2");        
+    }
+    else if (current_CS_ID == 3){
+        temp = String("3");        
+    }
+    else if (current_CS_ID == 4){
+        temp = String("4");        
+    }
+    else {
+        temp = String("?");
+    }
+
+    clearArea(32, 40);
+
+    display.setCursor(32, 40);
+    display.print("Station " + temp);
     display.display();
 }
 
 void destination(String dest)
 {
+    clearArea(32, 50);
+
     String temp = String(dest);
     display.setCursor(32, 50);
-    display.print("Dest: ");
+    display.print("Dest ");
     display.setCursor(75, 50);
     display.println(temp);
     display.display();
 }
 
-void queuePoints(float dest)
+void queuePoints(float point)
 {
+    clearArea(32, 50);
+
+    int temp = int(point);
     display.setCursor(32, 50);
-    display.print("Queue: ");
-    display.setCursor(68, 50);
-    display.println(dest);
+    display.print("Points ");
+    display.setCursor(74, 50);
+    display.println(temp);
     display.display();
 }
 
 void loading()
 {
+    clearArea(32, 50);
+
     display.setCursor(32, 50);
     display.print("Laddar...");
     display.display();

@@ -249,14 +249,14 @@ void loop()
                 node.ycor = destination.y;
                 cout << "Nod-Förlyttning: x: " << destination.x << ", y: " << destination.y << " | Batterinivå: " << node.battery_charge << "%" << endl;
                 // UPPDATERA BATTERI STATUS-FUNKTION TILL OLED
-                displayClear();
+
                 setID(node.node_id);
                 setBat(node.battery_charge);
-                setWeight(node.current_mission.last);
+                position(node.xcor, node.ycor);
                 setLoadType(node.current_mission.kylvara);
 
                 statusMessage = makeStatusString(node);
-                sendStatus(statusMessage);
+                // sendStatus(statusMessage);
             }
 
             // Nod framme
@@ -293,7 +293,7 @@ void loop()
     case QUEUE:
 
         statusMessage = makeStatusString(node);
-        sendStatus(statusMessage);
+        // sendStatus(statusMessage);
         cout << "Nod-" << node.node_id << " köar för att få ladda..." << endl;
         this_thread::sleep_for(chrono::milliseconds(1000));
 
@@ -322,10 +322,9 @@ void loop()
             }
         }
 
-        displayClear();
         setID(node.node_id);
         setBat(node.battery_charge);
-        position(node.xcor, node.ycor);
+        location(node.current_CS.id);
         queuePoints(node.queue_point);
 
         break;
@@ -333,15 +332,14 @@ void loop()
     case CHARGE:
 
         statusMessage = makeStatusString(node);
-        sendStatus(statusMessage);
+        // sendStatus(statusMessage);
         //  Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
         //  Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
         //  noder med högre köpoäng som ska kunna "slänga ut" den nuvarande laddande noden
 
-        displayClear();
         setID(node.node_id);
         setBat(node.battery_charge);
-        position(node.xcor, node.ycor);
+        location(node.current_CS.id);
         loading();
 
         updateCommunication();
