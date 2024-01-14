@@ -30,6 +30,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <ArduinoWebsockets.h>
 
 using namespace std;
 
@@ -611,94 +612,19 @@ void disconnect()
   mesh.stop();
 }
 
-void sendStatus(string statusMessage)
-{
+WebsocketsClient websocketsClient;
 
+/*void sendStatus(string statusMessage)
+{
   cout << "TEST STATUS: " << statusMessage << endl;
 
-  // Server address
-  const char *server_ip = "127.0.0.1"; // Replace with your server IP
-  const int server_port = 12345;       // Replace with your server port
-
-  // Create a socket
-  int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd == -1)
+  if (websocketsClient.connect("ws://your_server_ip:your_server_port"))
   {
-    cerr << "Error creating socket\n";
-    return;
+    websocketsClient.send(statusMessage.c_str());
   }
-
-  // Set up server address
-  sockaddr_in serverAddr;
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(server_port);
-  inet_pton(AF_INET, server_ip, &serverAddr.sin_addr);
-
-  // Connect to the server
-  if (connect(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
+  else
   {
-    cerr << "Error connecting to the server\n";
-    close(sockfd);
-    return;
+    cerr << "Error connecting to WebSocket server\n";
   }
-
-  string serializedMessage = statusMessage;
-
-  // Send the message
-  if (send(sockfd, serializedMessage.c_str(), serializedMessage.size(), 0) == -1)
-  {
-    cerr << "Error sending message\n";
-  }
-
-  // Close the socket
-  close(sockfd);
 }
-
-/*ON THE SERVER SIDE MAYBE??
-
-import React, { useEffect, useState } from 'react';
-
-const WebSocketExample = () => {
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    // Replace 'ws://your-server-ip:your-port' with your WebSocket server's address
-    const socket = new WebSocket('ws://127.0.0.1:12345');
-
-    // Handle connection open
-    socket.onopen = () => {
-      console.log('WebSocket connected');
-    };
-
-    // Handle incoming messages
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, message]);
-      console.log('Received message:', message);
-    };
-
-    // Handle connection close
-    socket.onclose = () => {
-      console.log('WebSocket closed');
-    };
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  return (
-    <div>
-      <h2>Received Messages:</h2>
-      <ul>
-        {messages.map((message, index) => (
-          <li key={index}>{JSON.stringify(message)}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-export default WebSocketExample;
- */
+*/
