@@ -611,7 +611,7 @@ void disconnect()
   printf("***NODE DISCONNECTED***\n");
   mesh.stop();
 }
-
+/*
 websockets::WebsocketsClient websocketsClient;
 
 void sendStatus(string statusMessage)
@@ -627,3 +627,4 @@ void sendStatus(string statusMessage)
     cerr << "Error connecting to WebSocket server\n";
   }
 }
+*/
