@@ -30,7 +30,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <ArduinoWebsockets.h>
+#include <tiny_websockets/client.hpp>
 
 using namespace std;
 
@@ -612,13 +612,13 @@ void disconnect()
   mesh.stop();
 }
 
-/*WebsocketsClient websocketsClient;
+websockets::WebsocketsClient websocketsClient;
 
 void sendStatus(string statusMessage)
 {
   cout << "TEST STATUS: " << statusMessage << endl;
 
-  if (websocketsClient.connect("ws://your_server_ip:your_server_port"))
+  if (websocketsClient.connect("http://localhost:8080"))
   {
     websocketsClient.send(statusMessage.c_str());
   }
@@ -627,4 +627,3 @@ void sendStatus(string statusMessage)
     cerr << "Error connecting to WebSocket server\n";
   }
 }
-*/
