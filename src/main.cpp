@@ -8,6 +8,10 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
+
+typedef websocketpp::server<websocketpp::config::asio> server;
 
 enum State
 {
@@ -20,6 +24,7 @@ Node node(0);
 State state = TRANSIT; // Starttillståndet
 Message message;
 string statusMessage;
+server echo_server;
 using namespace std;
 
 // Metod som:
@@ -52,6 +57,10 @@ using namespace std;
         cout << '\n';
     }
 }*/
+
+void on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
+    // You can define message handling logic here if needed
+}
 
 // Returnerar true om den enda noden som finns i listan är sig själv, annars false; det finns även andra noder i listan
 bool isAlone()
@@ -205,6 +214,14 @@ string makeStatusString(Node node)
     return statusMsg;
 }
 
+// Call this function whenever you update statusMessage
+void send_status_message(const std::string& message) {
+    // Iterate over all connected clients and send the message
+    for (auto it : echo_server.get_connections()) {
+        echo_server.send(it, message, websocketpp::frame::opcode::text);
+    }
+}
+
 void setup()
 {
     cout << "SETUP START..." << endl;
@@ -224,6 +241,25 @@ void setup()
     setLoadType(node.current_mission.kylvara);
     randomSeed(analogRead(A0));
     cout << "SETUP FINISHED!" << endl;
+
+    // Set logging settings
+    echo_server.set_access_channels(websocketpp::log::alevel::all);
+    echo_server.clear_access_channels(websocketpp::log::alevel::frame_payload);
+
+    // Initialize ASIO
+    echo_server.init_asio();
+
+    // Register our message handler
+    echo_server.set_message_handler(&on_message);
+
+    // Listen on port 9002
+    echo_server.listen(9002);
+
+    // Start the server accept loop
+    echo_server.start_accept();
+
+    // Start the ASIO io_service run loop
+    echo_server.run();
 }
 
 void loop()
@@ -233,6 +269,7 @@ void loop()
     switch (state)
     {
     case TRANSIT:
+        std::thread server_thread(setup_server);
         cout << "** NOD är i TRANSIT-state **" << endl;
         //  OM: Batterinivån är högre än minimumladdning påbörjar noden sitt uppdrag
         if (node.battery_charge >= node.min_charge)
@@ -256,6 +293,7 @@ void loop()
                 setLoadType(node.current_mission.kylvara);
 
                 statusMessage = makeStatusString(node);
+                send_status_message(statusMessage);
                 // sendStatus(statusMessage);
             }
 
@@ -288,11 +326,13 @@ void loop()
             cout << "** NOD är i QUEUE-state **" << endl;
             break;
         }
+        server_thread.join();
         break;
 
     case QUEUE:
-
+        std::thread server_thread(setup_server);
         statusMessage = makeStatusString(node);
+        send_status_message(statusMessage);
         // sendStatus(statusMessage);
         cout << "Nod-" << node.node_id << " köar för att få ladda..." << endl;
         this_thread::sleep_for(chrono::milliseconds(1000));
@@ -327,11 +367,13 @@ void loop()
         location(node.current_CS.id);
         queuePoints(node.queue_point);
 
+        server_thread.join();
         break;
 
     case CHARGE:
-
+        std::thread server_thread(setup_server);
         statusMessage = makeStatusString(node);
+        send_status_message(statusMessage);
         // sendStatus(statusMessage);
         //  Uppdaterar listan för att säkerställa att noden fortfarande är först i kön
         //  Nodens egna köpoäng kommer inte förändras under laddning, men det kan komma in andra
@@ -398,7 +440,7 @@ void loop()
             state = TRANSIT;
             node.state = "transit";
         }
-
+        server_thread.join();
         break;
     }
 }
