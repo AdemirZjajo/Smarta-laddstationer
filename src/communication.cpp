@@ -627,3 +627,4 @@ void sendStatus(string statusMessage)
     cerr << "Error connecting to WebSocket server\n";
   }
 }
+
